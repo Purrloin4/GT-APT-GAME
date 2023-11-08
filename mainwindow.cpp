@@ -14,7 +14,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     // Create the world
     try {
-        myWorld.createWorld(":/world_images/grobu.png", 1, 1, 0.25f);
+        myWorld.createWorld(":/world_images/worldmap.png", 1, 1, 0.25f);
         visualizeWorld(); // Visualize the created world
     } catch (const std::exception& e) {
         // Handle any exceptions here
@@ -40,20 +40,15 @@ void MainWindow::visualizeWorld()
     // Adjust the size of the tiles in the visualization
     const int tileSize = 10; // Define the desired size for the tiles
 
-    // Add visualization code here to display the world using QGraphicsScene and QGraphicsView
-    // For example, you can add rectangles or images representing tiles, enemies, and health packs to the scene.
-
-    // Visualize the tiles
+    // Loop through each tile and set its color based on its value
     for (const auto &tile : tiles) {
         int xPos = tile->getXPos();
         int yPos = tile->getYPos();
-        if (std::isinf(tile->getValue())) {
-            // Impassable area (wall)
-            scene->addRect(xPos * tileSize, yPos * tileSize, tileSize, tileSize, QPen(Qt::black), QBrush(Qt::darkGray));
-        } else {
-            // Passable area
-            scene->addRect(xPos * tileSize, yPos * tileSize, tileSize, tileSize, QPen(Qt::black), QBrush(Qt::lightGray));
-        }
+        double value = tile->getValue();
+
+        // Determine the color of the tile based on its value
+        QColor brush = QColor::fromRgbF(value, value, value);
+        scene->addRect(xPos * tileSize, yPos * tileSize, tileSize, tileSize, QPen(Qt::black), brush);
     }
 
     // Add visualization for enemies
