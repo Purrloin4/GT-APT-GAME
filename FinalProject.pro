@@ -27,9 +27,6 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 
-DISTFILES += \
-    images/safeimagekit-pixel-art.png
-
 unix|win32: LIBS += -L$$PWD/../build-world-Desktop_Qt_6_5_3_MinGW_64_bit-Release/release/ -lworld
 
 INCLUDEPATH += $$PWD/../worldsource

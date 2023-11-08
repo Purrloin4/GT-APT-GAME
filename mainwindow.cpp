@@ -8,7 +8,7 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
     World world;
-    QString path = ":/images/safeimagekit-pixel-art.png";
+    QString path = ":/world_images/grobu.png";
     world.createWorld(path,2,3,2);
 }
 
