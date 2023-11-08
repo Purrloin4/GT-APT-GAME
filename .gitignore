@@ -3,3 +3,4 @@ debug/
 release/
 Make*
 .qmake.stash
+.qtc_clangd/
