@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/">
+        <file>images/safeimagekit-pixel-art.png</file>
+    </qresource>
+</RCC>
