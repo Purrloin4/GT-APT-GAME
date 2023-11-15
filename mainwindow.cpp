@@ -5,6 +5,7 @@
 #include <QImage>
 #include <QGraphicsRectItem>
 #include <QMessageBox>
+#include "pathfinder.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -42,6 +43,7 @@ void MainWindow::visualizeWorld()
 
     // Adjust the size of the tiles in the visualization
     const int tileSize = 10; // Define the desired size for the tiles
+    const float maxEH = 100.0f; // Define the value of maxEH
 
     // Loop through each tile and set its color based on its value
     for (const auto &tile : tiles) {
@@ -72,6 +74,22 @@ void MainWindow::visualizeWorld()
 
     // Add visualization for protagonist
     scene->addRect(protagonist.getXPos() * tileSize, protagonist.getYPos() * tileSize, tileSize, tileSize, QPen(Qt::black), QBrush(Qt::blue));
+
+    // Add visualization for protagonist health bar
+    int healthBarWidth = tileSize * 2; // You can adjust the width as needed
+    int healthBarHeight = tileSize / 4; // You can adjust the height as needed
+    QRect healthBarRect(protagonist.getXPos() * tileSize, protagonist.getYPos() * tileSize - tileSize / 2, healthBarWidth, healthBarHeight);
+    double healthRatio = static_cast<double>(protagonist.getHealth()) / static_cast<double>(maxEH);
+    QColor healthBarColor = QColor::fromRgbF(1.0 - healthRatio, healthRatio, 0.0); // Red to green gradient
+    scene->addRect(healthBarRect, QPen(Qt::black), QBrush(healthBarColor));
+
+    // Add visualization for protagonist energy bar
+    int energyBarWidth = tileSize * 2; // You can adjust the width as needed
+    int energyBarHeight = tileSize / 4; // You can adjust the height as needed
+    QRect energyBarRect(protagonist.getXPos() * tileSize, protagonist.getYPos() * tileSize - tileSize / 2 - energyBarHeight, energyBarWidth, energyBarHeight);
+    double energyRatio = static_cast<double>(protagonist.getEnergy()) / static_cast<double>(maxEH);
+    QColor energyBarColor = QColor::fromRgbF(0.0, 0.0, 1.0 - energyRatio); // Blue to black gradient
+    scene->addRect(energyBarRect, QPen(Qt::black), QBrush(energyBarColor));
 
     // Finally, set the scene in a graphics view
     QGraphicsView *view = new QGraphicsView(scene);
