@@ -14,7 +14,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     // Create the world
     try {
-        myWorld.createWorld(":/world_images/worldmap4.png", 1, 1, 0.25f);
+        myWorld.createWorld(":/world_images/worldmap.png", 1, 1, 0.25f);
         visualizeWorld(); // Visualize the created world
     } catch (const std::exception& e) {
         // Handle any exceptions here
@@ -36,6 +36,9 @@ void MainWindow::visualizeWorld()
     auto tiles = myWorld.getTiles();
     auto enemies = myWorld.getEnemies();
     auto healthPacks = myWorld.getHealthPacks();
+
+    // Create protagonist
+    auto protagonist = Protagonist();
 
     // Adjust the size of the tiles in the visualization
     const int tileSize = 10; // Define the desired size for the tiles
@@ -66,6 +69,9 @@ void MainWindow::visualizeWorld()
     for (const auto &healthPack : healthPacks) {
         scene->addRect(healthPack->getXPos() * tileSize, healthPack->getYPos() * tileSize, tileSize, tileSize, QPen(Qt::black), QBrush(Qt::green));
     }
+
+    // Add visualization for protagonist
+    scene->addRect(protagonist.getXPos() * tileSize, protagonist.getYPos() * tileSize, tileSize, tileSize, QPen(Qt::black), QBrush(Qt::blue));
 
     // Finally, set the scene in a graphics view
     QGraphicsView *view = new QGraphicsView(scene);
