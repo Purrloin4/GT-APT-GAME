@@ -14,7 +14,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     // Create the world
     try {
-        myWorld.createWorld(":/world_images/worldmap.png", 1, 1, 0.25f);
+        myWorld.createWorld(":/world_images/worldmap4.png", 1, 1, 0.25f);
         visualizeWorld(); // Visualize the created world
     } catch (const std::exception& e) {
         // Handle any exceptions here
@@ -47,7 +47,13 @@ void MainWindow::visualizeWorld()
         double value = tile->getValue();
 
         // Determine the color of the tile based on its value
-        QColor brush = QColor::fromRgbF(value, value, value);
+        QColor brush;
+        if(std::isinf(value)){
+            brush = Qt::black;
+        }
+        else {
+            brush = QColor::fromRgbF(value, value, value);
+        }
         scene->addRect(xPos * tileSize, yPos * tileSize, tileSize, tileSize, QPen(Qt::black), brush);
     }
 
