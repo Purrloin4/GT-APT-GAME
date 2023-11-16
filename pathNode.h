@@ -3,7 +3,6 @@
 #include "world.h"
 
 
-template <typename T>
 class PathNode {
 public:
     Tile tile;
@@ -11,10 +10,22 @@ public:
     float g;
     float h;
     bool visited;
-    T* prev;
+    PathNode* prev;
 
     PathNode(Tile tile)
         :  tile(tile), f(0.0f), g(0.0f), h(0.0f), visited(false), prev(nullptr)  {
+    }
+
+    float getValue() {
+        return tile.getValue();
+    }
+
+    int getXPos(){
+        return tile.getXPos();
+    }
+
+    int getYPos(){
+        return tile.getYPos();
     }
 };
 

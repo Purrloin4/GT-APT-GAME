@@ -70,14 +70,13 @@ void MainWindow::visualizeWorld()
 void MainWindow::findPathAndHighlight(QGraphicsScene* scene, int tileSize, std::unique_ptr<Tile> startTile, std::unique_ptr<Tile> endTile)
 {
   auto tiles = myWorld.getTiles();
-  // iterate over tiles, convert unique pointers to raw pointers and put in pathNodes
-  std::vector<PathNode<Tile>> pathNodes;
+
+  std::vector<PathNode> pathNodes;
     for (const auto &tile : tiles) {
-        pathNodes.push_back(PathNode<Tile>(*tile));
+        pathNodes.push_back(PathNode(*tile));
     }
 
-
-  Comparator<Tile> comp;
+  Comparator<PathNode> comp;
   int xPos = startTile->getXPos();
   int yPos = startTile->getYPos();
 
