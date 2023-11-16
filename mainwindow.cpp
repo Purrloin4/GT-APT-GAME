@@ -5,6 +5,7 @@
 #include <QImage>
 #include <QGraphicsRectItem>
 #include <QMessageBox>
+#include "pathfinder.h"
 
 
 MainWindow::MainWindow(QWidget *parent)

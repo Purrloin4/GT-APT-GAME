@@ -4,7 +4,7 @@
 #include <QMainWindow>
 #include <QGraphicsScene>
 #include "world.h"
-#include "pathfinder.h"
+
 #include "pathNode.h"
 
 QT_BEGIN_NAMESPACE
