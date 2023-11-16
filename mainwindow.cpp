@@ -18,6 +18,10 @@ MainWindow::MainWindow(QWidget *parent)
     try {
         myWorld.createWorld(":/world_images/worldmap4.png", 1, 1, 0.25f);
         visualizeWorld(); // Visualize the created world
+        auto startTile = std::make_unique<Tile>(0, 0, 0.0f);
+        auto endTile = std::make_unique<Tile>(10, 10, 0.0f);
+
+        findPathAndHighlight(scene,tileSize, std::move(startTile), std::move(endTile));
     } catch (const std::exception& e) {
         // Handle any exceptions here
     }
@@ -78,12 +82,13 @@ void MainWindow::findPathAndHighlight(QGraphicsScene* scene, int tileSize, std::
     }
 
   Comparator<PathNode> comp;
+
+
+
+  std::vector<int> path = A_star(pathNodes, startTile.get(), endTile.get(), comp, scene->width(), 0.5);
+
   int xPos = startTile->getXPos();
   int yPos = startTile->getYPos();
-
-
-  std::vector<int> path = A_star(pathNodes, startTile.get(), endTile.get(), comp, scene->width(), 1.0);
-
 
   for (const auto &move : path) {
         // Determine the position based on the move
