@@ -6,6 +6,9 @@
 #include <QGraphicsRectItem>
 #include <QMessageBox>
 #include "pathfinder.h"
+#include "QLoggingCategory"
+
+QLoggingCategory mainwindowCategory("mainwindow");
 
 
 MainWindow::MainWindow(QWidget *parent)
@@ -16,7 +19,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     // Create the world
     try {
-        myWorld.createWorld(":/world_images/worldmap4.png", 1, 1, 0.25f);
+        myWorld.createWorld(":/world_images/grobu.png", 1, 1, 0.25f);
         visualizeWorld(); // Visualize the created world
         auto startTile = std::make_unique<Tile>(0, 0, 0.0f);
         auto endTile = std::make_unique<Tile>(10, 10, 0.0f);
@@ -36,7 +39,7 @@ MainWindow::~MainWindow()
 void MainWindow::visualizeWorld()
 {
     // Create a graphics scene
-    QGraphicsScene *scene = new QGraphicsScene(this);
+    this->scene = new QGraphicsScene(this);
 
     // Get tiles, enemies, and health packs from the world
     auto tiles = myWorld.getTiles();
@@ -44,7 +47,7 @@ void MainWindow::visualizeWorld()
     auto healthPacks = myWorld.getHealthPacks();
 
     // Adjust the size of the tiles in the visualization
-    const int tileSize = 5; // Define the desired size for the tiles
+    const int tileSize = 50; // Define the desired size for the tiles
 
     // Loop through each tile and set its color based on its value
     for (const auto &tile : tiles) {
@@ -83,9 +86,14 @@ void MainWindow::findPathAndHighlight(QGraphicsScene* scene, int tileSize, std::
 
   Comparator<PathNode> comp;
 
+  PathNode startNode(*startTile);
+  PathNode endNode(*endTile);
 
+  qCInfo(mainwindowCategory) << "Before A_star";
 
-  std::vector<int> path = A_star(pathNodes, startTile.get(), endTile.get(), comp, scene->width(), 0.5);
+    std::vector<int> path = A_star(pathNodes, &startNode, &endNode, comp, scene->width(), 0.5);
+
+  qCInfo(mainwindowCategory) << "After A_star";
 
   int xPos = startTile->getXPos();
   int yPos = startTile->getYPos();
@@ -104,7 +112,6 @@ void MainWindow::findPathAndHighlight(QGraphicsScene* scene, int tileSize, std::
         default: break;
         }
 
-        // Add a rectangle to the scene to highlight the position
-        scene->addRect(xPos * tileSize, yPos * tileSize, tileSize, tileSize, QPen(Qt::black), QBrush(Qt::blue));
+        scene->addRect(xPos * tileSize, yPos * tileSize, tileSize, tileSize, QPen(Qt::black), QBrush(Qt::red));
   }
 }

@@ -16,15 +16,15 @@ public:
         :  tile(tile), f(0.0f), g(0.0f), h(0.0f), visited(false), prev(nullptr)  {
     }
 
-    float getValue() {
+    float getValue(){
         return tile.getValue();
     }
 
-    int getXPos(){
+    int getXPos() const{
         return tile.getXPos();
     }
 
-    int getYPos(){
+    int getYPos() const{
         return tile.getYPos();
     }
 };
