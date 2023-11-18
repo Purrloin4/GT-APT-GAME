@@ -42,7 +42,7 @@ void MainWindow::visualizeWorld()
     this->scene = new QGraphicsScene(this);
 
     // Get tiles, enemies, and health packs from the world
-    auto tiles = myWorld.getTiles();
+    this->myTiles = myWorld.getTiles();
     auto enemies = myWorld.getEnemies();
     auto healthPacks = myWorld.getHealthPacks();
 
@@ -50,7 +50,7 @@ void MainWindow::visualizeWorld()
     const int tileSize = 50; // Define the desired size for the tiles
 
     // Loop through each tile and set its color based on its value
-    for (const auto &tile : tiles) {
+    for (const auto &tile : myTiles) {
         int xPos = tile->getXPos();
         int yPos = tile->getYPos();
         double value = tile->getValue();
@@ -77,10 +77,8 @@ void MainWindow::visualizeWorld()
 
 void MainWindow::findPathAndHighlight(QGraphicsScene* scene, int tileSize, std::unique_ptr<Tile> startTile, std::unique_ptr<Tile> endTile)
 {
-  auto tiles = myWorld.getTiles();
-
   std::vector<PathNode> pathNodes;
-    for (const auto &tile : tiles) {
+    for (const auto &tile : myTiles) {
         pathNodes.push_back(PathNode(*tile));
     }
 
