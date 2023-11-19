@@ -47,7 +47,7 @@ void MainWindow::visualizeWorld()
     auto healthPacks = myWorld.getHealthPacks();
 
     // Adjust the size of the tiles in the visualization
-    const int tileSize = 50; // Define the desired size for the tiles
+    this->tileSize = 10; // Define the desired size for the tiles
 
     // Loop through each tile and set its color based on its value
     for (const auto &tile : myTiles) {
@@ -56,7 +56,14 @@ void MainWindow::visualizeWorld()
         double value = tile->getValue();
 
         // Determine the color of the tile based on its value
-        QColor brush = QColor::fromRgbF(value, value, value);
+        QColor brush;
+        if(std::isinf(value)){
+            brush = Qt::black;
+        }
+        else {
+            brush = QColor::fromRgbF(value, value, value);
+        }
+
         scene->addRect(xPos * tileSize, yPos * tileSize, tileSize, tileSize, QPen(Qt::black), brush);
     }
 
@@ -87,11 +94,9 @@ void MainWindow::findPathAndHighlight(QGraphicsScene* scene, int tileSize, std::
   PathNode startNode(*startTile);
   PathNode endNode(*endTile);
 
-  qCInfo(mainwindowCategory) << "Before A_star";
+  auto width = (scene->width())/tileSize;
 
-    std::vector<int> path = A_star(pathNodes, &startNode, &endNode, comp, scene->width(), 0.5);
-
-  qCInfo(mainwindowCategory) << "After A_star";
+  std::vector<int> path = A_star(pathNodes, &startNode, &endNode, comp, width, 0.5);
 
   int xPos = startTile->getXPos();
   int yPos = startTile->getYPos();
