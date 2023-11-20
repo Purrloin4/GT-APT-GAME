@@ -5,10 +5,6 @@
 #include <QImage>
 #include <QGraphicsRectItem>
 #include <QMessageBox>
-#include "pathfinder.h"
-#include "QLoggingCategory"
-
-QLoggingCategory mainwindowCategory("mainwindow");
 
 
 MainWindow::MainWindow(QWidget *parent)
@@ -19,12 +15,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     // Create the world
     try {
-        myWorld.createWorld(":/world_images/grobu.png", 1, 1, 0.25f);
+        myWorld.createWorld(":/world_images/worldmap4.png", 1, 1, 0.25f);
         visualizeWorld(); // Visualize the created world
-        auto startTile = std::make_unique<Tile>(0, 0, 0.0f);
-        auto endTile = std::make_unique<Tile>(20, 20, 0.0f);
-
-        findPathAndHighlight(scene,tileSize, std::move(startTile), std::move(endTile));
     } catch (const std::exception& e) {
         // Handle any exceptions here
     }
@@ -39,31 +31,24 @@ MainWindow::~MainWindow()
 void MainWindow::visualizeWorld()
 {
     // Create a graphics scene
-    this->scene = new QGraphicsScene(this);
+    QGraphicsScene *scene = new QGraphicsScene(this);
 
     // Get tiles, enemies, and health packs from the world
-    this->myTiles = myWorld.getTiles();
+    auto tiles = myWorld.getTiles();
     auto enemies = myWorld.getEnemies();
     auto healthPacks = myWorld.getHealthPacks();
 
     // Adjust the size of the tiles in the visualization
-    this->tileSize = 10; // Define the desired size for the tiles
+    const int tileSize = 5; // Define the desired size for the tiles
 
     // Loop through each tile and set its color based on its value
-    for (const auto &tile : myTiles) {
+    for (const auto &tile : tiles) {
         int xPos = tile->getXPos();
         int yPos = tile->getYPos();
         double value = tile->getValue();
 
         // Determine the color of the tile based on its value
-        QColor brush;
-        if(std::isinf(value)){
-            brush = Qt::black;
-        }
-        else {
-            brush = QColor::fromRgbF(value, value, value);
-        }
-
+        QColor brush = QColor::fromRgbF(value, value, value);
         scene->addRect(xPos * tileSize, yPos * tileSize, tileSize, tileSize, QPen(Qt::black), brush);
     }
 
@@ -84,20 +69,21 @@ void MainWindow::visualizeWorld()
 
 void MainWindow::findPathAndHighlight(QGraphicsScene* scene, int tileSize, std::unique_ptr<Tile> startTile, std::unique_ptr<Tile> endTile)
 {
-  std::vector<PathNode> pathNodes;
-    for (const auto &tile : myTiles) {
-        pathNodes.push_back(PathNode(*tile));
+  auto tiles = myWorld.getTiles();
+  // iterate over tiles, convert unique pointers to raw pointers and put in pathNodes
+  std::vector<PathNode<Tile>> pathNodes;
+    for (const auto &tile : tiles) {
+        pathNodes.push_back(PathNode<Tile>(*tile));
     }
 
-  Comparator<PathNode> comp = PathNode::Comparator();
 
-  PathNode startNode(*startTile);
-  PathNode endNode(*endTile);
-
-  std::vector<int> path = A_star(pathNodes, &startNode, &endNode, comp, myWorld.getCols(), 0.5);
-
+  Comparator<Tile> comp;
   int xPos = startTile->getXPos();
   int yPos = startTile->getYPos();
+
+
+  std::vector<int> path = A_star(pathNodes, startTile.get(), endTile.get(), comp, scene->width(), 1.0);
+
 
   for (const auto &move : path) {
         // Determine the position based on the move
@@ -113,6 +99,7 @@ void MainWindow::findPathAndHighlight(QGraphicsScene* scene, int tileSize, std::
         default: break;
         }
 
-        scene->addRect(xPos * tileSize, yPos * tileSize, tileSize, tileSize, QPen(Qt::black), QBrush(Qt::red));
+        // Add a rectangle to the scene to highlight the position
+        scene->addRect(xPos * tileSize, yPos * tileSize, tileSize, tileSize, QPen(Qt::black), QBrush(Qt::blue));
   }
 }

@@ -27,6 +27,12 @@ public:
     int getYPos() const{
         return tile.getYPos();
     }
+
+    struct Comparator {
+        bool operator()(const PathNode& lhs, const PathNode& rhs) const {
+            return (lhs.f + lhs.h) > (rhs.f + rhs.h);
+        }
+    };
 };
 
 
