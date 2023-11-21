@@ -10,10 +10,12 @@ CONFIG += c++20
 
 SOURCES += \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    worldcontroller.cpp
 
 HEADERS += \
-    mainwindow.h
+    mainwindow.h \
+    worldcontroller.h
 
 FORMS += \
     mainwindow.ui
