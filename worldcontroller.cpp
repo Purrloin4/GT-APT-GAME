@@ -1,8 +1,19 @@
 #include "worldcontroller.h"
 
 WorldController::WorldController()
+    : start{0, 0}, exit{30,30} // start always (0,0), exit (30,30) for worldmap.png
 {
 
+}
+
+point WorldController::getStart()
+{
+    return start;
+}
+
+point WorldController::getExit()
+{
+    return exit;
 }
 
 std::shared_ptr<Tile> WorldController::getTile(int x, int y) const
@@ -86,7 +97,8 @@ bool WorldController::isEnemy(int x, int y)
     return false;
 }
 
-bool WorldController::isPoisined(int x, int y)
+bool WorldController::isPoisoned(int x, int y)
 {
+    // We do not yet have poisoned tiles
     return false;
 }

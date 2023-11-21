@@ -5,10 +5,20 @@
 #include <memory>
 #include <vector>
 
+
+struct point {
+    int xCoordinate;
+    int yCoordinate;
+};
+
+
 class WorldController
 {
 public:
     WorldController();
+
+    point getStart();
+    point getExit();
 
     std::shared_ptr<Tile> getTile(int x, int y) const;
     std::vector<std::shared_ptr<Tile> > getTiles() const;
@@ -26,9 +36,11 @@ public:
 
     bool isHealthPack(int x, int y);
     bool isEnemy(int x, int y);
-    bool isPoisined(int x, int y);
+    bool isPoisoned(int x, int y);
 
 private:
+    point start;
+    point exit;
     std::shared_ptr<World> world;
     std::vector<std::shared_ptr<Tile>> tiles;
     std::vector<std::shared_ptr<Tile>> healthpacks;
