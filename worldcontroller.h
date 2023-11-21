@@ -10,13 +10,13 @@ class WorldController
 public:
     WorldController();
 
-    std::shared_ptr<Tile> getTile() const;
+    std::shared_ptr<Tile> getTile(int x, int y) const;
     std::vector<std::shared_ptr<Tile> > getTiles() const;
 
-    std::shared_ptr<Tile> getHealthpack() const;
+    std::shared_ptr<Tile> getHealthpack(int x, int y) const;
     std::vector<std::shared_ptr<Tile> > getHealthpacks() const;
 
-    std::shared_ptr<Enemy> getEnemy() const;
+    std::shared_ptr<Enemy> getEnemy(int x, int y) const;
     std::vector<std::shared_ptr<Enemy> > getEnemies() const;
 
     std::shared_ptr<Protagonist> getProtagonist() const;
