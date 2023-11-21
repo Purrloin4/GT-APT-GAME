@@ -5,11 +5,6 @@
 #include <memory>
 #include <vector>
 
-class Tile;
-class World;
-class EnemyInfo;
-class Protagonist;
-
 class WorldController
 {
 public:
@@ -37,7 +32,7 @@ private:
     std::shared_ptr<World> world;
     std::vector<std::shared_ptr<Tile>> tiles;
     std::vector<std::shared_ptr<Tile>> healthpacks;
-    std::vector<std::shared_ptr<EnemyInfo>> enemies;
+    std::vector<std::shared_ptr<Enemy>> enemies;
     std::shared_ptr<Protagonist> protagonist;
     int height;
     int width;
