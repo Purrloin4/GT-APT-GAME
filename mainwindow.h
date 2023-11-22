@@ -27,9 +27,11 @@ private:
     QGraphicsScene* scene;
     std::vector<std::unique_ptr<Tile>> myTiles;
 
-    void visualizeWorld();
+    void visualizeWorldGraph();
+    void visualizeWorldText();
     void findPathAndHighlight(QGraphicsScene* scene, int tileSize, std::unique_ptr<Tile> startTile, std::unique_ptr<Tile> endTile);
-
+    void showGraphicalView();
+    void showTextView();
 };
 
 #endif // MAINWINDOW_H

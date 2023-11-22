@@ -7,6 +7,9 @@
 #include <QMessageBox>
 #include "pathfinder.h"
 #include "QLoggingCategory"
+#include <QPushButton>
+#include <QHBoxLayout>
+#include <QTextEdit>
 
 QLoggingCategory mainwindowCategory("mainwindow");
 
@@ -19,8 +22,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     // Create the world
     try {
-        myWorld.createWorld(":/world_images/grobu.png", 1, 1, 0.25f);
-        visualizeWorld(); // Visualize the created world
+        myWorld.createWorld(":/world_images/grobu.png", 25, 25, 0.25f);
+        visualizeWorldGraph(); // Visualize the created world
         auto startTile = std::make_unique<Tile>(0, 0, 0.0f);
         auto endTile = std::make_unique<Tile>(20, 20, 0.0f);
 
@@ -36,7 +39,7 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::visualizeWorld()
+void MainWindow::visualizeWorldGraph()
 {
     // Create a graphics scene
     this->scene = new QGraphicsScene(this);
@@ -61,10 +64,9 @@ void MainWindow::visualizeWorld()
 
         // Determine the color of the tile based on its value
         QColor brush;
-        if(std::isinf(value)){
+        if (std::isinf(value)) {
             brush = Qt::black;
-        }
-        else {
+        } else {
             brush = QColor::fromRgbF(value, value, value);
         }
         scene->addRect(xPos * tileSize, yPos * tileSize, tileSize, tileSize, QPen(Qt::black), brush);
@@ -102,6 +104,107 @@ void MainWindow::visualizeWorld()
     // Finally, set the scene in a graphics view
     QGraphicsView *view = new QGraphicsView(scene);
     setCentralWidget(view);
+
+    // Create buttons for switching between graphical and text views
+    QPushButton *graphicalButton = new QPushButton("Graphical View");
+    QPushButton *textButton = new QPushButton("Text View");
+
+    // Connect button signals to corresponding slots
+    connect(graphicalButton, &QPushButton::clicked, this, &MainWindow::showGraphicalView);
+    connect(textButton, &QPushButton::clicked, this, &MainWindow::showTextView);
+
+    // Create a layout for the buttons and graphics view
+    QVBoxLayout *layout = new QVBoxLayout;
+    layout->addWidget(view);
+    layout->addWidget(graphicalButton);
+    layout->addWidget(textButton);
+
+    // Set the central widget to the layout
+    setCentralWidget(new QWidget);
+    centralWidget()->setLayout(layout);
+}
+
+void MainWindow::visualizeWorldText()
+{
+    // Create a QString to hold the ASCII representation of the world
+    QString asciiRepresentation;
+
+    // Get tiles, enemies, and health packs from the world
+    this->myTiles = myWorld.getTiles();
+    const float maxEH = 100.0f; // Define the value of maxEH
+    auto enemies = myWorld.getEnemies();
+    auto healthPacks = myWorld.getHealthPacks();
+
+    // Create protagonist
+    auto protagonist = Protagonist();
+
+    // Adjust the size of the tiles in the visualization
+    this->tileSize = 10; // Define the desired size for the tiles
+
+    // Determine the ASCII representation of different entities
+    const QString emptyTile = "+---+\n|   |\n+---+\n";
+    const QString healthPackTile = "+---+\n| H |\n+---+\n";
+    const QString enemyTile = "+---+\n| E |\n+---+\n";
+    const QString protagonistTile = "+---+\n| P |\n+---+\n";
+
+    // Loop through each row
+    for (int y = 0; y < myWorld.getRows(); ++y) {
+        // Loop through each column
+        for (int x = 0; x < myWorld.getCols(); ++x) {
+            // Check if the current position contains an entity (health pack, enemy, protagonist)
+            auto isHealthPack = std::find_if(healthPacks.begin(), healthPacks.end(),
+                                             [x, y](const auto &hp) { return hp->getXPos() == x && hp->getYPos() == y; });
+            auto isEnemy = std::find_if(enemies.begin(), enemies.end(),
+                                        [x, y](const auto &enemy) { return enemy->getXPos() == x && enemy->getYPos() == y; });
+            auto isProtagonist = (protagonist.getXPos() == x && protagonist.getYPos() == y);
+
+            // Append the corresponding ASCII representation to the overall representation string
+            if (isHealthPack != healthPacks.end()) {
+                asciiRepresentation += healthPackTile;
+            } else if (isEnemy != enemies.end()) {
+                asciiRepresentation += enemyTile;
+            } else if (isProtagonist) {
+                asciiRepresentation += protagonistTile;
+            } else {
+                asciiRepresentation += emptyTile;
+            }
+        }
+    }
+
+    // Display the ASCII representation in a QTextEdit
+    QTextEdit *asciiTextEdit = new QTextEdit(asciiRepresentation);
+    asciiTextEdit->setFont(QFont("Courier")); // Set a monospaced font for better alignment
+
+    // Set the central widget to the ASCII text edit
+    setCentralWidget(asciiTextEdit);
+
+    // Create buttons for switching between graphical and text views
+    QPushButton *graphicalButton = new QPushButton("Graphical View");
+    QPushButton *textButton = new QPushButton("Text View");
+
+    // Connect button signals to corresponding slots
+    connect(graphicalButton, &QPushButton::clicked, this, &MainWindow::showGraphicalView);
+    connect(textButton, &QPushButton::clicked, this, &MainWindow::showTextView);
+
+    // Create a layout for the buttons and ASCII text edit
+    QVBoxLayout *layout = new QVBoxLayout;
+    layout->addWidget(asciiTextEdit);
+    layout->addWidget(graphicalButton);
+    layout->addWidget(textButton);
+
+    // Set the central widget to the layout
+    setCentralWidget(new QWidget);
+    centralWidget()->setLayout(layout);
+}
+
+void MainWindow::showGraphicalView()
+{
+    visualizeWorldGraph();
+}
+
+void MainWindow::showTextView()
+{
+    visualizeWorldText();
 }
 
 void MainWindow::findPathAndHighlight(QGraphicsScene* scene, int tileSize, std::unique_ptr<Tile> startTile, std::unique_ptr<Tile> endTile)
