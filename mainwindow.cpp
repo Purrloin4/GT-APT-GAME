@@ -9,6 +9,7 @@
 #include "QLoggingCategory"
 #include <QKeyEvent>
 #include <QMouseEvent>
+#include <QPushButton>
 
 QLoggingCategory mainwindowCategory("mainwindow");
 
@@ -31,6 +32,11 @@ MainWindow::MainWindow(QWidget *parent)
     } catch (const std::exception& e) {
         // Handle any exceptions here
     }
+
+    // Create a button and add it to the main window
+    QPushButton* switchButton = new QPushButton("Switch View", this);
+    switchButton->setGeometry(10, 10, 200, 30);
+    connect(switchButton, &QPushButton::clicked, this, &MainWindow::onSwitchButtonClicked);
 
 }
 
@@ -196,4 +202,10 @@ void MainWindow::mousePressEvent(QMouseEvent *event) {
 
   // Call the base class implementation to ensure standard processing
   QMainWindow::mousePressEvent(event);
+}
+
+void MainWindow::onSwitchButtonClicked()
+{
+    // Handle the button click event if needed
+    // This function will be called when the button is clicked
 }

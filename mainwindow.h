@@ -36,6 +36,7 @@ private:
     void drawProtagonist();
     bool isValidPosition(int x, int y);
     void mousePressEvent(QMouseEvent *event);
+    void onSwitchButtonClicked();
 
 };
 
