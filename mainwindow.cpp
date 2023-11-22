@@ -22,7 +22,7 @@ MainWindow::MainWindow(QWidget *parent)
         myWorld.createWorld(":/world_images/grobu.png", 1, 1, 0.25f);
         visualizeWorld(); // Visualize the created world
         auto startTile = std::make_unique<Tile>(0, 0, 0.0f);
-        auto endTile = std::make_unique<Tile>(20, 20, 0.0f);
+        auto endTile = std::make_unique<Tile>(myWorld.getCols()-1, myWorld.getRows()-1, 0.0f);
 
         findPathAndHighlight(scene,tileSize, std::move(startTile), std::move(endTile));
     } catch (const std::exception& e) {
@@ -125,13 +125,13 @@ void MainWindow::findPathAndHighlight(QGraphicsScene* scene, int tileSize, std::
         // Determine the position based on the move
         switch (move) {
         case 0: yPos -= 1; break;  // Move up
-        case 1: xPos += 1; yPos -= 1; break;  // Move to the top-right
-        case 2: xPos += 1; break;  // Move to the right
-        case 3: xPos += 1; yPos += 1; break;  // Move to the bottom-right
+        case 1: xPos -= 1; yPos -= 1; break;  // Move to the top-right
+        case 2: xPos -= 1; break;  // Move to the right
+        case 3: xPos -= 1; yPos += 1; break;  // Move to the bottom-right
         case 4: yPos += 1; break;  // Move down
-        case 5: xPos -= 1; yPos += 1; break;  // Move to the bottom-left
-        case 6: xPos -= 1; break;  // Move to the left
-        case 7: xPos -= 1; yPos -= 1; break;  // Move to the top-left
+        case 5: xPos += 1; yPos += 1; break;  // Move to the bottom-left
+        case 6: xPos += 1; break;  // Move to the left
+        case 7: xPos += 1; yPos -= 1; break;  // Move to the top-left
         default: break;
         }
 
