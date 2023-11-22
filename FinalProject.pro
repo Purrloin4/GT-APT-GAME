@@ -14,8 +14,6 @@ SOURCES += \
     controller/worldcontroller.cpp \
     main.cpp \
     mainwindow.cpp \
-    viewcontroller.cpp \
-    worldcontroller.cpp
 
 HEADERS += \
     controller/graphicviewcontroller.h \
@@ -23,8 +21,6 @@ HEADERS += \
     controller/viewcontroller.h \
     controller/worldcontroller.h \
     mainwindow.h \
-    viewcontroller.h \
-    worldcontroller.h \
     pathNode.h
 
 FORMS += \

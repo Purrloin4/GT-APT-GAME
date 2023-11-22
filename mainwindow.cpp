@@ -7,8 +7,8 @@
 #include <QMessageBox>
 #include "pathfinder.h"
 #include "QLoggingCategory"
-#include "/controller/worldcontroller.h"
-#include "/controller/graphicviewcontroller.h"
+#include "controller/worldcontroller.h"
+#include "controller/graphicviewcontroller.h"
 
 QLoggingCategory mainwindowCategory("mainwindow");
 

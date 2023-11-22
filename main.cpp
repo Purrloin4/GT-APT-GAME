@@ -1,8 +1,5 @@
 #include "mainwindow.h"
 #include "qloggingcategory.h"
-#include "/controller/worldcontroller.h"
-#include "/controller/graphicviewcontroller.h"
-
 #include <QApplication>
 
 int main(int argc, char *argv[])
