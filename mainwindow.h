@@ -35,6 +35,7 @@ private:
     void keyPressEvent(QKeyEvent *event);
     void drawProtagonist();
     bool isValidPosition(int x, int y);
+    void mousePressEvent(QMouseEvent *event);
 
 };
 

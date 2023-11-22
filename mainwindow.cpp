@@ -8,6 +8,7 @@
 #include "pathfinder.h"
 #include "QLoggingCategory"
 #include <QKeyEvent>
+#include <QMouseEvent>
 
 QLoggingCategory mainwindowCategory("mainwindow");
 
@@ -185,4 +186,14 @@ void MainWindow::keyPressEvent(QKeyEvent *event) {
 bool MainWindow::isValidPosition(int x, int y) {
   // Check if the new position is within the boundaries of the world
   return x >= 0 && x < myWorld.getCols() && y >= 0 && y < myWorld.getRows();
+}
+
+void MainWindow::mousePressEvent(QMouseEvent *event) {
+  // Set focus to the main window when the mouse is clicked on the map
+  setFocus();
+
+  // Handle other mouse press events if needed: Movement of protagonist via mouse
+
+  // Call the base class implementation to ensure standard processing
+  QMainWindow::mousePressEvent(event);
 }
