@@ -23,7 +23,7 @@ MainWindow::MainWindow(QWidget *parent)
     // Create the world
     try {
         myWorld.createWorld(":/world_images/grobu.png", 25, 25, 0.25f);
-        visualizeWorldGraph(); // Visualize the created world
+        visualizeWorldText(); // Visualize the created world
         auto startTile = std::make_unique<Tile>(0, 0, 0.0f);
         auto endTile = std::make_unique<Tile>(20, 20, 0.0f);
 
@@ -131,7 +131,6 @@ void MainWindow::visualizeWorldText()
 
     // Get tiles, enemies, and health packs from the world
     this->myTiles = myWorld.getTiles();
-    const float maxEH = 100.0f; // Define the value of maxEH
     auto enemies = myWorld.getEnemies();
     auto healthPacks = myWorld.getHealthPacks();
 
