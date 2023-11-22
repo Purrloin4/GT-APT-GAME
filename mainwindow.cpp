@@ -43,6 +43,7 @@ void MainWindow::visualizeWorld()
 
     // Get tiles, enemies, and health packs from the world
     this->myTiles = myWorld.getTiles();
+    const float maxEH = 100.0f; // Define the value of maxEH
     auto enemies = myWorld.getEnemies();
     auto healthPacks = myWorld.getHealthPacks();
 
