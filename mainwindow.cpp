@@ -141,11 +141,10 @@ void MainWindow::visualizeWorldText()
     this->tileSize = 10; // Define the desired size for the tiles
 
     // Determine the ASCII representation of different entities
-    const QString emptyTile = QString("+---+") + QChar(0x2029) + "|\u00A0\u00A0\u00A0|" + QChar(0x2029) + "+---+" + QChar(0x2029);
-    const QString healthPackTile = QString("+---+") + QChar(0x2029) + "| H |" + QChar(0x2029) + "+---+" + QChar(0x2029);
-    const QString enemyTile = QString("+---+") + QChar(0x2029) + "| E |" + QChar(0x2029) + "+---+" + QChar(0x2029);
-    const QString protagonistTile = QString("+---+") + QChar(0x2029) + "| P |" + QChar(0x2029) + "+---+" + QChar(0x2029);
-
+    const QString emptyTile = "+---+\n|\u00A0\u00A0\u00A0|\n+---+\n";
+    const QString healthPackTile = "+---+\n| H |\n+---+\n";
+    const QString enemyTile = "+---+\n| E |\n+---+\n";
+    const QString protagonistTile = "+---+\n| P |\n+---+\n";
 
     // Loop through each row
     for (int y = 0; y < myWorld.getRows(); ++y) {
@@ -169,14 +168,14 @@ void MainWindow::visualizeWorldText()
                 asciiRepresentation += emptyTile;
             }
         }
+
+        // Add a line break after each row
+        asciiRepresentation += "\n";
     }
 
     // Display the ASCII representation in a QTextEdit
     QTextEdit *asciiTextEdit = new QTextEdit(asciiRepresentation);
     asciiTextEdit->setFont(QFont("Courier")); // Set a monospaced font for better alignment
-
-    // Set the central widget to the ASCII text edit
-    setCentralWidget(asciiTextEdit);
 
     // Create buttons for switching between graphical and text views
     QPushButton *graphicalButton = new QPushButton("Graphical View");
