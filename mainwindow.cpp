@@ -178,6 +178,11 @@ void MainWindow::visualizeWorldText()
         asciiRepresentation += QChar(0x2029);
     }
 
+    // Add the horizontal border after the last row
+    for (int x = 0; x < myWorld.getCols(); ++x) {
+        asciiRepresentation += horizontalBorder;
+    }
+
     // Display the ASCII representation in a QTextEdit
     QTextEdit *asciiTextEdit = new QTextEdit(asciiRepresentation);
     asciiTextEdit->setFont(QFont("Courier")); // Set a monospaced font for better alignment
@@ -200,11 +205,6 @@ void MainWindow::visualizeWorldText()
     setCentralWidget(new QWidget);
     centralWidget()->setLayout(layout);
 }
-
-
-
-
-
 
 
 void MainWindow::showGraphicalView()
