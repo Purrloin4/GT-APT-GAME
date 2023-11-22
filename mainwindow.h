@@ -2,7 +2,11 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QGraphicsScene>
 #include "world.h"
+#include "pathNode.h"
+
+
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -19,8 +23,12 @@ public:
 private:
     Ui::MainWindow *ui;
     World myWorld;
+    int tileSize;
+    QGraphicsScene* scene;
+    std::vector<std::unique_ptr<Tile>> myTiles;
 
     void visualizeWorld();
+    void findPathAndHighlight(QGraphicsScene* scene, int tileSize, std::unique_ptr<Tile> startTile, std::unique_ptr<Tile> endTile);
 
 };
 

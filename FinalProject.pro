@@ -16,6 +16,7 @@ SOURCES += \
 HEADERS += \
     mainwindow.h \
     worldcontroller.h
+    pathNode.h
 
 FORMS += \
     mainwindow.ui
