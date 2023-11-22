@@ -7,6 +7,7 @@
 #include <QMessageBox>
 #include "pathfinder.h"
 #include "QLoggingCategory"
+#include <QKeyEvent>
 
 QLoggingCategory mainwindowCategory("mainwindow");
 
@@ -16,6 +17,7 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    this->setFocus();
 
     // Create the world
     try {
@@ -80,8 +82,7 @@ void MainWindow::visualizeWorld()
         scene->addRect(healthPack->getXPos() * tileSize, healthPack->getYPos() * tileSize, tileSize, tileSize, QPen(Qt::black), QBrush(Qt::green));
     }
 
-    // Add visualization for protagonist
-    scene->addRect(protagonist.getXPos() * tileSize, protagonist.getYPos() * tileSize, tileSize, tileSize, QPen(Qt::black), QBrush(Qt::blue));
+    drawProtagonist();
 
     // Add visualization for protagonist health bar
     int healthBarWidth = tileSize * 2; // You can adjust the width as needed
@@ -137,4 +138,29 @@ void MainWindow::findPathAndHighlight(QGraphicsScene* scene, int tileSize, std::
 
         scene->addRect(xPos * tileSize, yPos * tileSize, tileSize, tileSize, QPen(Qt::black), QBrush(Qt::red));
   }
+}
+
+void MainWindow::drawProtagonist() {
+    // Add visualization for protagonist
+    scene->addRect(protagonist.getXPos() * tileSize, protagonist.getYPos() * tileSize, tileSize, tileSize, QPen(Qt::black), QBrush(Qt::blue));
+}
+
+void MainWindow::keyPressEvent(QKeyEvent *event) {
+  switch (event->key()) {
+  case Qt::Key_Left: // If the left arrow key was pressed
+        protagonist.setXPos(protagonist.getXPos() - 1);
+        break;
+  case Qt::Key_Right: // If the right arrow key was pressed
+        protagonist.setXPos(protagonist.getXPos() + 1);
+        break;
+  case Qt::Key_Up: // If the up arrow key was pressed
+        protagonist.setYPos(protagonist.getYPos() - 1);
+        break;
+  case Qt::Key_Down: // If the down arrow key was pressed
+        protagonist.setYPos(protagonist.getYPos() + 1);
+        break;
+  default:
+        QMainWindow::keyPressEvent(event);
+  }
+  drawProtagonist();
 }

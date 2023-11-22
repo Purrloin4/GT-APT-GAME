@@ -26,9 +26,13 @@ private:
     int tileSize;
     QGraphicsScene* scene;
     std::vector<std::unique_ptr<Tile>> myTiles;
+    Protagonist protagonist;
+
 
     void visualizeWorld();
     void findPathAndHighlight(QGraphicsScene* scene, int tileSize, std::unique_ptr<Tile> startTile, std::unique_ptr<Tile> endTile);
+    void keyPressEvent(QKeyEvent *event);
+    void drawProtagonist();
 
 };
 
