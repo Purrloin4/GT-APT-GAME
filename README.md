@@ -6,6 +6,6 @@
 ### Week 8
 - Visualisation world map - Bob
 - Pathfinding - Cédric
-- Health and energy bars - Tiësto
+- Health and energy bars & protagonist visualisation - Tiësto
 
 ### Week 9
