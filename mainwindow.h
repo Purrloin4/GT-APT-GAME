@@ -27,6 +27,7 @@ private:
     QGraphicsScene* scene;
     std::vector<std::unique_ptr<Tile>> myTiles;
     Protagonist protagonist;
+    QGraphicsRectItem* protagonistItem = nullptr;
 
 
     void visualizeWorld();

@@ -141,8 +141,13 @@ void MainWindow::findPathAndHighlight(QGraphicsScene* scene, int tileSize, std::
 }
 
 void MainWindow::drawProtagonist() {
-    // Add visualization for protagonist
-    scene->addRect(protagonist.getXPos() * tileSize, protagonist.getYPos() * tileSize, tileSize, tileSize, QPen(Qt::black), QBrush(Qt::blue));
+  // Remove the old position of the protagonist, if it exists
+  if (protagonistItem) {
+        scene->removeItem(protagonistItem);
+  }
+
+  // Add visualization for protagonist
+  protagonistItem = scene->addRect(protagonist.getXPos() * tileSize, protagonist.getYPos() * tileSize, tileSize, tileSize, QPen(Qt::black), QBrush(Qt::blue));
 }
 
 void MainWindow::keyPressEvent(QKeyEvent *event) {
