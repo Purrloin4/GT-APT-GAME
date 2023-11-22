@@ -4,6 +4,7 @@
 #include "world.h"
 #include <memory>
 #include <vector>
+#include <QImage>
 
 
 struct point {

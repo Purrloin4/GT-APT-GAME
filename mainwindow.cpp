@@ -18,8 +18,9 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    std::shared_ptr<WorldController> worldController = std::shared_ptr<WorldController>();
+    std::shared_ptr<WorldController> worldController = std::make_shared<WorldController>();
     GraphicViewController graphicViewController(worldController);
+
     auto view = graphicViewController.visualizeWorld();
     setCentralWidget(&view);
 

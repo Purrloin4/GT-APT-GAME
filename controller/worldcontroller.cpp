@@ -1,4 +1,6 @@
 #include "worldcontroller.h"
+#include <iostream>
+
 
 WorldController::WorldController()
     : start{0, 0}, exit{30,30} // start always (0,0), exit (30,30) for worldmap.png
@@ -7,8 +9,17 @@ WorldController::WorldController()
     try {
         world = std::shared_ptr<World>();
         world->createWorld(":/world_images/worldmap.png", 1, 1, 0.25f);
+
+        auto myTiles = world->getTiles();
+        for (const auto &tile : myTiles){
+            auto sharedTile = std::make_shared<Tile>(tile->getXPos(), tile->getYPos(), tile->getValue());
+            this->tiles.push_back(sharedTile);
+        }
+
+
     } catch (const std::exception& e) {
         // Handle any exceptions here
+        std::cout << "Exeption during create world" << std::endl;
     }
 }
 
