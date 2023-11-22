@@ -151,21 +151,38 @@ void MainWindow::drawProtagonist() {
 }
 
 void MainWindow::keyPressEvent(QKeyEvent *event) {
+  int newX = protagonist.getXPos();
+  int newY = protagonist.getYPos();
+
   switch (event->key()) {
   case Qt::Key_Left: // If the left arrow key was pressed
-        protagonist.setXPos(protagonist.getXPos() - 1);
+        newX = protagonist.getXPos() - 1;
         break;
   case Qt::Key_Right: // If the right arrow key was pressed
-        protagonist.setXPos(protagonist.getXPos() + 1);
+        newX = protagonist.getXPos() + 1;
         break;
   case Qt::Key_Up: // If the up arrow key was pressed
-        protagonist.setYPos(protagonist.getYPos() - 1);
+        newY = protagonist.getYPos() - 1;
         break;
   case Qt::Key_Down: // If the down arrow key was pressed
-        protagonist.setYPos(protagonist.getYPos() + 1);
+        newY = protagonist.getYPos() + 1;
         break;
   default:
         QMainWindow::keyPressEvent(event);
   }
-  drawProtagonist();
+
+  // Check if the new position is within the boundaries of the world
+  if (isValidPosition(newX, newY)) {
+        // Update the protagonist's position only if it's a valid position
+        protagonist.setXPos(newX);
+        protagonist.setYPos(newY);
+
+        // Redraw the protagonist
+        drawProtagonist();
+  }
+}
+
+bool MainWindow::isValidPosition(int x, int y) {
+  // Check if the new position is within the boundaries of the world
+  return x >= 0 && x < myWorld.getCols() && y >= 0 && y < myWorld.getRows();
 }
