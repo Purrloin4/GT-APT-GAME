@@ -141,13 +141,20 @@ void MainWindow::visualizeWorldText()
     this->tileSize = 10; // Define the desired size for the tiles
 
     // Determine the ASCII representation of different entities
-    const QString emptyTile = "+---+\n|\u00A0\u00A0\u00A0|\n+---+\n";
-    const QString healthPackTile = "+---+\n| H |\n+---+\n";
-    const QString enemyTile = "+---+\n| E |\n+---+\n";
-    const QString protagonistTile = "+---+\n| P |\n+---+\n";
+    const QString horizontalBorder = "+---+";
+    const QString verticalEmptyTile = "|\u00A0\u00A0\u00A0|";
+    const QString verticalHealthPackTile = "| H |";
+    const QString verticalEnemyTile = "| E |";
+    const QString verticalProtagonistTile = "| P |";
 
     // Loop through each row
     for (int y = 0; y < myWorld.getRows(); ++y) {
+        // Add the horizontal border for each tile in the row
+        for (int x = 0; x < myWorld.getCols(); ++x) {
+            asciiRepresentation += horizontalBorder;
+        }
+        asciiRepresentation += QChar(0x2029);
+
         // Loop through each column
         for (int x = 0; x < myWorld.getCols(); ++x) {
             // Check if the current position contains an entity (health pack, enemy, protagonist)
@@ -159,18 +166,16 @@ void MainWindow::visualizeWorldText()
 
             // Append the corresponding ASCII representation to the overall representation string
             if (isHealthPack != healthPacks.end()) {
-                asciiRepresentation += healthPackTile;
+                asciiRepresentation += verticalHealthPackTile;
             } else if (isEnemy != enemies.end()) {
-                asciiRepresentation += enemyTile;
+                asciiRepresentation += verticalEnemyTile;
             } else if (isProtagonist) {
-                asciiRepresentation += protagonistTile;
+                asciiRepresentation += verticalProtagonistTile;
             } else {
-                asciiRepresentation += emptyTile;
+                asciiRepresentation += verticalEmptyTile; // Spaces for empty tile
             }
         }
-
-        // Add a line break after each row
-        asciiRepresentation += "\n";
+        asciiRepresentation += QChar(0x2029);
     }
 
     // Display the ASCII representation in a QTextEdit
@@ -195,6 +200,11 @@ void MainWindow::visualizeWorldText()
     setCentralWidget(new QWidget);
     centralWidget()->setLayout(layout);
 }
+
+
+
+
+
 
 
 void MainWindow::showGraphicalView()
