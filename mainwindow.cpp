@@ -27,7 +27,7 @@ MainWindow::MainWindow(QWidget *parent)
         auto startTile = std::make_unique<Tile>(0, 0, 0.0f);
         auto endTile = std::make_unique<Tile>(20, 20, 0.0f);
 
-        findPathAndHighlight(scene,tileSize, std::move(startTile), std::move(endTile));
+        //findPathAndHighlight(scene,tileSize, std::move(startTile), std::move(endTile));
     } catch (const std::exception& e) {
         // Handle any exceptions here
     }
@@ -142,10 +142,11 @@ void MainWindow::visualizeWorldText()
     this->tileSize = 10; // Define the desired size for the tiles
 
     // Determine the ASCII representation of different entities
-    const QString emptyTile = "+---+\n|   |\n+---+\n";
-    const QString healthPackTile = "+---+\n| H |\n+---+\n";
-    const QString enemyTile = "+---+\n| E |\n+---+\n";
-    const QString protagonistTile = "+---+\n| P |\n+---+\n";
+    const QString emptyTile = QString("+---+") + QChar(0x2029) + "|\u00A0\u00A0\u00A0|" + QChar(0x2029) + "+---+" + QChar(0x2029);
+    const QString healthPackTile = QString("+---+") + QChar(0x2029) + "| H |" + QChar(0x2029) + "+---+" + QChar(0x2029);
+    const QString enemyTile = QString("+---+") + QChar(0x2029) + "| E |" + QChar(0x2029) + "+---+" + QChar(0x2029);
+    const QString protagonistTile = QString("+---+") + QChar(0x2029) + "| P |" + QChar(0x2029) + "+---+" + QChar(0x2029);
+
 
     // Loop through each row
     for (int y = 0; y < myWorld.getRows(); ++y) {
@@ -196,6 +197,7 @@ void MainWindow::visualizeWorldText()
     setCentralWidget(new QWidget);
     centralWidget()->setLayout(layout);
 }
+
 
 void MainWindow::showGraphicalView()
 {
