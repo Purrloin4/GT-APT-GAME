@@ -3,7 +3,13 @@
 WorldController::WorldController()
     : start{0, 0}, exit{30,30} // start always (0,0), exit (30,30) for worldmap.png
 {
-
+    // Create the world
+    try {
+        world = std::shared_ptr<World>();
+        world->createWorld(":/world_images/worldmap.png", 1, 1, 0.25f);
+    } catch (const std::exception& e) {
+        // Handle any exceptions here
+    }
 }
 
 point WorldController::getStart()

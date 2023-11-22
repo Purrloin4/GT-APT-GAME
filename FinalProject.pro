@@ -9,13 +9,22 @@ CONFIG += c++20
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    controller/graphicviewcontroller.cpp \
+    controller/textviewcontroller.cpp \
+    controller/worldcontroller.cpp \
     main.cpp \
     mainwindow.cpp \
+    viewcontroller.cpp \
     worldcontroller.cpp
 
 HEADERS += \
+    controller/graphicviewcontroller.h \
+    controller/textviewcontroller.h \
+    controller/viewcontroller.h \
+    controller/worldcontroller.h \
     mainwindow.h \
-    worldcontroller.h
+    viewcontroller.h \
+    worldcontroller.h \
     pathNode.h
 
 FORMS += \

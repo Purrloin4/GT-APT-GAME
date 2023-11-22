@@ -7,6 +7,8 @@
 #include <QMessageBox>
 #include "pathfinder.h"
 #include "QLoggingCategory"
+#include "/controller/worldcontroller.h"
+#include "/controller/graphicviewcontroller.h"
 
 QLoggingCategory mainwindowCategory("mainwindow");
 
@@ -16,92 +18,21 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    std::shared_ptr<WorldController> worldController = std::shared_ptr<WorldController>();
+    GraphicViewController graphicViewController = GraphicViewController(worldController);
+    auto view = graphicViewController.visualizeWorld();
+    setCentralWidget(&view);
 
-    // Create the world
-    try {
-        myWorld.createWorld(":/world_images/grobu.png", 1, 1, 0.25f);
-        visualizeWorld(); // Visualize the created world
-        auto startTile = std::make_unique<Tile>(0, 0, 0.0f);
-        auto endTile = std::make_unique<Tile>(myWorld.getCols()-1, myWorld.getRows()-1, 0.0f);
 
-        findPathAndHighlight(scene,tileSize, std::move(startTile), std::move(endTile));
-    } catch (const std::exception& e) {
-        // Handle any exceptions here
-    }
+//    auto startTile = std::make_unique<Tile>(0, 0, 0.0f);
+//    auto endTile = std::make_unique<Tile>(myWorld.getCols()-1, myWorld.getRows()-1, 0.0f);
+//    findPathAndHighlight(scene,tileSize, std::move(startTile), std::move(endTile));
 
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
-}
-
-void MainWindow::visualizeWorld()
-{
-    // Create a graphics scene
-    this->scene = new QGraphicsScene(this);
-
-    // Get tiles, enemies, and health packs from the world
-    this->myTiles = myWorld.getTiles();
-    const float maxEH = 100.0f; // Define the value of maxEH
-    auto enemies = myWorld.getEnemies();
-    auto healthPacks = myWorld.getHealthPacks();
-
-    // Create protagonist
-    auto protagonist = Protagonist();
-
-    // Adjust the size of the tiles in the visualization
-    this->tileSize = 10; // Define the desired size for the tiles
-
-    // Loop through each tile and set its color based on its value
-    for (const auto &tile : myTiles) {
-        int xPos = tile->getXPos();
-        int yPos = tile->getYPos();
-        double value = tile->getValue();
-
-        // Determine the color of the tile based on its value
-        QColor brush;
-        if(std::isinf(value)){
-            brush = Qt::black;
-        }
-        else {
-            brush = QColor::fromRgbF(value, value, value);
-        }
-        scene->addRect(xPos * tileSize, yPos * tileSize, tileSize, tileSize, QPen(Qt::black), brush);
-    }
-
-    // Add visualization for enemies
-    for (const auto &enemy : enemies) {
-        scene->addRect(enemy->getXPos() * tileSize, enemy->getYPos() * tileSize, tileSize, tileSize, QPen(Qt::black), QBrush(Qt::red));
-    }
-
-    // Add visualization for health packs
-    for (const auto &healthPack : healthPacks) {
-        scene->addRect(healthPack->getXPos() * tileSize, healthPack->getYPos() * tileSize, tileSize, tileSize, QPen(Qt::black), QBrush(Qt::green));
-    }
-
-    // Add visualization for protagonist
-    scene->addRect(protagonist.getXPos() * tileSize, protagonist.getYPos() * tileSize, tileSize, tileSize, QPen(Qt::black), QBrush(Qt::blue));
-
-    // Add visualization for protagonist health bar
-    int healthBarWidth = tileSize * 2; // You can adjust the width as needed
-    int healthBarHeight = tileSize / 4; // You can adjust the height as needed
-    QRect healthBarRect(protagonist.getXPos() * tileSize, protagonist.getYPos() * tileSize - tileSize / 2, healthBarWidth, healthBarHeight);
-    double healthRatio = static_cast<double>(protagonist.getHealth()) / static_cast<double>(maxEH);
-    QColor healthBarColor = QColor::fromRgbF(1.0 - healthRatio, healthRatio, 0.0); // Red to green gradient
-    scene->addRect(healthBarRect, QPen(Qt::black), QBrush(healthBarColor));
-
-    // Add visualization for protagonist energy bar
-    int energyBarWidth = tileSize * 2; // You can adjust the width as needed
-    int energyBarHeight = tileSize / 4; // You can adjust the height as needed
-    QRect energyBarRect(protagonist.getXPos() * tileSize, protagonist.getYPos() * tileSize - tileSize / 2 - energyBarHeight, energyBarWidth, energyBarHeight);
-    double energyRatio = static_cast<double>(protagonist.getEnergy()) / static_cast<double>(maxEH);
-    QColor energyBarColor = QColor::fromRgbF(0.0, 0.0, 1.0 - energyRatio); // Blue to black gradient
-    scene->addRect(energyBarRect, QPen(Qt::black), QBrush(energyBarColor));
-
-    // Finally, set the scene in a graphics view
-    QGraphicsView *view = new QGraphicsView(scene);
-    setCentralWidget(view);
 }
 
 void MainWindow::findPathAndHighlight(QGraphicsScene* scene, int tileSize, std::unique_ptr<Tile> startTile, std::unique_ptr<Tile> endTile)
@@ -111,12 +42,14 @@ void MainWindow::findPathAndHighlight(QGraphicsScene* scene, int tileSize, std::
         pathNodes.push_back(PathNode(*tile));
     }
 
-  Comparator<PathNode> comp = PathNode::Comparator();
+    auto weight = 0.1;
+
+    Comparator<PathNode> comp = PathNode::Comparator();
 
   PathNode startNode(*startTile);
   PathNode endNode(*endTile);
 
-  std::vector<int> path = A_star(pathNodes, &startNode, &endNode, comp, myWorld.getCols(), 0.5);
+  std::vector<int> path = A_star(pathNodes, &startNode, &endNode, comp, myWorld.getCols(), weight);
 
   int xPos = startTile->getXPos();
   int yPos = startTile->getYPos();
