@@ -102,14 +102,14 @@ void MainWindow::findPathAndHighlight(QGraphicsScene* scene, int tileSize, std::
   for (const auto &move : path) {
         // Determine the position based on the move
         switch (move) {
-        case 0: xPos += 1; break;  // Move to the right
-        case 1: xPos += 1; yPos += 1; break;  // Move to the bottom-right
-        case 2: yPos += 1; break;  // Move down
-        case 3: xPos -= 1; yPos += 1; break;  // Move to the bottom-left
-        case 4: xPos -= 1; break;  // Move to the left
-        case 5: xPos -= 1; yPos -= 1; break;  // Move to the top-left
-        case 6: yPos -= 1; break;  // Move up
-        case 7: xPos += 1; yPos -= 1; break;  // Move to the top-right
+        case 0: yPos -= 1; break;  // Move up
+        case 1: xPos += 1; yPos -= 1; break;  // Move to the top-right
+        case 2: xPos += 1; break;  // Move to the right
+        case 3: xPos += 1; yPos += 1; break;  // Move to the bottom-right
+        case 4: yPos += 1; break;  // Move down
+        case 5: xPos -= 1; yPos += 1; break;  // Move to the bottom-left
+        case 6: xPos -= 1; break;  // Move to the left
+        case 7: xPos -= 1; yPos -= 1; break;  // Move to the top-left
         default: break;
         }
 
