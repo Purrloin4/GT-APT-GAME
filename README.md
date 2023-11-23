@@ -9,6 +9,6 @@
 - Health and energy bars & protagonist visualisation - Tiësto
 
 ### Week 9
-
-- Conversion to bject oriented files - Cédric
+- Conversion to object oriented files - Cédric
 - Protagonist movement - Tiësto
+- Visualisation Text-Based View - Bob
