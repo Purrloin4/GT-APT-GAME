@@ -22,7 +22,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     // Create the world
     try {
-        myWorld.createWorld(":/world_images/grobu.png", 25, 25, 0.25f);
+        myWorld.createWorld(":/world_images/worldmap4.png", 25, 25, 0.25f);
         visualizeWorldText(); // Visualize the created world
         auto startTile = std::make_unique<Tile>(0, 0, 0.0f);
         auto endTile = std::make_unique<Tile>(20, 20, 0.0f);
@@ -153,7 +153,7 @@ void MainWindow::visualizeWorldText()
         for (int x = 0; x < myWorld.getCols(); ++x) {
             asciiRepresentation += horizontalBorder;
         }
-        asciiRepresentation += "+";
+        asciiRepresentation += "+"; // Add last '+' of every row
         asciiRepresentation += QChar(0x2029); // Unicode for 'PARAGRAPH SEPARATOR' = '\n'
 
         // Loop through each column
@@ -176,7 +176,7 @@ void MainWindow::visualizeWorldText()
                 asciiRepresentation += verticalEmptyTile; // Spaces for empty tile
             }
         }
-        asciiRepresentation += "|";
+        asciiRepresentation += "|"; // Add last '|' of every row
         asciiRepresentation += QChar(0x2029); // Unicode for 'PARAGRAPH SEPARATOR' = '\n'
     }
 
@@ -184,6 +184,7 @@ void MainWindow::visualizeWorldText()
     for (int x = 0; x < myWorld.getCols(); ++x) {
         asciiRepresentation += horizontalBorder;
     }
+    asciiRepresentation += "+"; // Add last '+' of map
 
     // Display the ASCII representation in a QTextEdit
     QTextEdit *asciiTextEdit = new QTextEdit(asciiRepresentation);
