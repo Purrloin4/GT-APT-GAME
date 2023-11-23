@@ -141,11 +141,11 @@ void MainWindow::visualizeWorldText()
     this->tileSize = 10; // Define the desired size for the tiles
 
     // Determine the ASCII representation of different entities
-    const QString horizontalBorder = "+---+";
-    const QString verticalEmptyTile = "|\u00A0\u00A0\u00A0|";
-    const QString verticalHealthPackTile = "| H |";
-    const QString verticalEnemyTile = "| E |";
-    const QString verticalProtagonistTile = "| P |";
+    const QString horizontalBorder = "+---";
+    const QString verticalEmptyTile = "|\u00A0\u00A0\u00A0";
+    const QString verticalHealthPackTile = "| H ";
+    const QString verticalEnemyTile = "| E ";
+    const QString verticalProtagonistTile = "| P ";
 
     // Loop through each row
     for (int y = 0; y < myWorld.getRows(); ++y) {
@@ -153,7 +153,8 @@ void MainWindow::visualizeWorldText()
         for (int x = 0; x < myWorld.getCols(); ++x) {
             asciiRepresentation += horizontalBorder;
         }
-        asciiRepresentation += QChar(0x2029);
+        asciiRepresentation += "+";
+        asciiRepresentation += QChar(0x2029); // Unicode for 'PARAGRAPH SEPARATOR' = '\n'
 
         // Loop through each column
         for (int x = 0; x < myWorld.getCols(); ++x) {
@@ -175,7 +176,8 @@ void MainWindow::visualizeWorldText()
                 asciiRepresentation += verticalEmptyTile; // Spaces for empty tile
             }
         }
-        asciiRepresentation += QChar(0x2029);
+        asciiRepresentation += "|";
+        asciiRepresentation += QChar(0x2029); // Unicode for 'PARAGRAPH SEPARATOR' = '\n'
     }
 
     // Add the horizontal border after the last row
