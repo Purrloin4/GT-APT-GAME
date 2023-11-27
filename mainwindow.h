@@ -5,6 +5,8 @@
 #include <QGraphicsScene>
 #include "world.h"
 #include "pathNode.h"
+#include "controller/worldcontroller.h"
+#include "controller/graphicviewcontroller.h"
 
 
 QT_BEGIN_NAMESPACE
@@ -23,8 +25,9 @@ private:
     Ui::MainWindow *ui;
     World myWorld;
     int tileSize;
-    QGraphicsScene* scene;
     std::vector<std::unique_ptr<Tile>> myTiles;
+    std::shared_ptr<WorldController> worldController;
+
 
     void visualizeWorld();
     void findPathAndHighlight(QGraphicsScene* scene, int tileSize, std::unique_ptr<Tile> startTile, std::unique_ptr<Tile> endTile);

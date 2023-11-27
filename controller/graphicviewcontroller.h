@@ -7,11 +7,14 @@
 class GraphicViewController : public ViewController
 {
 public:
-    std::shared_ptr<WorldController> worldController;
-
     GraphicViewController(std::shared_ptr<WorldController> worldController)
         :worldController(worldController){};
-    QGraphicsView visualizeWorld();
+    std::unique_ptr<QGraphicsView> visualizeWorld();
+private:
+    std::shared_ptr<WorldController> worldController;
+    std::shared_ptr<QGraphicsScene> scene;
 };
+
+
 
 #endif // GRAPHICVIEWCONTROLLER_H

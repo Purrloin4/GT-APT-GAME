@@ -1,9 +1,9 @@
 #include "graphicviewcontroller.h"
 
-QGraphicsView GraphicViewController::visualizeWorld()
+std::unique_ptr<QGraphicsView> GraphicViewController::visualizeWorld()
 {
     // Create a graphics scene
-    auto scene = new QGraphicsScene();
+    scene = std::make_shared<QGraphicsScene>();
 
     // Get tiles, enemies, and health packs from the world
     auto myTiles = worldController->getTiles();
@@ -64,6 +64,7 @@ QGraphicsView GraphicViewController::visualizeWorld()
     scene->addRect(energyBarRect, QPen(Qt::black), QBrush(energyBarColor));
 
     // Finally, set the scene in a graphics view
-    QGraphicsView *view = new QGraphicsView(scene);
+    QGraphicsView *viewRawPtr = new QGraphicsView(scene.get());
+    auto view = std::make_unique<QGraphicsView>(viewRawPtr);
     return view;
 }

@@ -7,7 +7,7 @@ WorldController::WorldController()
 {
     // Create the world
     try {
-        world = std::shared_ptr<World>();
+        world = std::make_shared<World>();
         world->createWorld(":/world_images/worldmap.png", 1, 1, 0.25f);
 
         auto myTiles = world->getTiles();

@@ -7,22 +7,20 @@
 #include <QMessageBox>
 #include "pathfinder.h"
 #include "QLoggingCategory"
-#include "controller/worldcontroller.h"
-#include "controller/graphicviewcontroller.h"
+
 
 QLoggingCategory mainwindowCategory("mainwindow");
 
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
-    , ui(new Ui::MainWindow)
+    , ui(new Ui::MainWindow),
+    worldController(std::make_shared<WorldController>())
 {
     ui->setupUi(this);
-    std::shared_ptr<WorldController> worldController = std::make_shared<WorldController>();
     GraphicViewController graphicViewController(worldController);
-
     auto view = graphicViewController.visualizeWorld();
-    setCentralWidget(&view);
+    setCentralWidget(view.release());
 
 
 //    auto startTile = std::make_unique<Tile>(0, 0, 0.0f);
