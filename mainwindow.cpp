@@ -112,8 +112,8 @@ void MainWindow::visualizeWorldGraph()
 
 void MainWindow::visualizeWorldText()
 {
-    // Create a QString to hold the ASCII representation of the world
-    QString asciiRepresentation;
+    // Reset asciiRepresentation
+    asciiRepresentation.clear();
 
     // Create protagonist
     auto protagonist = Protagonist();
@@ -237,14 +237,61 @@ void MainWindow::findPathAndHighlight(QGraphicsScene* scene, int tileSize, std::
 }
 
 void MainWindow::drawProtagonist() {
-    // Remove the old position of the protagonist, if it exists
-    if (protagonistItem) {
-        scene->removeItem(protagonistItem);
-    }
+  // Remove the old position of the protagonist from the ASCII representation
+  updateAsciiRepresentation();
 
-    // Add visualization for protagonist
-    protagonistItem = scene->addRect(protagonist.getXPos() * tileSize, protagonist.getYPos() * tileSize, tileSize, tileSize, QPen(Qt::black), QBrush(Qt::blue));
+  // Update the graphical view
+  if (protagonistItem) {
+        scene->removeItem(protagonistItem);
+  }
+  protagonistItem = scene->addRect(protagonist.getXPos() * tileSize, protagonist.getYPos() * tileSize, tileSize, tileSize, QPen(Qt::black), QBrush(Qt::blue));
+
+  // Display the updated ASCII representation in the QTextEdit
+  QTextEdit *asciiTextEdit = new QTextEdit(asciiRepresentation);
+  asciiTextEdit->setFont(QFont("Courier")); // Set a monospaced font for better alignment
+
+  // Create buttons for switching between graphical and text views
+  QPushButton *graphicalButton = new QPushButton("Graphical View");
+  QPushButton *textButton = new QPushButton("Text View");
+
+  // Connect button signals to corresponding slots
+  connect(graphicalButton, &QPushButton::clicked, this, &MainWindow::showGraphicalView);
+  connect(textButton, &QPushButton::clicked, this, &MainWindow::showTextView);
+
+  // Create a layout for the buttons and ASCII text edit
+  QVBoxLayout *layout = new QVBoxLayout;
+  layout->addWidget(asciiTextEdit);
+  layout->addWidget(graphicalButton);
+  layout->addWidget(textButton);
+
+  // Set the central widget to the layout
+  setCentralWidget(new QWidget);
+  centralWidget()->setLayout(layout);
 }
+
+void MainWindow::updateAsciiRepresentation() {
+  // Calculate the index of the old position in the ASCII representation based on the previous position of the protagonist
+  int oldX = protagonist.getXPos();
+  int oldY = protagonist.getYPos();
+  int oldPosition = (oldY + 1) * (myWorld.getCols() * 5) + (oldX + 1) * 5 + 2; // Calculate the index of the old position
+
+  // Set the old position back to an empty tile in the ASCII representation
+  if (isValidPosition(oldX, oldY)) {
+        asciiRepresentation[oldPosition] = QChar('\u00A0');
+  }
+
+  // Calculate the index of the new position in the ASCII representation based on the current position of the protagonist
+  int newX = protagonist.getXPos();
+  int newY = protagonist.getYPos();
+  int newPosition = (newY + 1) * (myWorld.getCols() * 5) + (newX + 1) * 5 + 2; // Calculate the index of the new position
+
+  // Set the new position to the ASCII representation for the protagonist
+  if (isValidPosition(newX, newY)) {
+        asciiRepresentation[newPosition] = QChar('P');
+  }
+}
+
+
 
 void MainWindow::drawBars() {
     // Define the position above the map for the bars

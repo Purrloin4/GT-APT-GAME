@@ -3,6 +3,8 @@
 
 #include <QMainWindow>
 #include <QGraphicsScene>
+#include <QString>
+#include <QTextEdit>
 #include "world.h"
 #include "pathNode.h"
 
@@ -25,6 +27,8 @@ private:
     World myWorld;
     int tileSize;
     QGraphicsScene* scene;
+    QString asciiRepresentation;
+    QTextEdit* asciiTextEdit;
     std::vector<std::unique_ptr<Tile>> myTiles;
     std::vector<std::unique_ptr<Enemy>> myEnemies;
     std::vector<std::unique_ptr<Tile>> myHealthpacks;
@@ -42,6 +46,7 @@ private:
     void showTextView();
     void keyPressEvent(QKeyEvent *event);
     void drawProtagonist();
+    void updateAsciiRepresentation();
     void drawBars();
     bool isValidPosition(int x, int y);
     void mousePressEvent(QMouseEvent *event);
