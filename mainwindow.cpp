@@ -7,6 +7,12 @@
 #include <QMessageBox>
 #include "pathfinder.h"
 #include "QLoggingCategory"
+#include <QPushButton>
+#include <QHBoxLayout>
+#include <QTextEdit>
+#include <QKeyEvent>
+#include <QMouseEvent>
+
 
 QLoggingCategory mainwindowCategory("mainwindow");
 
@@ -16,15 +22,16 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    this->setFocus();
 
     // Create the world
     try {
-        myWorld.createWorld(":/world_images/grobu.png", 1, 1, 0.25f);
-        visualizeWorld(); // Visualize the created world
+        myWorld.createWorld(":/world_images/worldmap4.png", 25, 25, 0.25f);
+        visualizeWorldText(); // Visualize the created world
         auto startTile = std::make_unique<Tile>(0, 0, 0.0f);
         auto endTile = std::make_unique<Tile>(myWorld.getCols()-1, myWorld.getRows()-1, 0.0f);
 
-        findPathAndHighlight(scene,tileSize, std::move(startTile), std::move(endTile));
+        //findPathAndHighlight(scene,tileSize, std::move(startTile), std::move(endTile));
     } catch (const std::exception& e) {
         // Handle any exceptions here
     }
@@ -36,7 +43,7 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::visualizeWorld()
+void MainWindow::visualizeWorldGraph()
 {
     // Create a graphics scene
     this->scene = new QGraphicsScene(this);
@@ -61,10 +68,9 @@ void MainWindow::visualizeWorld()
 
         // Determine the color of the tile based on its value
         QColor brush;
-        if(std::isinf(value)){
+        if (std::isinf(value)) {
             brush = Qt::black;
-        }
-        else {
+        } else {
             brush = QColor::fromRgbF(value, value, value);
         }
         scene->addRect(xPos * tileSize, yPos * tileSize, tileSize, tileSize, QPen(Qt::black), brush);
@@ -80,8 +86,7 @@ void MainWindow::visualizeWorld()
         scene->addRect(healthPack->getXPos() * tileSize, healthPack->getYPos() * tileSize, tileSize, tileSize, QPen(Qt::black), QBrush(Qt::green));
     }
 
-    // Add visualization for protagonist
-    scene->addRect(protagonist.getXPos() * tileSize, protagonist.getYPos() * tileSize, tileSize, tileSize, QPen(Qt::black), QBrush(Qt::blue));
+    drawProtagonist();
 
     // Add visualization for protagonist health bar
     int healthBarWidth = tileSize * 2; // You can adjust the width as needed
@@ -102,6 +107,120 @@ void MainWindow::visualizeWorld()
     // Finally, set the scene in a graphics view
     QGraphicsView *view = new QGraphicsView(scene);
     setCentralWidget(view);
+
+    // Create buttons for switching between graphical and text views
+    QPushButton *graphicalButton = new QPushButton("Graphical View");
+    QPushButton *textButton = new QPushButton("Text View");
+
+    // Connect button signals to corresponding slots
+    connect(graphicalButton, &QPushButton::clicked, this, &MainWindow::showGraphicalView);
+    connect(textButton, &QPushButton::clicked, this, &MainWindow::showTextView);
+
+    // Create a layout for the buttons and graphics view
+    QVBoxLayout *layout = new QVBoxLayout;
+    layout->addWidget(view);
+    layout->addWidget(graphicalButton);
+    layout->addWidget(textButton);
+
+    // Set the central widget to the layout
+    setCentralWidget(new QWidget);
+    centralWidget()->setLayout(layout);
+}
+
+void MainWindow::visualizeWorldText()
+{
+    // Create a QString to hold the ASCII representation of the world
+    QString asciiRepresentation;
+
+    // Get tiles, enemies, and health packs from the world
+    this->myTiles = myWorld.getTiles();
+    auto enemies = myWorld.getEnemies();
+    auto healthPacks = myWorld.getHealthPacks();
+
+    // Create protagonist
+    auto protagonist = Protagonist();
+
+    // Adjust the size of the tiles in the visualization
+    this->tileSize = 10; // Define the desired size for the tiles
+
+    // Determine the ASCII representation of different entities
+    const QString horizontalBorder = "+---";
+    const QString verticalEmptyTile = "|\u00A0\u00A0\u00A0";
+    const QString verticalHealthPackTile = "| H ";
+    const QString verticalEnemyTile = "| E ";
+    const QString verticalProtagonistTile = "| P ";
+
+    // Loop through each row
+    for (int y = 0; y < myWorld.getRows(); ++y) {
+        // Add the horizontal border for each tile in the row
+        for (int x = 0; x < myWorld.getCols(); ++x) {
+            asciiRepresentation += horizontalBorder;
+        }
+        asciiRepresentation += "+"; // Add last '+' of every row
+        asciiRepresentation += QChar(0x2029); // Unicode for 'PARAGRAPH SEPARATOR' = '\n'
+
+        // Loop through each column
+        for (int x = 0; x < myWorld.getCols(); ++x) {
+            // Check if the current position contains an entity (health pack, enemy, protagonist)
+            auto isHealthPack = std::find_if(healthPacks.begin(), healthPacks.end(),
+                                             [x, y](const auto &hp) { return hp->getXPos() == x && hp->getYPos() == y; });
+            auto isEnemy = std::find_if(enemies.begin(), enemies.end(),
+                                        [x, y](const auto &enemy) { return enemy->getXPos() == x && enemy->getYPos() == y; });
+            auto isProtagonist = (protagonist.getXPos() == x && protagonist.getYPos() == y);
+
+            // Append the corresponding ASCII representation to the overall representation string
+            if (isHealthPack != healthPacks.end()) {
+                asciiRepresentation += verticalHealthPackTile;
+            } else if (isEnemy != enemies.end()) {
+                asciiRepresentation += verticalEnemyTile;
+            } else if (isProtagonist) {
+                asciiRepresentation += verticalProtagonistTile;
+            } else {
+                asciiRepresentation += verticalEmptyTile; // Spaces for empty tile
+            }
+        }
+        asciiRepresentation += "|"; // Add last '|' of every row
+        asciiRepresentation += QChar(0x2029); // Unicode for 'PARAGRAPH SEPARATOR' = '\n'
+    }
+
+    // Add the horizontal border after the last row
+    for (int x = 0; x < myWorld.getCols(); ++x) {
+        asciiRepresentation += horizontalBorder;
+    }
+    asciiRepresentation += "+"; // Add last '+' of map
+
+    // Display the ASCII representation in a QTextEdit
+    QTextEdit *asciiTextEdit = new QTextEdit(asciiRepresentation);
+    asciiTextEdit->setFont(QFont("Courier")); // Set a monospaced font for better alignment
+
+    // Create buttons for switching between graphical and text views
+    QPushButton *graphicalButton = new QPushButton("Graphical View");
+    QPushButton *textButton = new QPushButton("Text View");
+
+    // Connect button signals to corresponding slots
+    connect(graphicalButton, &QPushButton::clicked, this, &MainWindow::showGraphicalView);
+    connect(textButton, &QPushButton::clicked, this, &MainWindow::showTextView);
+
+    // Create a layout for the buttons and ASCII text edit
+    QVBoxLayout *layout = new QVBoxLayout;
+    layout->addWidget(asciiTextEdit);
+    layout->addWidget(graphicalButton);
+    layout->addWidget(textButton);
+
+    // Set the central widget to the layout
+    setCentralWidget(new QWidget);
+    centralWidget()->setLayout(layout);
+}
+
+
+void MainWindow::showGraphicalView()
+{
+    visualizeWorldGraph();
+}
+
+void MainWindow::showTextView()
+{
+    visualizeWorldText();
 }
 
 void MainWindow::findPathAndHighlight(QGraphicsScene* scene, int tileSize, std::unique_ptr<Tile> startTile, std::unique_ptr<Tile> endTile)
@@ -137,4 +256,61 @@ void MainWindow::findPathAndHighlight(QGraphicsScene* scene, int tileSize, std::
 
         scene->addRect(xPos * tileSize, yPos * tileSize, tileSize, tileSize, QPen(Qt::black), QBrush(Qt::red));
   }
+}
+
+void MainWindow::drawProtagonist() {
+  // Remove the old position of the protagonist, if it exists
+  if (protagonistItem) {
+        scene->removeItem(protagonistItem);
+  }
+
+  // Add visualization for protagonist
+  protagonistItem = scene->addRect(protagonist.getXPos() * tileSize, protagonist.getYPos() * tileSize, tileSize, tileSize, QPen(Qt::black), QBrush(Qt::blue));
+}
+
+void MainWindow::keyPressEvent(QKeyEvent *event) {
+  int newX = protagonist.getXPos();
+  int newY = protagonist.getYPos();
+
+  switch (event->key()) {
+  case Qt::Key_Left: // If the left arrow key was pressed
+        newX = protagonist.getXPos() - 1;
+        break;
+  case Qt::Key_Right: // If the right arrow key was pressed
+        newX = protagonist.getXPos() + 1;
+        break;
+  case Qt::Key_Up: // If the up arrow key was pressed
+        newY = protagonist.getYPos() - 1;
+        break;
+  case Qt::Key_Down: // If the down arrow key was pressed
+        newY = protagonist.getYPos() + 1;
+        break;
+  default:
+        QMainWindow::keyPressEvent(event);
+  }
+
+  // Check if the new position is within the boundaries of the world
+  if (isValidPosition(newX, newY)) {
+        // Update the protagonist's position only if it's a valid position
+        protagonist.setXPos(newX);
+        protagonist.setYPos(newY);
+
+        // Redraw the protagonist
+        drawProtagonist();
+  }
+}
+
+bool MainWindow::isValidPosition(int x, int y) {
+  // Check if the new position is within the boundaries of the world
+  return x >= 0 && x < myWorld.getCols() && y >= 0 && y < myWorld.getRows();
+}
+
+void MainWindow::mousePressEvent(QMouseEvent *event) {
+  // Set focus to the main window when the mouse is clicked on the map
+  setFocus();
+
+  // Handle other mouse press events if needed: Movement of protagonist via mouse
+
+  // Call the base class implementation to ensure standard processing
+  QMainWindow::mousePressEvent(event);
 }
