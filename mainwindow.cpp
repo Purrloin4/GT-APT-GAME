@@ -26,8 +26,12 @@ MainWindow::MainWindow(QWidget *parent)
 
     // Create the world
     try {
-        myWorld.createWorld(":/world_images/worldmap4.png", 25, 25, 0.25f);
+        myWorld.createWorld(":/world_images/worldmap.png", 25, 25, 0.25f);
+        this->myTiles = myWorld.getTiles();
+        this->myEnemies = myWorld.getEnemies();
+        this->myHealthpacks = myWorld.getHealthPacks();
         visualizeWorldText(); // Visualize the created world
+        visualizeWorldGraph();
         auto startTile = std::make_unique<Tile>(0, 0, 0.0f);
         auto endTile = std::make_unique<Tile>(20, 20, 0.0f);
 
@@ -49,10 +53,7 @@ void MainWindow::visualizeWorldGraph()
     this->scene = new QGraphicsScene(this);
 
     // Get tiles, enemies, and health packs from the world
-    this->myTiles = myWorld.getTiles();
     const float maxEH = 100.0f; // Define the value of maxEH
-    auto enemies = myWorld.getEnemies();
-    auto healthPacks = myWorld.getHealthPacks();
 
     // Create protagonist
     auto protagonist = Protagonist();
@@ -77,12 +78,12 @@ void MainWindow::visualizeWorldGraph()
     }
 
     // Add visualization for enemies
-    for (const auto &enemy : enemies) {
+    for (const auto &enemy : myEnemies) {
         scene->addRect(enemy->getXPos() * tileSize, enemy->getYPos() * tileSize, tileSize, tileSize, QPen(Qt::black), QBrush(Qt::red));
     }
 
     // Add visualization for health packs
-    for (const auto &healthPack : healthPacks) {
+    for (const auto &healthPack : myHealthpacks) {
         scene->addRect(healthPack->getXPos() * tileSize, healthPack->getYPos() * tileSize, tileSize, tileSize, QPen(Qt::black), QBrush(Qt::green));
     }
 
@@ -132,11 +133,6 @@ void MainWindow::visualizeWorldText()
     // Create a QString to hold the ASCII representation of the world
     QString asciiRepresentation;
 
-    // Get tiles, enemies, and health packs from the world
-    this->myTiles = myWorld.getTiles();
-    auto enemies = myWorld.getEnemies();
-    auto healthPacks = myWorld.getHealthPacks();
-
     // Create protagonist
     auto protagonist = Protagonist();
 
@@ -162,16 +158,16 @@ void MainWindow::visualizeWorldText()
         // Loop through each column
         for (int x = 0; x < myWorld.getCols(); ++x) {
             // Check if the current position contains an entity (health pack, enemy, protagonist)
-            auto isHealthPack = std::find_if(healthPacks.begin(), healthPacks.end(),
+            auto isHealthPack = std::find_if(myHealthpacks.begin(), myHealthpacks.end(),
                                              [x, y](const auto &hp) { return hp->getXPos() == x && hp->getYPos() == y; });
-            auto isEnemy = std::find_if(enemies.begin(), enemies.end(),
+            auto isEnemy = std::find_if(myEnemies.begin(), myEnemies.end(),
                                         [x, y](const auto &enemy) { return enemy->getXPos() == x && enemy->getYPos() == y; });
             auto isProtagonist = (protagonist.getXPos() == x && protagonist.getYPos() == y);
 
             // Append the corresponding ASCII representation to the overall representation string
-            if (isHealthPack != healthPacks.end()) {
+            if (isHealthPack != myHealthpacks.end()) {
                 asciiRepresentation += verticalHealthPackTile;
-            } else if (isEnemy != enemies.end()) {
+            } else if (isEnemy != myEnemies.end()) {
                 asciiRepresentation += verticalEnemyTile;
             } else if (isProtagonist) {
                 asciiRepresentation += verticalProtagonistTile;
