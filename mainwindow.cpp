@@ -310,8 +310,9 @@ void MainWindow::keyPressEvent(QKeyEvent *event) {
         protagonist.setXPos(newX);
         protagonist.setYPos(newY);
 
-        // Redraw the protagonist
+        // Redraw the protagonist and energy bar
         drawProtagonist();
+        drawBars();
 
         // Check if we can attack an enemy or use a healthpack
         attackEnemy();
@@ -328,7 +329,27 @@ void MainWindow::mousePressEvent(QMouseEvent *event) {
   // Set focus to the main window when the mouse is clicked on the map
   setFocus();
 
-  // Handle other mouse press events if needed: Movement of protagonist via mouse
+  // Get the position of the click in scene coordinates
+  auto views = scene->views();
+  if (!views.isEmpty()) {
+        QPointF clickedPoint = views.first()->mapToScene(event->pos());
+
+        // Convert the scene coordinates to tile coordinates
+        int x = static_cast<int>(clickedPoint.x()) / tileSize - 1;
+        int y = static_cast<int>(clickedPoint.y()) / tileSize - 1;
+
+        // Check if the clicked position is within the boundaries of the world
+        if (isValidPosition(x, y)) {
+            // Call findPathAndHighlight with the clicked tile's position
+            auto startTile = std::make_unique<Tile>(protagonist.getXPos(), protagonist.getYPos(), 0.0f);
+            auto endTile = std::make_unique<Tile>(x, y, 0.0f);
+            findPathAndHighlight(scene, tileSize, std::move(startTile), std::move(endTile));
+            protagonist.setPos(x, y);
+            drawProtagonist();
+            attackEnemy();
+            useHealthpack();
+        }
+  }
 
   // Call the base class implementation to ensure standard processing
   QMainWindow::mousePressEvent(event);
@@ -361,7 +382,11 @@ void MainWindow::attackEnemy()
             else
             {
                 // Protagonist doesn't have enough health to defeat the enemy
+                protagonist.setHealth(0.0f);
+                drawBars();
                 QMessageBox::information(this, "Game Over", "You were defeated by the enemy!");
+                // Exit the program when OK is pressed
+                QCoreApplication::quit();
             }
 
             // Exit the function since the attack has been resolved
@@ -382,16 +407,17 @@ void MainWindow::useHealthpack()
         if (pack->getXPos() == x && pack->getYPos() == y)
         {
             // Perform the attack logic here
-            if (protagonist.getHealth() < 100.0f)
+            if (protagonist.getHealth() < maxEH)
             {
                 // Protagonist has enough health to attack and defeat the enemy
                 float newHealth = protagonist.getHealth() + pack->getValue();
-                if (newHealth > 100) {
-                    protagonist.setHealth(100.0f);
+                if (newHealth > maxEH) {
+                    protagonist.setHealth(maxEH);
                 } else {
                     protagonist.setHealth(newHealth);
                 }
                 scene->addRect(pack->getXPos() * tileSize, pack->getYPos() * tileSize, tileSize, tileSize, QPen(Qt::black), QBrush(QColorConstants::Svg::purple));
+                pack->setValue(0.0f);
                 drawProtagonist();
                 drawBars();
             }
