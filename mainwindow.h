@@ -32,7 +32,7 @@ private:
 
     void visualizeWorldGraph();
     void visualizeWorldText();
-    void findPathAndHighlight(QGraphicsScene* scene, int tileSize, std::unique_ptr<Tile> startTile, std::unique_ptr<Tile> endTile);
+    void findPathAndHighlight(QGraphicsScene* scene, int tileSize, std::unique_ptr<Tile> startTile, std::unique_ptr<Tile> endTile, float heurWeight, float minimalCost);
     void showGraphicalView();
     void showTextView();
     void keyPressEvent(QKeyEvent *event);

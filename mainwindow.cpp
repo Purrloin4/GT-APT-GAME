@@ -26,16 +26,16 @@ MainWindow::MainWindow(QWidget *parent)
 
     // Create the world
     try {
-        myWorld.createWorld(":/world_images/worldmap4.png", 25, 25, 0.25f);
-        visualizeWorldText(); // Visualize the created world
-        auto startTile = std::make_unique<Tile>(0, 0, 0.0f);
-        auto endTile = std::make_unique<Tile>(myWorld.getCols()-1, myWorld.getRows()-1, 0.0f);
-
-        //findPathAndHighlight(scene,tileSize, std::move(startTile), std::move(endTile));
+        myWorld.createWorld(":/world_images/worldmap.png", 25, 25, 0.25f);
+        visualizeWorldGraph(); // Visualize the created world
     } catch (const std::exception& e) {
         // Handle any exceptions here
     }
 
+    auto startTile = std::make_unique<Tile>(0, 0, 0.0f);
+    auto endTile = std::make_unique<Tile>(myWorld.getCols()-1, myWorld.getRows()-1, 0.0f);
+
+    findPathAndHighlight(scene,tileSize, std::move(startTile), std::move(endTile), 0.05, 0.01);
 }
 
 MainWindow::~MainWindow()
@@ -223,7 +223,7 @@ void MainWindow::showTextView()
     visualizeWorldText();
 }
 
-void MainWindow::findPathAndHighlight(QGraphicsScene* scene, int tileSize, std::unique_ptr<Tile> startTile, std::unique_ptr<Tile> endTile)
+void MainWindow::findPathAndHighlight(QGraphicsScene* scene, int tileSize, std::unique_ptr<Tile> startTile, std::unique_ptr<Tile> endTile, float heurWeight, float minimalCost)
 {
   std::vector<PathNode> pathNodes;
     for (const auto &tile : myTiles) {
@@ -235,7 +235,7 @@ void MainWindow::findPathAndHighlight(QGraphicsScene* scene, int tileSize, std::
   PathNode startNode(*startTile);
   PathNode endNode(*endTile);
 
-  std::vector<int> path = A_star(pathNodes, &startNode, &endNode, comp, myWorld.getCols(), 0.5);
+  std::vector<int> path = A_star(pathNodes, &startNode, &endNode, comp, myWorld.getCols(), heurWeight, minimalCost);
 
   int xPos = startTile->getXPos();
   int yPos = startTile->getYPos();
