@@ -50,9 +50,8 @@ void MainWindow::visualizeWorldGraph()
 
     // Get tiles, enemies, and health packs from the world
     this->myTiles = myWorld.getTiles();
-    const float maxEH = 100.0f; // Define the value of maxEH
-    auto enemies = myWorld.getEnemies();
-    auto healthPacks = myWorld.getHealthPacks();
+    enemies = myWorld.getEnemies();
+    healthPacks = myWorld.getHealthPacks();
 
     // Create protagonist
     auto protagonist = Protagonist();
@@ -76,9 +75,9 @@ void MainWindow::visualizeWorldGraph()
         scene->addRect(xPos * tileSize, yPos * tileSize, tileSize, tileSize, QPen(Qt::black), brush);
     }
 
-    // Add visualization for enemies
+    // Add visualization for enemies (including defeated ones)
     for (const auto &enemy : enemies) {
-        scene->addRect(enemy->getXPos() * tileSize, enemy->getYPos() * tileSize, tileSize, tileSize, QPen(Qt::black), QBrush(Qt::red));
+        scene->addRect(enemy->getXPos() * tileSize, enemy->getYPos() * tileSize, tileSize, tileSize, QPen(Qt::black), enemy->getDefeated() ? QBrush(Qt::gray) : QBrush(Qt::red));
     }
 
     // Add visualization for health packs
@@ -88,21 +87,7 @@ void MainWindow::visualizeWorldGraph()
 
     drawProtagonist();
 
-    // Add visualization for protagonist health bar
-    int healthBarWidth = tileSize * 2; // You can adjust the width as needed
-    int healthBarHeight = tileSize / 4; // You can adjust the height as needed
-    QRect healthBarRect(protagonist.getXPos() * tileSize, protagonist.getYPos() * tileSize - tileSize / 2, healthBarWidth, healthBarHeight);
-    double healthRatio = static_cast<double>(protagonist.getHealth()) / static_cast<double>(maxEH);
-    QColor healthBarColor = QColor::fromRgbF(1.0 - healthRatio, healthRatio, 0.0); // Red to green gradient
-    scene->addRect(healthBarRect, QPen(Qt::black), QBrush(healthBarColor));
-
-    // Add visualization for protagonist energy bar
-    int energyBarWidth = tileSize * 2; // You can adjust the width as needed
-    int energyBarHeight = tileSize / 4; // You can adjust the height as needed
-    QRect energyBarRect(protagonist.getXPos() * tileSize, protagonist.getYPos() * tileSize - tileSize / 2 - energyBarHeight, energyBarWidth, energyBarHeight);
-    double energyRatio = static_cast<double>(protagonist.getEnergy()) / static_cast<double>(maxEH);
-    QColor energyBarColor = QColor::fromRgbF(0.0, 0.0, 1.0 - energyRatio); // Blue to black gradient
-    scene->addRect(energyBarRect, QPen(Qt::black), QBrush(energyBarColor));
+    drawBars();
 
     // Finally, set the scene in a graphics view
     QGraphicsView *view = new QGraphicsView(scene);
@@ -259,14 +244,44 @@ void MainWindow::findPathAndHighlight(QGraphicsScene* scene, int tileSize, std::
 }
 
 void MainWindow::drawProtagonist() {
-  // Remove the old position of the protagonist, if it exists
-  if (protagonistItem) {
+    // Remove the old position of the protagonist, if it exists
+    if (protagonistItem) {
         scene->removeItem(protagonistItem);
-  }
+    }
 
-  // Add visualization for protagonist
-  protagonistItem = scene->addRect(protagonist.getXPos() * tileSize, protagonist.getYPos() * tileSize, tileSize, tileSize, QPen(Qt::black), QBrush(Qt::blue));
+    // Add visualization for protagonist
+    protagonistItem = scene->addRect(protagonist.getXPos() * tileSize, protagonist.getYPos() * tileSize, tileSize, tileSize, QPen(Qt::black), QBrush(Qt::blue));
 }
+
+void MainWindow::drawBars() {
+    // Define the position above the map for the bars
+    int barX = 0; // X-coordinate
+    int barY = -tileSize * 2; // Y-coordinate, adjust as needed
+
+    // Calculate the remaining health as a percentage
+    double healthRatio = static_cast<double>(protagonist.getHealth()) / static_cast<double>(maxEH);
+
+    // Calculate the width of the health bar based on the remaining health
+    int healthBarWidth = static_cast<int>(myWorld.getCols() * tileSize * healthRatio);
+
+    // Clear the old health bar rectangle
+    QRect oldHealthBarRect(barX, barY, myWorld.getCols() * tileSize, tileSize / 2); // Full width of the map
+    scene->addRect(oldHealthBarRect, QPen(Qt::white), QBrush(Qt::white)); // Clear the old health bar
+
+    // Add visualization for the sliding health bar
+    QRect healthBarRect(barX, barY, healthBarWidth, tileSize / 2); // You can adjust the height as needed
+    QColor healthBarColor = QColor::fromRgbF(1.0 - healthRatio, healthRatio, 0.0); // Red to green gradient
+    scene->addRect(healthBarRect, QPen(Qt::black), QBrush(healthBarColor));
+
+    // Add visualization for protagonist energy bar (similar to previous implementation)
+    int energyBarWidth = myWorld.getCols() * tileSize; // Full width of the map
+    int energyBarHeight = tileSize / 2; // You can adjust the height as needed
+    QRect energyBarRect(barX, barY - energyBarHeight, energyBarWidth, energyBarHeight);
+    double energyRatio = static_cast<double>(protagonist.getEnergy()) / static_cast<double>(maxEH);
+    QColor energyBarColor = QColor::fromRgbF(0.0, 0.0, 1.0 - energyRatio); // Blue to black gradient
+    scene->addRect(energyBarRect, QPen(Qt::black), QBrush(energyBarColor));
+}
+
 
 void MainWindow::keyPressEvent(QKeyEvent *event) {
   int newX = protagonist.getXPos();
@@ -295,8 +310,13 @@ void MainWindow::keyPressEvent(QKeyEvent *event) {
         protagonist.setXPos(newX);
         protagonist.setYPos(newY);
 
-        // Redraw the protagonist
+        // Redraw the protagonist and energy bar
         drawProtagonist();
+        drawBars();
+
+        // Check if we can attack an enemy or use a healthpack
+        attackEnemy();
+        useHealthpack();
   }
 }
 
@@ -309,8 +329,100 @@ void MainWindow::mousePressEvent(QMouseEvent *event) {
   // Set focus to the main window when the mouse is clicked on the map
   setFocus();
 
-  // Handle other mouse press events if needed: Movement of protagonist via mouse
+  // Get the position of the click in scene coordinates
+  auto views = scene->views();
+  if (!views.isEmpty()) {
+        QPointF clickedPoint = views.first()->mapToScene(event->pos());
+
+        // Convert the scene coordinates to tile coordinates
+        int x = static_cast<int>(clickedPoint.x()) / tileSize - 1;
+        int y = static_cast<int>(clickedPoint.y()) / tileSize - 1;
+
+        // Check if the clicked position is within the boundaries of the world
+        if (isValidPosition(x, y)) {
+            // Call findPathAndHighlight with the clicked tile's position
+            auto startTile = std::make_unique<Tile>(protagonist.getXPos(), protagonist.getYPos(), 0.0f);
+            auto endTile = std::make_unique<Tile>(x, y, 0.0f);
+            findPathAndHighlight(scene, tileSize, std::move(startTile), std::move(endTile));
+            protagonist.setPos(x, y);
+            drawProtagonist();
+            attackEnemy();
+            useHealthpack();
+        }
+  }
 
   // Call the base class implementation to ensure standard processing
   QMainWindow::mousePressEvent(event);
+}
+
+void MainWindow::attackEnemy()
+{
+  // Get the current position of the protagonist
+  int x = protagonist.getXPos();
+  int y = protagonist.getYPos();
+
+  // Check if there is an enemy at the current position
+  for (auto& enemy : enemies)
+  {
+        if (enemy->getXPos() == x && enemy->getYPos() == y)
+        {
+            if (enemy->getDefeated()){
+                break;
+            }
+            // Perform the attack logic here
+            if (protagonist.getHealth() > enemy->getValue())
+            {
+                // Protagonist has enough health to attack and defeat the enemy
+                protagonist.setHealth(protagonist.getHealth()-enemy->getValue());
+                enemy->setDefeated(true);
+                scene->addRect(enemy->getXPos() * tileSize, enemy->getYPos() * tileSize, tileSize, tileSize, QPen(Qt::black), QBrush(QColorConstants::Svg::purple));
+                drawProtagonist();
+                drawBars();
+            }
+            else
+            {
+                // Protagonist doesn't have enough health to defeat the enemy
+                protagonist.setHealth(0.0f);
+                drawBars();
+                QMessageBox::information(this, "Game Over", "You were defeated by the enemy!");
+                // Exit the program when OK is pressed
+                QCoreApplication::quit();
+            }
+
+            // Exit the function since the attack has been resolved
+            return;
+        }
+  }
+}
+
+void MainWindow::useHealthpack()
+{
+  // Get the current position of the protagonist
+  int x = protagonist.getXPos();
+  int y = protagonist.getYPos();
+
+  // Check if there is an enemy at the current position
+  for (auto& pack : healthPacks)
+  {
+        if (pack->getXPos() == x && pack->getYPos() == y)
+        {
+            // Perform the attack logic here
+            if (protagonist.getHealth() < maxEH)
+            {
+                // Protagonist has enough health to attack and defeat the enemy
+                float newHealth = protagonist.getHealth() + pack->getValue();
+                if (newHealth > maxEH) {
+                    protagonist.setHealth(maxEH);
+                } else {
+                    protagonist.setHealth(newHealth);
+                }
+                scene->addRect(pack->getXPos() * tileSize, pack->getYPos() * tileSize, tileSize, tileSize, QPen(Qt::black), QBrush(QColorConstants::Svg::purple));
+                pack->setValue(0.0f);
+                drawProtagonist();
+                drawBars();
+            }
+            // Exit the function since the attack has been resolved
+            return;
+        }
+  }
 }
