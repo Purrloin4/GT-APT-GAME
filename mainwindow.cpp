@@ -51,9 +51,6 @@ void MainWindow::visualizeWorldGraph()
     // Create a graphics scene
     this->scene = new QGraphicsScene(this);
 
-    // Get tiles, enemies, and health packs from the world
-    const float maxEH = 100.0f; // Define the value of maxEH
-
     // Create protagonist
     auto protagonist = Protagonist();
 
@@ -358,7 +355,7 @@ void MainWindow::attackEnemy()
   int y = protagonist.getYPos();
 
   // Check if there is an enemy at the current position
-  for (auto& enemy : enemies)
+  for (auto& enemy : myEnemies)
   {
         if (enemy->getXPos() == x && enemy->getYPos() == y)
         {
@@ -398,7 +395,7 @@ void MainWindow::useHealthpack()
   int y = protagonist.getYPos();
 
   // Check if there is an enemy at the current position
-  for (auto& pack : healthPacks)
+  for (auto& pack : myHealthpacks)
   {
         if (pack->getXPos() == x && pack->getYPos() == y)
         {
