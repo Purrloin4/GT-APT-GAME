@@ -28,6 +28,9 @@ private:
     std::vector<std::unique_ptr<Tile>> myTiles;
     Protagonist protagonist;
     QGraphicsRectItem* protagonistItem = nullptr;
+    std::vector<std::unique_ptr<Enemy>> enemies;
+    std::vector<std::unique_ptr<Tile>> healthPacks;
+    const float maxEH = 100.0f;
 
 
     void visualizeWorldGraph();
@@ -37,8 +40,11 @@ private:
     void showTextView();
     void keyPressEvent(QKeyEvent *event);
     void drawProtagonist();
+    void drawBars();
     bool isValidPosition(int x, int y);
     void mousePressEvent(QMouseEvent *event);
+    void attackEnemy();
+    void useHealthpack();
 
 };
 
