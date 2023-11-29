@@ -31,11 +31,6 @@ MainWindow::MainWindow(QWidget *parent)
     } catch (const std::exception& e) {
         // Handle any exceptions here
     }
-
-    auto startTile = std::make_unique<Tile>(0, 0, 0.0f);
-    auto endTile = std::make_unique<Tile>(myWorld.getCols()-1, myWorld.getRows()-1, 0.0f);
-
-    findPathAndHighlight(scene,tileSize, std::move(startTile), std::move(endTile), 0.05, 0.01);
 }
 
 MainWindow::~MainWindow()
@@ -343,7 +338,7 @@ void MainWindow::mousePressEvent(QMouseEvent *event) {
             // Call findPathAndHighlight with the clicked tile's position
             auto startTile = std::make_unique<Tile>(protagonist.getXPos(), protagonist.getYPos(), 0.0f);
             auto endTile = std::make_unique<Tile>(x, y, 0.0f);
-            findPathAndHighlight(scene, tileSize, std::move(startTile), std::move(endTile));
+            findPathAndHighlight(scene, tileSize, std::move(startTile), std::move(endTile), 0.1, 0.1);
             protagonist.setPos(x, y);
             drawProtagonist();
             attackEnemy();
