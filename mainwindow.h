@@ -26,6 +26,8 @@ private:
     int tileSize;
     QGraphicsScene* scene;
     std::vector<std::unique_ptr<Tile>> myTiles;
+    std::vector<std::unique_ptr<Enemy>> myEnemies;
+    std::vector<std::unique_ptr<Tile>> myHealthpacks;
     Protagonist protagonist;
     QGraphicsRectItem* protagonistItem = nullptr;
     std::vector<std::unique_ptr<Enemy>> enemies;
