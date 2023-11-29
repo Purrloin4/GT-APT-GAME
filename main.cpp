@@ -2,11 +2,14 @@
 #include "qloggingcategory.h"
 #include <QApplication>
 
+
 int main(int argc, char *argv[])
 {
+    QLoggingCategory pathfinderCategory("main", QtDebugMsg);
     QApplication a(argc, argv);
     QLoggingCategory::setFilterRules("pathfinderCategory.debug=true");
     MainWindow w;
+    //qCDebug(main) << w.getView().scene()->items().count();
     w.show();
     return a.exec();
 }

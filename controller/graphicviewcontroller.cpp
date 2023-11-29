@@ -1,6 +1,6 @@
 #include "graphicviewcontroller.h"
 
-std::unique_ptr<QGraphicsView> GraphicViewController::visualizeWorld()
+QGraphicsView* GraphicViewController::visualizeWorld()
 {
     // Create a graphics scene
     scene = std::make_shared<QGraphicsScene>();
@@ -64,7 +64,6 @@ std::unique_ptr<QGraphicsView> GraphicViewController::visualizeWorld()
     scene->addRect(energyBarRect, QPen(Qt::black), QBrush(energyBarColor));
 
     // Finally, set the scene in a graphics view
-    QGraphicsView *viewRawPtr = new QGraphicsView(scene.get());
-    auto view = std::make_unique<QGraphicsView>(viewRawPtr);
-    return view;
+    rawView = new QGraphicsView(scene.get());
+    return rawView;
 }

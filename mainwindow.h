@@ -28,7 +28,7 @@ private:
     std::vector<std::unique_ptr<Tile>> myTiles;
     std::shared_ptr<WorldController> worldController;
     std::shared_ptr<GraphicViewController> graphicViewController;
-    std::unique_ptr<QGraphicsView> view;
+    QGraphicsView* view;
 
     void visualizeWorld();
     void findPathAndHighlight(QGraphicsScene* scene, int tileSize, std::unique_ptr<Tile> startTile, std::unique_ptr<Tile> endTile);

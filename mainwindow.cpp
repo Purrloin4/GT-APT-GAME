@@ -7,6 +7,7 @@
 #include <QMessageBox>
 #include "pathfinder.h"
 #include "QLoggingCategory"
+#include <iostream>
 
 
 QLoggingCategory mainwindowCategory("mainwindow");
@@ -20,7 +21,8 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
     this->view = graphicViewController->visualizeWorld();
-    setCentralWidget(view.get());
+    //std::cout << view.get()->scene()->items().count() << std::endl;
+    setCentralWidget(view);
 
 
 //    auto startTile = std::make_unique<Tile>(0, 0, 0.0f);
@@ -33,6 +35,7 @@ MainWindow::~MainWindow()
 {
     delete ui;
 }
+
 
 void MainWindow::findPathAndHighlight(QGraphicsScene* scene, int tileSize, std::unique_ptr<Tile> startTile, std::unique_ptr<Tile> endTile)
 {
