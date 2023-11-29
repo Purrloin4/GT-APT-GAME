@@ -15,12 +15,12 @@ QLoggingCategory mainwindowCategory("mainwindow");
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow),
-    worldController(std::make_shared<WorldController>())
+    worldController(std::make_shared<WorldController>()),
+    graphicViewController(std::make_shared<GraphicViewController>(worldController))
 {
     ui->setupUi(this);
-    GraphicViewController graphicViewController(worldController);
-    auto view = graphicViewController.visualizeWorld();
-    setCentralWidget(view.release());
+    this->view = graphicViewController->visualizeWorld();
+    setCentralWidget(view.get());
 
 
 //    auto startTile = std::make_unique<Tile>(0, 0, 0.0f);
@@ -42,13 +42,14 @@ void MainWindow::findPathAndHighlight(QGraphicsScene* scene, int tileSize, std::
     }
 
     auto weight = 0.1;
+    auto minimalCost = 0.1;
 
     Comparator<PathNode> comp = PathNode::Comparator();
 
   PathNode startNode(*startTile);
   PathNode endNode(*endTile);
 
-  std::vector<int> path = A_star(pathNodes, &startNode, &endNode, comp, myWorld.getCols(), weight);
+  std::vector<int> path = A_star(pathNodes, &startNode, &endNode, comp, myWorld.getCols(), weight, minimalCost);
 
   int xPos = startTile->getXPos();
   int yPos = startTile->getYPos();
