@@ -10,6 +10,9 @@
 #include <QPushButton>
 #include <QHBoxLayout>
 #include <QTextEdit>
+#include <QKeyEvent>
+#include <QMouseEvent>
+
 
 QLoggingCategory mainwindowCategory("mainwindow");
 
@@ -19,6 +22,7 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    this->setFocus();
 
     // Create the world
     try {
@@ -82,8 +86,7 @@ void MainWindow::visualizeWorldGraph()
         scene->addRect(healthPack->getXPos() * tileSize, healthPack->getYPos() * tileSize, tileSize, tileSize, QPen(Qt::black), QBrush(Qt::green));
     }
 
-    // Add visualization for protagonist
-    scene->addRect(protagonist.getXPos() * tileSize, protagonist.getYPos() * tileSize, tileSize, tileSize, QPen(Qt::black), QBrush(Qt::blue));
+    drawProtagonist();
 
     // Add visualization for protagonist health bar
     int healthBarWidth = tileSize * 2; // You can adjust the width as needed
@@ -241,16 +244,73 @@ void MainWindow::findPathAndHighlight(QGraphicsScene* scene, int tileSize, std::
         // Determine the position based on the move
         switch (move) {
         case 0: yPos -= 1; break;  // Move up
-        case 1: xPos += 1; yPos -= 1; break;  // Move to the top-right
-        case 2: xPos += 1; break;  // Move to the right
-        case 3: xPos += 1; yPos += 1; break;  // Move to the bottom-right
+        case 1: xPos -= 1; yPos -= 1; break;  // Move to the top-right
+        case 2: xPos -= 1; break;  // Move to the right
+        case 3: xPos -= 1; yPos += 1; break;  // Move to the bottom-right
         case 4: yPos += 1; break;  // Move down
-        case 5: xPos -= 1; yPos += 1; break;  // Move to the bottom-left
-        case 6: xPos -= 1; break;  // Move to the left
-        case 7: xPos -= 1; yPos -= 1; break;  // Move to the top-left
+        case 5: xPos += 1; yPos += 1; break;  // Move to the bottom-left
+        case 6: xPos += 1; break;  // Move to the left
+        case 7: xPos += 1; yPos -= 1; break;  // Move to the top-left
         default: break;
         }
 
         scene->addRect(xPos * tileSize, yPos * tileSize, tileSize, tileSize, QPen(Qt::black), QBrush(Qt::red));
   }
+}
+
+void MainWindow::drawProtagonist() {
+  // Remove the old position of the protagonist, if it exists
+  if (protagonistItem) {
+        scene->removeItem(protagonistItem);
+  }
+
+  // Add visualization for protagonist
+  protagonistItem = scene->addRect(protagonist.getXPos() * tileSize, protagonist.getYPos() * tileSize, tileSize, tileSize, QPen(Qt::black), QBrush(Qt::blue));
+}
+
+void MainWindow::keyPressEvent(QKeyEvent *event) {
+  int newX = protagonist.getXPos();
+  int newY = protagonist.getYPos();
+
+  switch (event->key()) {
+  case Qt::Key_Left: // If the left arrow key was pressed
+        newX = protagonist.getXPos() - 1;
+        break;
+  case Qt::Key_Right: // If the right arrow key was pressed
+        newX = protagonist.getXPos() + 1;
+        break;
+  case Qt::Key_Up: // If the up arrow key was pressed
+        newY = protagonist.getYPos() - 1;
+        break;
+  case Qt::Key_Down: // If the down arrow key was pressed
+        newY = protagonist.getYPos() + 1;
+        break;
+  default:
+        QMainWindow::keyPressEvent(event);
+  }
+
+  // Check if the new position is within the boundaries of the world
+  if (isValidPosition(newX, newY)) {
+        // Update the protagonist's position only if it's a valid position
+        protagonist.setXPos(newX);
+        protagonist.setYPos(newY);
+
+        // Redraw the protagonist
+        drawProtagonist();
+  }
+}
+
+bool MainWindow::isValidPosition(int x, int y) {
+  // Check if the new position is within the boundaries of the world
+  return x >= 0 && x < myWorld.getCols() && y >= 0 && y < myWorld.getRows();
+}
+
+void MainWindow::mousePressEvent(QMouseEvent *event) {
+  // Set focus to the main window when the mouse is clicked on the map
+  setFocus();
+
+  // Handle other mouse press events if needed: Movement of protagonist via mouse
+
+  // Call the base class implementation to ensure standard processing
+  QMainWindow::mousePressEvent(event);
 }

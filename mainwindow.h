@@ -26,12 +26,20 @@ private:
     int tileSize;
     QGraphicsScene* scene;
     std::vector<std::unique_ptr<Tile>> myTiles;
+    Protagonist protagonist;
+    QGraphicsRectItem* protagonistItem = nullptr;
+
 
     void visualizeWorldGraph();
     void visualizeWorldText();
     void findPathAndHighlight(QGraphicsScene* scene, int tileSize, std::unique_ptr<Tile> startTile, std::unique_ptr<Tile> endTile);
     void showGraphicalView();
     void showTextView();
+    void keyPressEvent(QKeyEvent *event);
+    void drawProtagonist();
+    bool isValidPosition(int x, int y);
+    void mousePressEvent(QMouseEvent *event);
+
 };
 
 #endif // MAINWINDOW_H
