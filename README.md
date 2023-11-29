@@ -12,3 +12,8 @@
 - Conversion to object oriented files - Cédric
 - Protagonist movement - Tiësto
 - Visualisation Text-Based View - Bob
+
+### Week 10
+- Attack enemies, use healthpacks, move by clicking - Tiësto
+- Switching views, protagonist movement in text-based view - Bob
+- Conversion to object oriented files - Cédric
