@@ -46,7 +46,8 @@ private:
     void showTextView();
     void keyPressEvent(QKeyEvent *event);
     void drawProtagonist();
-    void updateAsciiRepresentation();
+    void drawProtagonistText();
+    //void updateAsciiRepresentation();
     void drawBars();
     bool isValidPosition(int x, int y);
     void mousePressEvent(QMouseEvent *event);

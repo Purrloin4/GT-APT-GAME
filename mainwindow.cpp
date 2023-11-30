@@ -24,6 +24,8 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
     this->setFocus();
 
+    asciiTextEdit = new QTextEdit;
+    asciiTextEdit->setFont(QFont("Courier"));
     // Create the world
     try {
         myWorld.createWorld(":/world_images/worldmap.png", 25, 25, 0.25f);
@@ -167,8 +169,11 @@ void MainWindow::visualizeWorldText()
     }
     asciiRepresentation += "+"; // Add last '+' of map
 
+    //drawProtagonist();
+    //drawBars();
+
     // Display the ASCII representation in a QTextEdit
-    QTextEdit *asciiTextEdit = new QTextEdit(asciiRepresentation);
+    asciiTextEdit = new QTextEdit(asciiRepresentation);
     asciiTextEdit->setFont(QFont("Courier")); // Set a monospaced font for better alignment
 
     // Create buttons for switching between graphical and text views
@@ -237,61 +242,38 @@ void MainWindow::findPathAndHighlight(QGraphicsScene* scene, int tileSize, std::
 }
 
 void MainWindow::drawProtagonist() {
-  // Remove the old position of the protagonist from the ASCII representation
-  updateAsciiRepresentation();
-
-  // Update the graphical view
-  if (protagonistItem) {
+  // Remove the old position of the protagonist, if it exists
+  if (protagonistItem && protagonistItem->scene() == scene) {
         scene->removeItem(protagonistItem);
   }
+
+  // Add visualization for protagonist in Graph view
   protagonistItem = scene->addRect(protagonist.getXPos() * tileSize, protagonist.getYPos() * tileSize, tileSize, tileSize, QPen(Qt::black), QBrush(Qt::blue));
 
+  // Hier stond eerst den drawProtagonistText() gewoon bij, ma crashed als ik pijltjes beweeg in graphView,
+  // ma als ik nieuwe fuctie heb nog steeds, dus kan nog terugkomen
+}
+
+void MainWindow::drawProtagonistText() {
+  // Update ASCII representation for Text view
+  QString updatedAsciiRepresentation = asciiRepresentation;
+
+  // Find the index corresponding to the old protagonist's position in the ASCII representation
+  // >>>>>>>> onderstaande lijn is nog ni volledig juist >>>>>>>>>>>
+  int oldProtagonistIndex = myWorld.getCols()*4 + 4*protagonist.getXPos() + 4*(protagonist.getYPos()-1) + 2*myWorld.getCols()*4*(protagonist.getYPos()-1);// + 3*myWorld.getCols()*protagonist.getYPos();
+
+  // Replace the old representation of the protagonist with an empty tile
+  updatedAsciiRepresentation.replace(oldProtagonistIndex, 1, "X"); // "X" moet nog "\u00A0" worden, maar makkelijker om debuggen voor nu
+
+  // Find the index corresponding to the new protagonist's position in the ASCII representation
+  int newProtagonistIndex = myWorld.getCols()*4 + 4*protagonist.getXPos() + 2*myWorld.getCols()*4*protagonist.getYPos() + 4*protagonist.getYPos()+4;
+
+  // Replace the empty tile with the representation of the protagonist
+  updatedAsciiRepresentation.replace(newProtagonistIndex, 1, "P");
+
   // Display the updated ASCII representation in the QTextEdit
-  QTextEdit *asciiTextEdit = new QTextEdit(asciiRepresentation);
-  asciiTextEdit->setFont(QFont("Courier")); // Set a monospaced font for better alignment
-
-  // Create buttons for switching between graphical and text views
-  QPushButton *graphicalButton = new QPushButton("Graphical View");
-  QPushButton *textButton = new QPushButton("Text View");
-
-  // Connect button signals to corresponding slots
-  connect(graphicalButton, &QPushButton::clicked, this, &MainWindow::showGraphicalView);
-  connect(textButton, &QPushButton::clicked, this, &MainWindow::showTextView);
-
-  // Create a layout for the buttons and ASCII text edit
-  QVBoxLayout *layout = new QVBoxLayout;
-  layout->addWidget(asciiTextEdit);
-  layout->addWidget(graphicalButton);
-  layout->addWidget(textButton);
-
-  // Set the central widget to the layout
-  setCentralWidget(new QWidget);
-  centralWidget()->setLayout(layout);
+  asciiTextEdit->setPlainText(updatedAsciiRepresentation);
 }
-
-void MainWindow::updateAsciiRepresentation() {
-  // Calculate the index of the old position in the ASCII representation based on the previous position of the protagonist
-  int oldX = protagonist.getXPos();
-  int oldY = protagonist.getYPos();
-  int oldPosition = (oldY + 1) * (myWorld.getCols() * 5) + (oldX + 1) * 5 + 2; // Calculate the index of the old position
-
-  // Set the old position back to an empty tile in the ASCII representation
-  if (isValidPosition(oldX, oldY)) {
-        asciiRepresentation[oldPosition] = QChar('\u00A0');
-  }
-
-  // Calculate the index of the new position in the ASCII representation based on the current position of the protagonist
-  int newX = protagonist.getXPos();
-  int newY = protagonist.getYPos();
-  int newPosition = (newY + 1) * (myWorld.getCols() * 5) + (newX + 1) * 5 + 2; // Calculate the index of the new position
-
-  // Set the new position to the ASCII representation for the protagonist
-  if (isValidPosition(newX, newY)) {
-        asciiRepresentation[newPosition] = QChar('P');
-  }
-}
-
-
 
 void MainWindow::drawBars() {
     // Define the position above the map for the bars
@@ -352,6 +334,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event) {
 
         // Redraw the protagonist and energy bar
         drawProtagonist();
+        drawProtagonistText();
         drawBars();
 
         // Check if we can attack an enemy or use a healthpack
