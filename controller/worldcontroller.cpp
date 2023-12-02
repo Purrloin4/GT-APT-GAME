@@ -3,18 +3,30 @@
 
 
 WorldController::WorldController()
-    : start{0, 0}, exit{30,30} // start always (0,0), exit (30,30) for worldmap.png
 {
     // Create the world
     try {
         world = std::make_shared<World>();
-        world->createWorld(":/world_images/worldmap.png", 1, 1, 0.25f);
+        world->createWorld(":/world_images/worldmap.png", 20, 20, 0.25f);
 
         auto myTiles = world->getTiles();
         for (const auto &tile : myTiles){
             auto sharedTile = std::make_shared<Tile>(tile->getXPos(), tile->getYPos(), tile->getValue());
             this->tiles.push_back(sharedTile);
         }
+
+        auto myHealthpacks = world->getHealthPacks();
+        for (const auto &healthpack : myHealthpacks){
+            auto sharedHealthpack = std::make_shared<Tile>(healthpack->getXPos(),healthpack->getYPos(), healthpack->getValue());
+            this->healthpacks.push_back(sharedHealthpack);
+        }
+
+        auto myEnemies = world->getEnemies();
+        for (const auto &enemy : myEnemies){
+            auto sharedEnemy = std::make_shared<Enemy>(enemy->getXPos(),enemy->getYPos(), enemy->getValue());
+            this->enemies.push_back(sharedEnemy);
+        }
+
 
 
     } catch (const std::exception& e) {
@@ -23,15 +35,6 @@ WorldController::WorldController()
     }
 }
 
-point WorldController::getStart()
-{
-    return start;
-}
-
-point WorldController::getExit()
-{
-    return exit;
-}
 
 std::shared_ptr<Tile> WorldController::getTile(int x, int y) const
 {
@@ -94,6 +97,11 @@ int WorldController::getWidth() const
     return width;
 }
 
+float WorldController::getMaxEH() const
+{
+    return maxEH;
+}
+
 bool WorldController::isHealthPack(int x, int y)
 {
     for (const auto& healthpack : healthpacks) {
@@ -118,4 +126,8 @@ bool WorldController::isPoisoned(int x, int y)
 {
     // We do not yet have poisoned tiles
     return false;
+}
+
+std::shared_ptr<World> WorldController::getWorld(){
+    return world;
 }

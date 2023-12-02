@@ -1,14 +1,16 @@
 #include "graphicviewcontroller.h"
+#include <iostream>
 
 QGraphicsView* GraphicViewController::visualizeWorld()
 {
     // Create a graphics scene
-    scene = std::make_shared<QGraphicsScene>();
+    //scene = std::make_shared<QGraphicsScene>();
 
     // Get tiles, enemies, and health packs from the world
     auto myTiles = worldController->getTiles();
     const float maxEH = 100.0f; // Define the value of maxEH
     auto enemies = worldController->getEnemies();
+
     auto healthPacks = worldController->getHealthpacks();
 
     // Create protagonist
@@ -47,23 +49,21 @@ QGraphicsView* GraphicViewController::visualizeWorld()
     // Add visualization for protagonist
     scene->addRect(protagonist.getXPos() * tileSize, protagonist.getYPos() * tileSize, tileSize, tileSize, QPen(Qt::black), QBrush(Qt::blue));
 
-    // Add visualization for protagonist health bar
-    int healthBarWidth = tileSize * 2; // You can adjust the width as needed
-    int healthBarHeight = tileSize / 4; // You can adjust the height as needed
-    QRect healthBarRect(protagonist.getXPos() * tileSize, protagonist.getYPos() * tileSize - tileSize / 2, healthBarWidth, healthBarHeight);
-    double healthRatio = static_cast<double>(protagonist.getHealth()) / static_cast<double>(maxEH);
-    QColor healthBarColor = QColor::fromRgbF(1.0 - healthRatio, healthRatio, 0.0); // Red to green gradient
-    scene->addRect(healthBarRect, QPen(Qt::black), QBrush(healthBarColor));
+//    // Add visualization for protagonist health bar
+//    int healthBarWidth = tileSize * 2; // You can adjust the width as needed
+//    int healthBarHeight = tileSize / 4; // You can adjust the height as needed
+//    QRect healthBarRect(protagonist.getXPos() * tileSize, protagonist.getYPos() * tileSize - tileSize / 2, healthBarWidth, healthBarHeight);
+//    double healthRatio = static_cast<double>(protagonist.getHealth()) / static_cast<double>(maxEH);
+//    QColor healthBarColor = QColor::fromRgbF(1.0 - healthRatio, healthRatio, 0.0); // Red to green gradient
+//    scene->addRect(healthBarRect, QPen(Qt::black), QBrush(healthBarColor));
 
-    // Add visualization for protagonist energy bar
-    int energyBarWidth = tileSize * 2; // You can adjust the width as needed
-    int energyBarHeight = tileSize / 4; // You can adjust the height as needed
-    QRect energyBarRect(protagonist.getXPos() * tileSize, protagonist.getYPos() * tileSize - tileSize / 2 - energyBarHeight, energyBarWidth, energyBarHeight);
-    double energyRatio = static_cast<double>(protagonist.getEnergy()) / static_cast<double>(maxEH);
-    QColor energyBarColor = QColor::fromRgbF(0.0, 0.0, 1.0 - energyRatio); // Blue to black gradient
-    scene->addRect(energyBarRect, QPen(Qt::black), QBrush(energyBarColor));
+//    // Add visualization for protagonist energy bar
+//    int energyBarWidth = tileSize * 2; // You can adjust the width as needed
+//    int energyBarHeight = tileSize / 4; // You can adjust the height as needed
+//    QRect energyBarRect(protagonist.getXPos() * tileSize, protagonist.getYPos() * tileSize - tileSize / 2 - energyBarHeight, energyBarWidth, energyBarHeight);
+//    double energyRatio = static_cast<double>(protagonist.getEnergy()) / static_cast<double>(maxEH);
+//    QColor energyBarColor = QColor::fromRgbF(0.0, 0.0, 1.0 - energyRatio); // Blue to black gradient
+//    scene->addRect(energyBarRect, QPen(Qt::black), QBrush(energyBarColor));
 
-    // Finally, set the scene in a graphics view
-    rawView = new QGraphicsView(scene.get());
     return rawView;
 }

@@ -18,8 +18,7 @@ class WorldController
 public:
     WorldController();
 
-    point getStart();
-    point getExit();
+    std::shared_ptr<World> getWorld();
 
     std::shared_ptr<Tile> getTile(int x, int y) const;
     std::vector<std::shared_ptr<Tile> > getTiles() const;
@@ -35,6 +34,8 @@ public:
     int getHeight() const;
     int getWidth() const;
 
+    float getMaxEH() const;
+
     bool isHealthPack(int x, int y);
     bool isEnemy(int x, int y);
     bool isPoisoned(int x, int y);
@@ -49,6 +50,7 @@ private:
     std::shared_ptr<Protagonist> protagonist;
     int height;
     int width;
+    const float maxEH = 100.0f;
 };
 
 #endif // WORLDCONTROLLER_H

@@ -11,6 +11,7 @@ CONFIG += c++20
 SOURCES += \
     controller/graphicviewcontroller.cpp \
     controller/textviewcontroller.cpp \
+    controller/viewcontroller.cpp \
     controller/worldcontroller.cpp \
     main.cpp \
     mainwindow.cpp \
