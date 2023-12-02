@@ -5,7 +5,7 @@ ViewController::ViewController()
 {
 }
 
-//void ViewController::drawBars(){
+void ViewController::drawBars(){
 //    // Define the position above the map for the bars
 //    int barX = 0; // X-coordinate
 //    int barY = 0; // Y-coordinate, adjust as needed
@@ -29,7 +29,7 @@ ViewController::ViewController()
 //    int energyBarWidth = myWorld.getCols() * tileSize; // Full width of the map
 //    int energyBarHeight = tileSize / 2; // You can adjust the height as needed
 //    QRect energyBarRect(barX, barY - energyBarHeight, energyBarWidth, energyBarHeight);
-//    double energyRatio = static_cast<double>(protagonist.getEnergy()) / static_cast<double>(maxEH);
+//    double energyRatio = static_cast<double>(protagonist.getEnergy()) / static_cast<double>(worldController->getMaxEH());
 //    QColor energyBarColor = QColor::fromRgbF(0.0, 0.0, 1.0 - energyRatio); // Blue to black gradient
 //    scene->addRect(energyBarRect, QPen(Qt::black), QBrush(energyBarColor));
-//}
+}

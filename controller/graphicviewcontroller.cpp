@@ -3,18 +3,12 @@
 
 QGraphicsView* GraphicViewController::visualizeWorld()
 {
-    // Create a graphics scene
-    //scene = std::make_shared<QGraphicsScene>();
-
-    // Get tiles, enemies, and health packs from the world
     auto myTiles = worldController->getTiles();
-    const float maxEH = 100.0f; // Define the value of maxEH
     auto enemies = worldController->getEnemies();
 
     auto healthPacks = worldController->getHealthpacks();
 
-    // Create protagonist
-    auto protagonist = Protagonist();
+    auto protagonist = worldController->getProtagonist();
 
     // Adjust the size of the tiles in the visualization
     auto tileSize = 10; // Define the desired size for the tiles
@@ -47,7 +41,7 @@ QGraphicsView* GraphicViewController::visualizeWorld()
     }
 
     // Add visualization for protagonist
-    scene->addRect(protagonist.getXPos() * tileSize, protagonist.getYPos() * tileSize, tileSize, tileSize, QPen(Qt::black), QBrush(Qt::blue));
+    scene->addRect(protagonist->getXPos() * tileSize, protagonist->getYPos() * tileSize, tileSize, tileSize, QPen(Qt::black), QBrush(Qt::blue));
 
 //    // Add visualization for protagonist health bar
 //    int healthBarWidth = tileSize * 2; // You can adjust the width as needed

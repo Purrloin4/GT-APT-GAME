@@ -26,6 +26,7 @@ WorldController::WorldController()
             auto sharedEnemy = std::make_shared<Enemy>(enemy->getXPos(),enemy->getYPos(), enemy->getValue());
             this->enemies.push_back(sharedEnemy);
         }
+        this->protagonist = std::make_shared<Protagonist>();
 
 
 
