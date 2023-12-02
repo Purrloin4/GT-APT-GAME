@@ -91,6 +91,10 @@ std::shared_ptr<Protagonist> WorldController::getProtagonist() const
     return protagonist;
 }
 
+QGraphicsRectItem* WorldController::getProtagonistItem() const{
+    return protagonistItem;
+}
+
 int WorldController::getRows() const
 {
     return rows;

@@ -10,8 +10,9 @@ public:
     GraphicViewController(std::shared_ptr<WorldController> worldController)
         :ViewController(worldController){};
     QGraphicsView* visualizeWorld();
+    void drawProtagonist() override;
 private:
-
+    int tileSize = 10;
 };
 
 

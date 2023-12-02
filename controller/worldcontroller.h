@@ -5,6 +5,7 @@
 #include <memory>
 #include <vector>
 #include <QImage>
+#include <QGraphicsRectItem>
 
 
 struct point {
@@ -31,8 +32,11 @@ public:
 
     std::shared_ptr<Protagonist> getProtagonist() const;
 
+    QGraphicsRectItem* getProtagonistItem() const;
+
     int getRows() const;
     int getCols() const;
+
 
     float getMaxEH() const;
 
@@ -51,6 +55,7 @@ private:
     int rows;
     int cols;
     const float maxEH = 100.0f;
+    QGraphicsRectItem* protagonistItem = nullptr;
 };
 
 #endif // WORLDCONTROLLER_H

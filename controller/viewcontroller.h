@@ -18,6 +18,7 @@ class ViewController
         std::shared_ptr<WorldController> worldController;
         std::shared_ptr<QGraphicsScene> scene;
         QGraphicsView* rawView;
+        virtual void drawProtagonist() = 0;
     private:
 
 };
