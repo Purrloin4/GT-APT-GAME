@@ -28,6 +28,9 @@ WorldController::WorldController()
         }
         this->protagonist = std::make_shared<Protagonist>();
 
+        this->cols = world->getCols();
+        this->rows = world->getRows();
+
 
 
     } catch (const std::exception& e) {
@@ -88,14 +91,14 @@ std::shared_ptr<Protagonist> WorldController::getProtagonist() const
     return protagonist;
 }
 
-int WorldController::getHeight() const
+int WorldController::getRows() const
 {
-    return height;
+    return rows;
 }
 
-int WorldController::getWidth() const
+int WorldController::getCols() const
 {
-    return width;
+    return cols;
 }
 
 float WorldController::getMaxEH() const

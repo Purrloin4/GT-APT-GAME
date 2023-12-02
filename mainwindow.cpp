@@ -21,7 +21,7 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
     this->view = graphicViewController->visualizeWorld();
-    //std::cout << view.get()->scene()->items().count() << std::endl;
+    graphicViewController->drawBars();
     setCentralWidget(view);
 
 

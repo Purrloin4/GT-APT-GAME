@@ -31,8 +31,8 @@ public:
 
     std::shared_ptr<Protagonist> getProtagonist() const;
 
-    int getHeight() const;
-    int getWidth() const;
+    int getRows() const;
+    int getCols() const;
 
     float getMaxEH() const;
 
@@ -48,8 +48,8 @@ private:
     std::vector<std::shared_ptr<Tile>> healthpacks;
     std::vector<std::shared_ptr<Enemy>> enemies;
     std::shared_ptr<Protagonist> protagonist;
-    int height;
-    int width;
+    int rows;
+    int cols;
     const float maxEH = 100.0f;
 };
 
