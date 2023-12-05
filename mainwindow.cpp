@@ -9,6 +9,8 @@
 #include "QLoggingCategory"
 #include <iostream>
 
+#include "pathfinder.h"
+QLoggingCategory pathfinderCategory("pathfinder", QtDebugMsg);
 
 QLoggingCategory mainwindowCategory("mainwindow");
 
@@ -25,9 +27,11 @@ MainWindow::MainWindow(QWidget *parent)
     setCentralWidget(view);
 
 
-    auto startTile = std::make_unique<Tile>(0, 0, 0.0f);
-    auto endTile = std::make_unique<Tile>(myWorld.getCols()-1, myWorld.getRows()-1, 0.0f);
-    findPath(scene,tileSize, std::move(startTile), std::move(endTile));
+    auto startTile = new Tile(0, 0, 0.0f);
+    auto endTile = new Tile(10, 10, 0.0f);
+    auto path = worldController->findPath(std::unique_ptr<Tile>(startTile),std::unique_ptr<Tile>(endTile));
+    graphicViewController->visualizePath(path, std::unique_ptr<Tile>(startTile));
+
     
 
 }

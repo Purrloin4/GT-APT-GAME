@@ -6,6 +6,8 @@
 #include <vector>
 #include <QImage>
 #include <QGraphicsRectItem>
+#include "pathNode.h"
+#include "pathfinder.h"
 
 
 struct point {

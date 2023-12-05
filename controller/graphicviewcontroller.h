@@ -11,6 +11,7 @@ public:
         :ViewController(worldController){};
     QGraphicsView* visualizeWorld();
     void drawProtagonist() override;
+    void visualizePath(std::vector<int> path, std::unique_ptr<Tile> startTile);
 private:
     int tileSize = 10;
 };
