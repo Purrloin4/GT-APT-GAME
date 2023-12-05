@@ -19,6 +19,8 @@ class WorldController
 public:
     WorldController();
 
+    std::vector<int> findPath(std::unique_ptr<Tile> startTile, std::unique_ptr<Tile> endTile);
+
     std::shared_ptr<World> getWorld();
 
     std::shared_ptr<Tile> getTile(int x, int y) const;
