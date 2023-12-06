@@ -104,7 +104,7 @@ void WorldController::handleKeyPressEvent(QKeyEvent *event){
 
             // Check if we can attack an enemy or use a healthpack
             attackEnemy();
-//            useHealthpack();
+            useHealthpack();
       }
 
 }
@@ -155,6 +155,39 @@ void WorldController::attackEnemy(){
       }
 
 }
+
+void WorldController::useHealthpack()
+{
+      // Get the current position of the protagonist
+      int x = protagonist->getXPos();
+      int y = protagonist->getYPos();
+
+      // Check if there is an enemy at the current position
+      for (auto& pack : healthpacks)
+      {
+            if (pack->getXPos() == x && pack->getYPos() == y)
+            {
+            // Perform the attack logic here
+            if (protagonist->getHealth() < maxEH)
+            {
+                // Protagonist has enough health to attack and defeat the enemy
+                float newHealth = protagonist->getHealth() + pack->getValue();
+                if (newHealth > maxEH) {
+                    protagonist->setHealth(maxEH);
+                } else {
+                    protagonist->setHealth(newHealth);
+                }
+                emit healthPackTaken(pack->getXPos(), pack->getYPos());
+                pack->setValue(0.0f);
+                drawProtagonist();
+                drawBars();
+            }
+            // Exit the function since the attack has been resolved
+            return;
+            }
+      }
+}
+
 
 std::shared_ptr<Tile> WorldController::getTile(int x, int y) const
 {

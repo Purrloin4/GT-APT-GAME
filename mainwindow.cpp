@@ -52,17 +52,20 @@ void MainWindow::connectSignalsAndSlots(){
     connect(this, &MainWindow::keyPressed,
             worldController.get(), &WorldController::handleKeyPressEvent);
     //drawProtagonist
-    connect(worldController.get(), &WorldController::drawProtagonist,
+    connect(worldController.get(), &WorldController::drawProtagonist, // world geeft al een emit op poschange dus kan beter
             graphicViewController.get(), &GraphicViewController::drawProtagonist);
     //handleDeath
     for (const auto &enemy : worldController->getEnemies() ){
         connect(enemy.get(), &Enemy::dead, graphicViewController.get(), &GraphicViewController::handleDeath);
     }
     //drawBars
-    connect(worldController.get(), &WorldController::drawBars,
+    connect(worldController.get(), &WorldController::drawBars, //world geeft een emit op health- en energychange dus kan beter
             graphicViewController.get(), &GraphicViewController::drawBars);
     //gameOverMessage
     connect(worldController.get(), &WorldController::gameOver,
             this, &MainWindow::gameOverMessage);
+    //healthPackTaken
+    connect(worldController.get(), &WorldController::healthPackTaken,
+            graphicViewController.get(), &GraphicViewController::handleHealthPackTaken);
 }
 

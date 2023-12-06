@@ -25,12 +25,14 @@ signals:
     void drawProtagonist();
     void drawBars();
     void gameOver();
+    void healthPackTaken(int xPos, int yPos);
 public:
     WorldController();
 
     void findPath(std::shared_ptr<Tile> startTile, std::shared_ptr<Tile> endTile);
     bool isValidPosition(int x, int y);
     void attackEnemy();
+    void useHealthpack();
 
     std::shared_ptr<World> getWorld();
 

@@ -80,6 +80,10 @@ void GraphicViewController::handleDeath() {
     scene->addRect(enemy->getXPos() * tileSize, enemy->getYPos() * tileSize, tileSize, tileSize, QPen(Qt::black), QBrush(QColorConstants::Svg::purple));
 }
 
+void GraphicViewController::handleHealthPackTaken(int xPos, int yPos){
+     scene->addRect(xPos * tileSize, yPos * tileSize, tileSize, tileSize, QPen(Qt::black), QBrush(QColorConstants::Svg::purple));
+}
+
 void GraphicViewController::drawBars(){
     auto tileSize = 10;
 

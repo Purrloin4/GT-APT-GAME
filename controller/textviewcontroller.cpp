@@ -8,3 +8,7 @@ void TextViewController::drawProtagonist()
 void TextViewController::handleDeath(){
     //TODO
 }
+
+void TextViewController::handleHealthPackTaken(int xPos, int yPos){
+    //TODO
+}
