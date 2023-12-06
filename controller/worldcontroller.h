@@ -6,6 +6,7 @@
 #include <vector>
 #include <QImage>
 #include <QGraphicsRectItem>
+#include <QKeyEvent>
 #include "pathNode.h"
 #include "pathfinder.h"
 
@@ -25,6 +26,7 @@ public:
     WorldController();
 
     void findPath(std::shared_ptr<Tile> startTile, std::shared_ptr<Tile> endTile);
+    bool isValidPosition(int x, int y);
 
     std::shared_ptr<World> getWorld();
 
@@ -50,6 +52,8 @@ public:
     bool isHealthPack(int x, int y);
     bool isEnemy(int x, int y);
     bool isPoisoned(int x, int y);
+public slots:
+    void handleKeyPressEvent(QKeyEvent *event);
 private:
     point start;
     point exit;

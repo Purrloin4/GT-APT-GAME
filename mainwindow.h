@@ -16,7 +16,8 @@ QT_END_NAMESPACE
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
-
+signals:
+    void keyPressed(QKeyEvent *event);
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
@@ -32,6 +33,7 @@ private:
 
     void visualizeWorld();
     void findPathAndHighlight(QGraphicsScene* scene, int tileSize, std::unique_ptr<Tile> startTile, std::unique_ptr<Tile> endTile);
+    void keyPressEvent(QKeyEvent *event);
 
 };
 

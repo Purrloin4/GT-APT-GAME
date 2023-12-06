@@ -26,6 +26,8 @@ MainWindow::MainWindow(QWidget *parent)
     setCentralWidget(view);
     connect(worldController.get(), &WorldController::pathFound,
             graphicViewController.get(), &GraphicViewController::visualizePath);
+    connect(this, &MainWindow::keyPressed,
+            worldController.get(), &WorldController::handleKeyPressEvent);
 
 
     auto startTile = new Tile(0, 0, 0.0f);
@@ -36,5 +38,10 @@ MainWindow::MainWindow(QWidget *parent)
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::keyPressEvent(QKeyEvent *event)
+{
+    emit keyPressed(event);
 }
 

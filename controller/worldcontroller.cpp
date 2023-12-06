@@ -1,6 +1,8 @@
 #include "worldcontroller.h"
 #include <iostream>
+#include "QLoggingCategory"
 
+QLoggingCategory WorldControllerCategory("worldController", QtDebugMsg);
 
 WorldController::WorldController()
 {
@@ -57,6 +59,52 @@ void WorldController::findPath(std::shared_ptr<Tile> startTile, std::shared_ptr<
       std::vector<int> path = A_star(pathNodes, &startNode, &endNode, comp, cols, weight, minimalCost);
 
       emit pathFound(path, std::move(startTile));
+}
+
+void WorldController::handleKeyPressEvent(QKeyEvent *event){
+        int newX = protagonist->getXPos();
+        int newY = protagonist->getYPos();
+
+        qCDebug(WorldControllerCategory) << event->key();
+
+        switch (event->key()) {
+        case Qt::Key_Left:
+            qCDebug(WorldControllerCategory) << "left arrow key was pressed";
+            newX = protagonist->getXPos() - 1;
+            break;
+        case Qt::Key_Right:
+            qCDebug(WorldControllerCategory) << "right arrow key was pressed";
+            newX = protagonist->getXPos() + 1;
+            break;
+        case Qt::Key_Up:
+            qCDebug(WorldControllerCategory) << "up arrow key was pressed";
+            newY = protagonist->getYPos() - 1;
+            break;
+        case Qt::Key_Down:
+            qCDebug(WorldControllerCategory) << "down arrow key was pressed";
+            newY = protagonist->getYPos() + 1;
+            break;
+        }
+
+        // Check if the new position is within the boundaries of the world
+        if (isValidPosition(newX, newY)) {
+            // Update the protagonist's position only if it's a valid position
+            protagonist->setXPos(newX);
+            protagonist->setYPos(newY);
+
+            // Redraw the protagonist and energy bar
+//            drawProtagonist();
+//            drawBars();
+
+            // Check if we can attack an enemy or use a healthpack
+//            attackEnemy();
+//            useHealthpack();
+      }
+
+}
+
+bool WorldController::isValidPosition(int x, int y) {
+      return x >= 0 && x < cols && y >= 0 && y < rows;
 }
 
 
