@@ -56,7 +56,7 @@ void GraphicViewController::drawProtagonist() {
     protagonistItem = scene->addRect(protagonist->getXPos() * tileSize, protagonist->getYPos() * tileSize, tileSize, tileSize, QPen(Qt::black), QBrush(Qt::blue));
 }
 
-void GraphicViewController::visualizePath(std::vector<int> path, std::unique_ptr<Tile> startTile){
+void GraphicViewController::visualizePath(std::vector<int> path, std::shared_ptr<Tile> startTile){
     auto xPos = startTile->getXPos();
     auto yPos = startTile->getYPos();
     for (const auto &move : path) {

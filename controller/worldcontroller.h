@@ -16,12 +16,15 @@ struct point {
 };
 
 
-class WorldController
+class WorldController : public QObject
 {
+    Q_OBJECT
+signals:
+    void pathFound(std::vector<int> path, std::shared_ptr<Tile> startTile);
 public:
     WorldController();
 
-    std::vector<int> findPath(std::unique_ptr<Tile> startTile, std::unique_ptr<Tile> endTile);
+    void findPath(std::shared_ptr<Tile> startTile, std::shared_ptr<Tile> endTile);
 
     std::shared_ptr<World> getWorld();
 
@@ -47,7 +50,6 @@ public:
     bool isHealthPack(int x, int y);
     bool isEnemy(int x, int y);
     bool isPoisoned(int x, int y);
-
 private:
     point start;
     point exit;

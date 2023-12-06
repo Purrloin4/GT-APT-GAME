@@ -39,7 +39,7 @@ WorldController::WorldController()
     }
 }
 
-std::vector<int> WorldController::findPath(std::unique_ptr<Tile> startTile, std::unique_ptr<Tile> endTile)
+void WorldController::findPath(std::shared_ptr<Tile> startTile, std::shared_ptr<Tile> endTile)
 {
       std::vector<PathNode> pathNodes;
         for (const auto &tile : tiles) {
@@ -56,7 +56,7 @@ std::vector<int> WorldController::findPath(std::unique_ptr<Tile> startTile, std:
 
       std::vector<int> path = A_star(pathNodes, &startNode, &endNode, comp, cols, weight, minimalCost);
 
-      return path;
+      emit pathFound(path, std::move(startTile));
 }
 
 

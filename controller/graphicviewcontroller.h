@@ -3,15 +3,20 @@
 
 #include "controller/viewcontroller.h"
 #include "controller/worldcontroller.h"
+#include <QObject>
 
-class GraphicViewController : public ViewController
+class GraphicViewController : public QObject, public ViewController
 {
+    Q_OBJECT
 public:
     GraphicViewController(std::shared_ptr<WorldController> worldController)
         :ViewController(worldController){};
     QGraphicsView* visualizeWorld();
     void drawProtagonist() override;
-    void visualizePath(std::vector<int> path, std::unique_ptr<Tile> startTile);
+public slots:
+    void visualizePath(std::vector<int> path, std::shared_ptr<Tile> startTile);
+signals:
+    void pathVisualizationRequested(std::vector<int> path, std::shared_ptr<Tile> startTile);
 private:
     int tileSize = 10;
 };

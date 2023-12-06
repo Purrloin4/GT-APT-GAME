@@ -9,7 +9,6 @@
 #include "QLoggingCategory"
 #include <iostream>
 
-#include "pathfinder.h"
 QLoggingCategory pathfinderCategory("pathfinder", QtDebugMsg);
 
 QLoggingCategory mainwindowCategory("mainwindow");
@@ -25,15 +24,13 @@ MainWindow::MainWindow(QWidget *parent)
     this->view = graphicViewController->visualizeWorld();
     graphicViewController->drawBars();
     setCentralWidget(view);
+    connect(worldController.get(), &WorldController::pathFound,
+            graphicViewController.get(), &GraphicViewController::visualizePath);
 
 
     auto startTile = new Tile(0, 0, 0.0f);
     auto endTile = new Tile(10, 10, 0.0f);
-    auto path = worldController->findPath(std::unique_ptr<Tile>(startTile),std::unique_ptr<Tile>(endTile));
-    graphicViewController->visualizePath(path, std::unique_ptr<Tile>(startTile));
-
-    
-
+    worldController->findPath(std::shared_ptr<Tile>(startTile),std::shared_ptr<Tile>(endTile));
 }
 
 MainWindow::~MainWindow()
