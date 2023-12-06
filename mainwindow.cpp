@@ -28,9 +28,9 @@ MainWindow::MainWindow(QWidget *parent)
     this->connectSignalsAndSlots();
 
 
-    auto startTile = new Tile(0, 0, 0.0f);
-    auto endTile = new Tile(10, 10, 0.0f);
-    worldController->findPath(std::shared_ptr<Tile>(startTile),std::shared_ptr<Tile>(endTile));
+//    auto startTile = new Tile(0, 0, 0.0f);
+//    auto endTile = new Tile(10, 10, 0.0f);
+//    worldController->findPath(std::shared_ptr<Tile>(startTile),std::shared_ptr<Tile>(endTile));
 }
 
 MainWindow::~MainWindow()
@@ -53,5 +53,9 @@ void MainWindow::connectSignalsAndSlots(){
     //drawProtagonist
     connect(worldController.get(), &WorldController::drawProtagonist,
             graphicViewController.get(), &GraphicViewController::drawProtagonist);
+    //handleDeath
+    for (const auto &enemy : worldController->getEnemies() ){
+        connect(enemy.get(), &Enemy::dead, graphicViewController.get(), &GraphicViewController::handleDeath);
+        }
 }
 

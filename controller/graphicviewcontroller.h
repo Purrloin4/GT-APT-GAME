@@ -13,6 +13,7 @@ public:
 public slots:
     void visualizePath(std::vector<int> path, std::shared_ptr<Tile> startTile);
     void drawProtagonist() override;
+    void handleDeath() override;
 signals:
     void pathVisualizationRequested(std::vector<int> path, std::shared_ptr<Tile> startTile);
 private:

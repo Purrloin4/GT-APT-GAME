@@ -75,3 +75,10 @@ void GraphicViewController::visualizePath(std::vector<int> path, std::shared_ptr
         scene->addRect(xPos * tileSize, yPos * tileSize, tileSize, tileSize, QPen(Qt::black), QBrush(Qt::red));
     }
 }
+
+void GraphicViewController::handleDeath() {
+    Enemy* enemy = qobject_cast<Enemy*>(sender());
+    // Visualization of defeated enemy
+    scene->addRect(enemy->getXPos() * tileSize, enemy->getYPos() * tileSize, tileSize, tileSize, QPen(Qt::black), QBrush(QColorConstants::Svg::purple));
+}
+

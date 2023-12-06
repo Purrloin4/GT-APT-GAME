@@ -66,7 +66,7 @@ void WorldController::handleKeyPressEvent(QKeyEvent *event){
         int newX = protagonist->getXPos();
         int newY = protagonist->getYPos();
 
-        qCDebug(WorldControllerCategory) << event->key();
+        //qCDebug(WorldControllerCategory) << event->key();
 
         switch (event->key()) {
             // arrow keys can act up so ZQSD also possible #Azerty koning
@@ -103,7 +103,7 @@ void WorldController::handleKeyPressEvent(QKeyEvent *event){
             emit drawBars();
 
             // Check if we can attack an enemy or use a healthpack
-//            attackEnemy();
+            attackEnemy();
 //            useHealthpack();
       }
 
@@ -113,6 +113,49 @@ bool WorldController::isValidPosition(int x, int y) {
       return x >= 0 && x < cols && y >= 0 && y < rows;
 }
 
+void WorldController::attackEnemy(){
+      // Get the current position of the protagonist
+      int x = protagonist->getXPos();
+      int y = protagonist->getYPos();
+
+      // Check if there is an enemy at the current position
+      for (auto& enemy : enemies) {
+            if (enemy->getXPos() == x && enemy->getYPos() == y) {
+            if (enemy->getDefeated()) {
+                break;
+            }
+            // Perform the attack logic here
+            if (protagonist->getHealth() > enemy->getValue()) {
+                // Protagonist has enough health to attack and defeat the enemy
+                protagonist->setHealth(protagonist->getHealth() - enemy->getValue());
+                // Check if the defeated enemy is a PEnemy
+                if (auto pEnemy = dynamic_cast<PEnemy*>(enemy.get())) {
+                    // Call the poison method for PEnemy
+                    pEnemy->poison();
+                    qCDebug(WorldControllerCategory) << "Attacked a poison enemy";
+                } else {
+                    enemy->setDefeated(true);
+                    qCDebug(WorldControllerCategory) << "Defeated an enemy";
+                }
+
+                emit drawProtagonist();
+                emit drawBars();
+            } else {
+                // Protagonist doesn't have enough health to defeat the enemy
+                protagonist->setHealth(0.0f);
+                emit drawBars();
+                qCDebug(WorldControllerCategory) << "Protagonist dead";
+//                QMessageBox::information(this, "Game Over", "You were defeated by the enemy!");
+//                // Exit the program when OK is pressed
+//                QCoreApplication::quit();
+            }
+
+            // Exit the function since the attack has been resolved
+            return;
+            }
+      }
+
+}
 
 std::shared_ptr<Tile> WorldController::getTile(int x, int y) const
 {

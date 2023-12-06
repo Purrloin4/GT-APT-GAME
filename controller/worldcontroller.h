@@ -29,6 +29,7 @@ public:
 
     void findPath(std::shared_ptr<Tile> startTile, std::shared_ptr<Tile> endTile);
     bool isValidPosition(int x, int y);
+    void attackEnemy();
 
     std::shared_ptr<World> getWorld();
 
