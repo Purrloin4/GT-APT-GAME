@@ -7,6 +7,7 @@
 #include "pathNode.h"
 #include "controller/worldcontroller.h"
 #include "controller/graphicviewcontroller.h"
+#include "controller/textviewcontroller.h"
 
 
 QT_BEGIN_NAMESPACE
@@ -29,6 +30,7 @@ private:
     std::vector<std::unique_ptr<Tile>> myTiles;
     std::shared_ptr<WorldController> worldController;
     std::shared_ptr<GraphicViewController> graphicViewController;
+    std::shared_ptr<TextViewController> textViewController;
     QGraphicsView* view;
 
     void connectSignalsAndSlots();

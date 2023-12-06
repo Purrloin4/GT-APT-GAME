@@ -128,6 +128,7 @@ void WorldController::attackEnemy(){
             if (protagonist->getHealth() > enemy->getValue()) {
                 // Protagonist has enough health to attack and defeat the enemy
                 protagonist->setHealth(protagonist->getHealth() - enemy->getValue());
+                qCDebug(WorldControllerCategory) << "Protagonist healt:" << protagonist->getHealth();
                 // Check if the defeated enemy is a PEnemy
                 if (auto pEnemy = dynamic_cast<PEnemy*>(enemy.get())) {
                     // Call the poison method for PEnemy

@@ -21,8 +21,6 @@ public:
     QGraphicsView* rawView;
     virtual void drawProtagonist() = 0;
     virtual void handleDeath() = 0;
-public slots:
-    void drawBars();
 private:
 
 };

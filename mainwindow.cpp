@@ -18,19 +18,15 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow),
     worldController(std::make_shared<WorldController>()),
-    graphicViewController(std::make_shared<GraphicViewController>(worldController))
+    graphicViewController(std::make_shared<GraphicViewController>(worldController)),
+    textViewController(std::make_shared<TextViewController>(worldController))
+
 {
     ui->setupUi(this);
-    this->view = graphicViewController->visualizeWorld();
-    graphicViewController->drawBars();
-    setCentralWidget(view);
+    graphicViewController->visualizeWorld();
+    setCentralWidget(graphicViewController->getRawView());
 
     this->connectSignalsAndSlots();
-
-
-//    auto startTile = new Tile(0, 0, 0.0f);
-//    auto endTile = new Tile(10, 10, 0.0f);
-//    worldController->findPath(std::shared_ptr<Tile>(startTile),std::shared_ptr<Tile>(endTile));
 }
 
 MainWindow::~MainWindow()
@@ -56,6 +52,9 @@ void MainWindow::connectSignalsAndSlots(){
     //handleDeath
     for (const auto &enemy : worldController->getEnemies() ){
         connect(enemy.get(), &Enemy::dead, graphicViewController.get(), &GraphicViewController::handleDeath);
-        }
+    }
+    //drawBars
+    connect(worldController.get(), &WorldController::drawBars,
+            graphicViewController.get(), &GraphicViewController::drawBars);
 }
 

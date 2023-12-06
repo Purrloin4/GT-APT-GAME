@@ -1,6 +1,10 @@
 #include "textviewcontroller.h"
 
-TextViewController::TextViewController()
+void TextViewController::drawProtagonist()
 {
+    //TODO
+}
 
+void TextViewController::handleDeath(){
+    //TODO
 }
