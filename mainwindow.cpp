@@ -11,7 +11,6 @@
 #include <QKeyEvent>
 #include <QMouseEvent>
 
-
 QLoggingCategory mainwindowCategory("mainwindow");
 
 MainWindow::MainWindow(QWidget *parent)
