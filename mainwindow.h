@@ -22,7 +22,8 @@ signals:
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
-
+public slots:
+        void gameOverMessage();
 private:
     Ui::MainWindow *ui;
     World myWorld;

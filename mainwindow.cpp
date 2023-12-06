@@ -39,6 +39,11 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
     emit keyPressed(event);
 }
 
+void MainWindow::gameOverMessage(){
+    QMessageBox::information(this, "Game Over", "You were defeated by the enemy!");
+    QCoreApplication::quit();
+}
+
 void MainWindow::connectSignalsAndSlots(){
     //visualize path
     connect(worldController.get(), &WorldController::pathFound,
@@ -56,5 +61,8 @@ void MainWindow::connectSignalsAndSlots(){
     //drawBars
     connect(worldController.get(), &WorldController::drawBars,
             graphicViewController.get(), &GraphicViewController::drawBars);
+    //gameOverMessage
+    connect(worldController.get(), &WorldController::gameOver,
+            this, &MainWindow::gameOverMessage);
 }
 

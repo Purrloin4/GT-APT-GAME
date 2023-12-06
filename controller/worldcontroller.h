@@ -24,6 +24,7 @@ signals:
     void pathFound(std::vector<int> path, std::shared_ptr<Tile> startTile);
     void drawProtagonist();
     void drawBars();
+    void gameOver();
 public:
     WorldController();
 

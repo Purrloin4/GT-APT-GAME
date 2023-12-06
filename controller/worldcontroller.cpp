@@ -146,9 +146,7 @@ void WorldController::attackEnemy(){
                 protagonist->setHealth(0.0f);
                 emit drawBars();
                 qCDebug(WorldControllerCategory) << "Protagonist dead";
-//                QMessageBox::information(this, "Game Over", "You were defeated by the enemy!");
-//                // Exit the program when OK is pressed
-//                QCoreApplication::quit();
+                emit gameOver();
             }
 
             // Exit the function since the attack has been resolved
