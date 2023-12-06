@@ -424,4 +424,3 @@ void MainWindow::useHealthpack()
         }
     }
 }
-
