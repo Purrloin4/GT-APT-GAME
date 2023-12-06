@@ -68,22 +68,27 @@ void WorldController::handleKeyPressEvent(QKeyEvent *event){
         qCDebug(WorldControllerCategory) << event->key();
 
         switch (event->key()) {
-        case Qt::Key_Left:
-            qCDebug(WorldControllerCategory) << "left arrow key was pressed";
-            newX = protagonist->getXPos() - 1;
-            break;
-        case Qt::Key_Right:
-            qCDebug(WorldControllerCategory) << "right arrow key was pressed";
-            newX = protagonist->getXPos() + 1;
-            break;
-        case Qt::Key_Up:
-            qCDebug(WorldControllerCategory) << "up arrow key was pressed";
-            newY = protagonist->getYPos() - 1;
-            break;
-        case Qt::Key_Down:
-            qCDebug(WorldControllerCategory) << "down arrow key was pressed";
-            newY = protagonist->getYPos() + 1;
-            break;
+            // arrow keys can act up so ZQSD also possible #Azerty koning
+            case Qt::Key_Q:
+            case Qt::Key_Left:
+                qCDebug(WorldControllerCategory) << "left key was pressed";
+                newX = protagonist->getXPos() - 1;
+                break;
+            case Qt::Key_D:
+            case Qt::Key_Right:
+                qCDebug(WorldControllerCategory) << "right key was pressed";
+                newX = protagonist->getXPos() + 1;
+                break;
+            case Qt::Key_Z:
+            case Qt::Key_Up:
+                qCDebug(WorldControllerCategory) << "up key was pressed";
+                newY = protagonist->getYPos() - 1;
+                break;
+            case Qt::Key_S:
+            case Qt::Key_Down:
+                qCDebug(WorldControllerCategory) << "down key was pressed";
+                newY = protagonist->getYPos() + 1;
+                break;
         }
 
         // Check if the new position is within the boundaries of the world
