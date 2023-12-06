@@ -37,8 +37,7 @@ QGraphicsView* GraphicViewController::visualizeWorld()
         scene->addRect(healthPack->getXPos() * tileSize, healthPack->getYPos() * tileSize, tileSize, tileSize, QPen(Qt::black), QBrush(Qt::green));
     }
 
-    // Add visualization for protagonist
-    scene->addRect(protagonist->getXPos() * tileSize, protagonist->getYPos() * tileSize, tileSize, tileSize, QPen(Qt::black), QBrush(Qt::blue));
+    this->drawProtagonist();
 
     return rawView;
 
@@ -49,11 +48,11 @@ void GraphicViewController::drawProtagonist() {
     auto protagonist = worldController->getProtagonist();
 
     if (protagonistItem) {
-        scene->removeItem(protagonistItem);
+        scene->removeItem(*protagonistItem);
     }
 
     // Add visualization for protagonist
-    protagonistItem = scene->addRect(protagonist->getXPos() * tileSize, protagonist->getYPos() * tileSize, tileSize, tileSize, QPen(Qt::black), QBrush(Qt::blue));
+    *protagonistItem = scene->addRect(protagonist->getXPos() * tileSize, protagonist->getYPos() * tileSize, tileSize, tileSize, QPen(Qt::black), QBrush(Qt::blue));
 }
 
 void GraphicViewController::visualizePath(std::vector<int> path, std::shared_ptr<Tile> startTile){

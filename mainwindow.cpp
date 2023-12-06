@@ -24,10 +24,8 @@ MainWindow::MainWindow(QWidget *parent)
     this->view = graphicViewController->visualizeWorld();
     graphicViewController->drawBars();
     setCentralWidget(view);
-    connect(worldController.get(), &WorldController::pathFound,
-            graphicViewController.get(), &GraphicViewController::visualizePath);
-    connect(this, &MainWindow::keyPressed,
-            worldController.get(), &WorldController::handleKeyPressEvent);
+
+    this->connectSignalsAndSlots();
 
 
     auto startTile = new Tile(0, 0, 0.0f);
@@ -43,5 +41,17 @@ MainWindow::~MainWindow()
 void MainWindow::keyPressEvent(QKeyEvent *event)
 {
     emit keyPressed(event);
+}
+
+void MainWindow::connectSignalsAndSlots(){
+    //visualize path
+    connect(worldController.get(), &WorldController::pathFound,
+            graphicViewController.get(), &GraphicViewController::visualizePath);
+    //keypress
+    connect(this, &MainWindow::keyPressed,
+            worldController.get(), &WorldController::handleKeyPressEvent);
+    //drawProtagonist
+    connect(worldController.get(), &WorldController::drawProtagonist,
+            graphicViewController.get(), &GraphicViewController::drawProtagonist);
 }
 

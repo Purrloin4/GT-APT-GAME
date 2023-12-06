@@ -29,6 +29,7 @@ WorldController::WorldController()
             this->enemies.push_back(sharedEnemy);
         }
         this->protagonist = std::make_shared<Protagonist>();
+        this->protagonistItem = std::make_shared<QGraphicsRectItem*>();
 
         this->cols = world->getCols();
         this->rows = world->getRows();
@@ -98,8 +99,8 @@ void WorldController::handleKeyPressEvent(QKeyEvent *event){
             protagonist->setYPos(newY);
 
             // Redraw the protagonist and energy bar
-//            drawProtagonist();
-//            drawBars();
+            emit drawProtagonist();
+            emit drawBars();
 
             // Check if we can attack an enemy or use a healthpack
 //            attackEnemy();
@@ -164,7 +165,7 @@ std::shared_ptr<Protagonist> WorldController::getProtagonist() const
     return protagonist;
 }
 
-QGraphicsRectItem* WorldController::getProtagonistItem() const{
+std::shared_ptr<QGraphicsRectItem*> WorldController::getProtagonistItem() const{
     return protagonistItem;
 }
 

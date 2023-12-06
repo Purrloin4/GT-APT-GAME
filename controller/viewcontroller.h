@@ -6,20 +6,23 @@
 #include <QImage>
 #include <QGraphicsRectItem>
 #include <QMessageBox>
+#include <QObject>
 #include "controller/worldcontroller.h"
 
-class ViewController
+class ViewController: public QObject
 {
-    public:
-        ViewController();
-        ViewController(std::shared_ptr<WorldController> worldController)
-            : worldController(worldController), scene(std::make_shared<QGraphicsScene>()), rawView(new QGraphicsView(scene.get())){}
-        void drawBars();
-        std::shared_ptr<WorldController> worldController;
-        std::shared_ptr<QGraphicsScene> scene;
-        QGraphicsView* rawView;
-        virtual void drawProtagonist() = 0;
-    private:
+    Q_OBJECT
+public:
+    ViewController();
+    ViewController(std::shared_ptr<WorldController> worldController)
+        : worldController(worldController), scene(std::make_shared<QGraphicsScene>()), rawView(new QGraphicsView(scene.get())){}
+    std::shared_ptr<WorldController> worldController;
+    std::shared_ptr<QGraphicsScene> scene;
+    QGraphicsView* rawView;
+    virtual void drawProtagonist() = 0;
+public slots:
+    void drawBars();
+private:
 
 };
 

@@ -31,6 +31,8 @@ private:
     std::shared_ptr<GraphicViewController> graphicViewController;
     QGraphicsView* view;
 
+    void connectSignalsAndSlots();
+
     void visualizeWorld();
     void findPathAndHighlight(QGraphicsScene* scene, int tileSize, std::unique_ptr<Tile> startTile, std::unique_ptr<Tile> endTile);
     void keyPressEvent(QKeyEvent *event);

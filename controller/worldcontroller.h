@@ -22,6 +22,8 @@ class WorldController : public QObject
     Q_OBJECT
 signals:
     void pathFound(std::vector<int> path, std::shared_ptr<Tile> startTile);
+    void drawProtagonist();
+    void drawBars();
 public:
     WorldController();
 
@@ -41,7 +43,7 @@ public:
 
     std::shared_ptr<Protagonist> getProtagonist() const;
 
-    QGraphicsRectItem* getProtagonistItem() const;
+    std::shared_ptr<QGraphicsRectItem*> getProtagonistItem() const;
 
     int getRows() const;
     int getCols() const;
@@ -65,7 +67,7 @@ private:
     int rows;
     int cols;
     const float maxEH = 100.0f;
-    QGraphicsRectItem* protagonistItem = nullptr;
+    std::shared_ptr<QGraphicsRectItem*> protagonistItem = nullptr;
 };
 
 #endif // WORLDCONTROLLER_H
