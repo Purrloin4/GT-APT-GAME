@@ -7,8 +7,6 @@
 #include <QMessageBox>
 #include "pathfinder.h"
 #include "QLoggingCategory"
-#include <QPushButton>
-#include <QHBoxLayout>
 #include <QTextEdit>
 #include <QKeyEvent>
 #include <QMouseEvent>
@@ -16,13 +14,23 @@
 
 QLoggingCategory mainwindowCategory("mainwindow");
 
-
 MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent)
-    , ui(new Ui::MainWindow)
+    : QMainWindow(parent),
+    ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
     this->setFocus();
+
+    // Create tabs
+    tabWidget = new QTabWidget(this);
+    scene = new QGraphicsScene(this);
+
+    // Add tabs to the main window
+    tabWidget->addTab(new QWidget, "Graphical View");
+    tabWidget->addTab(new QWidget, "Text View");
+
+    // Set the central widget of the main window to the tab widget
+    setCentralWidget(tabWidget);
 
     asciiTextEdit = new QTextEdit;
     asciiTextEdit->setFont(QFont("Courier"));
@@ -32,13 +40,11 @@ MainWindow::MainWindow(QWidget *parent)
         this->myTiles = myWorld.getTiles();
         this->myEnemies = myWorld.getEnemies();
         this->myHealthpacks = myWorld.getHealthPacks();
-        visualizeWorldText(); // Visualize the created world
-        visualizeWorldGraph();
+        visualizeWorldGraph(); // Visualize the created world graphically by default
+        visualizeWorldText();
         auto startTile = std::make_unique<Tile>(0, 0, 0.0f);
         auto endTile = std::make_unique<Tile>(20, 20, 0.0f);
-
-        //findPathAndHighlight(scene,tileSize, std::move(startTile), std::move(endTile));
-    } catch (const std::exception& e) {
+    } catch (const std::exception &e) {
         // Handle any exceptions here
     }
 }
@@ -52,9 +58,6 @@ void MainWindow::visualizeWorldGraph()
 {
     // Create a graphics scene
     this->scene = new QGraphicsScene(this);
-
-    // Create protagonist
-    auto protagonist = Protagonist();
 
     // Adjust the size of the tiles in the visualization
     this->tileSize = 10; // Define the desired size for the tiles
@@ -85,40 +88,24 @@ void MainWindow::visualizeWorldGraph()
         scene->addRect(healthPack->getXPos() * tileSize, healthPack->getYPos() * tileSize, tileSize, tileSize, QPen(Qt::black), QBrush(Qt::green));
     }
 
-    drawProtagonist();
-
-    drawBars();
+    // Create a widget to contain the graphics view
+    QWidget* graphViewWidget = new QWidget;
+    QVBoxLayout* graphLayout = new QVBoxLayout(graphViewWidget);
 
     // Finally, set the scene in a graphics view
     QGraphicsView *view = new QGraphicsView(scene);
-    setCentralWidget(view);
 
-    // Create buttons for switching between graphical and text views
-    QPushButton *graphicalButton = new QPushButton("Graphical View");
-    QPushButton *textButton = new QPushButton("Text View");
+    // Add the graphics view to the layout
+    graphLayout->addWidget(view);
 
-    // Connect button signals to corresponding slots
-    connect(graphicalButton, &QPushButton::clicked, this, &MainWindow::showGraphicalView);
-    connect(textButton, &QPushButton::clicked, this, &MainWindow::showTextView);
-
-    // Create a layout for the buttons and graphics view
-    QVBoxLayout *layout = new QVBoxLayout;
-    layout->addWidget(view);
-    layout->addWidget(graphicalButton);
-    layout->addWidget(textButton);
-
-    // Set the central widget to the layout
-    setCentralWidget(new QWidget);
-    centralWidget()->setLayout(layout);
+    // Set the widget as the content of the first tab
+    tabWidget->widget(0)->setLayout(graphLayout);
 }
 
 void MainWindow::visualizeWorldText()
 {
     // Reset asciiRepresentation
     asciiRepresentation.clear();
-
-    // Create protagonist
-    auto protagonist = Protagonist();
 
     // Adjust the size of the tiles in the visualization
     this->tileSize = 10; // Define the desired size for the tiles
@@ -169,32 +156,20 @@ void MainWindow::visualizeWorldText()
     }
     asciiRepresentation += "+"; // Add last '+' of map
 
-    //drawProtagonist();
-    //drawBars();
+    // Create a widget to contain the text view
+    QWidget* textViewWidget = new QWidget;
+    QVBoxLayout* textLayout = new QVBoxLayout(textViewWidget);
 
     // Display the ASCII representation in a QTextEdit
     asciiTextEdit = new QTextEdit(asciiRepresentation);
     asciiTextEdit->setFont(QFont("Courier")); // Set a monospaced font for better alignment
 
-    // Create buttons for switching between graphical and text views
-    QPushButton *graphicalButton = new QPushButton("Graphical View");
-    QPushButton *textButton = new QPushButton("Text View");
+    // Add the text view to the layout
+    textLayout->addWidget(asciiTextEdit);
 
-    // Connect button signals to corresponding slots
-    connect(graphicalButton, &QPushButton::clicked, this, &MainWindow::showGraphicalView);
-    connect(textButton, &QPushButton::clicked, this, &MainWindow::showTextView);
-
-    // Create a layout for the buttons and ASCII text edit
-    QVBoxLayout *layout = new QVBoxLayout;
-    layout->addWidget(asciiTextEdit);
-    layout->addWidget(graphicalButton);
-    layout->addWidget(textButton);
-
-    // Set the central widget to the layout
-    setCentralWidget(new QWidget);
-    centralWidget()->setLayout(layout);
+    // Set the widget as the content of the second tab
+    tabWidget->widget(1)->setLayout(textLayout);
 }
-
 
 void MainWindow::showGraphicalView()
 {
@@ -208,22 +183,22 @@ void MainWindow::showTextView()
 
 void MainWindow::findPathAndHighlight(QGraphicsScene* scene, int tileSize, std::unique_ptr<Tile> startTile, std::unique_ptr<Tile> endTile, float heurWeight, float minimalCost)
 {
-  std::vector<PathNode> pathNodes;
+    std::vector<PathNode> pathNodes;
     for (const auto &tile : myTiles) {
         pathNodes.push_back(PathNode(*tile));
     }
 
-  Comparator<PathNode> comp = PathNode::Comparator();
+    Comparator<PathNode> comp = PathNode::Comparator();
 
-  PathNode startNode(*startTile);
-  PathNode endNode(*endTile);
+    PathNode startNode(*startTile);
+    PathNode endNode(*endTile);
 
-  std::vector<int> path = A_star(pathNodes, &startNode, &endNode, comp, myWorld.getCols(), heurWeight, minimalCost);
+    std::vector<int> path = A_star(pathNodes, &startNode, &endNode, comp, myWorld.getCols(), heurWeight, minimalCost);
 
-  int xPos = startTile->getXPos();
-  int yPos = startTile->getYPos();
+    int xPos = startTile->getXPos();
+    int yPos = startTile->getYPos();
 
-  for (const auto &move : path) {
+    for (const auto &move : path) {
         // Determine the position based on the move
         switch (move) {
         case 0: yPos -= 1; break;  // Move up
@@ -238,41 +213,41 @@ void MainWindow::findPathAndHighlight(QGraphicsScene* scene, int tileSize, std::
         }
 
         scene->addRect(xPos * tileSize, yPos * tileSize, tileSize, tileSize, QPen(Qt::black), QBrush(Qt::red));
-  }
+    }
 }
 
 void MainWindow::drawProtagonist() {
-  // Remove the old position of the protagonist, if it exists
-  if (protagonistItem && protagonistItem->scene() == scene) {
+    // Remove the old position of the protagonist, if it exists
+    if (protagonistItem && protagonistItem->scene() == scene) {
         scene->removeItem(protagonistItem);
-  }
+    }
 
-  // Add visualization for protagonist in Graph view
-  protagonistItem = scene->addRect(protagonist.getXPos() * tileSize, protagonist.getYPos() * tileSize, tileSize, tileSize, QPen(Qt::black), QBrush(Qt::blue));
+    // Add visualization for protagonist in Graph view
+    protagonistItem = scene->addRect(protagonist.getXPos() * tileSize, protagonist.getYPos() * tileSize, tileSize, tileSize, QPen(Qt::black), QBrush(Qt::blue));
 
-  // Hier stond eerst den drawProtagonistText() gewoon bij, ma crashed als ik pijltjes beweeg in graphView,
-  // ma als ik nieuwe fuctie heb nog steeds, dus kan nog terugkomen
+    // Hier stond eerst den drawProtagonistText() gewoon bij, ma crashed als ik pijltjes beweeg in graphView,
+    // ma als ik nieuwe fuctie heb nog steeds, dus kan nog terugkomen
 }
 
 void MainWindow::drawProtagonistText() {
-  // Update ASCII representation for Text view
-  QString updatedAsciiRepresentation = asciiRepresentation;
+    // Update ASCII representation for Text view
+    QString updatedAsciiRepresentation = asciiRepresentation;
 
-  // Find the index corresponding to the old protagonist's position in the ASCII representation
-  // >>>>>>>> onderstaande lijn is nog ni volledig juist >>>>>>>>>>>
-  int oldProtagonistIndex = myWorld.getCols()*4 + 4*protagonist.getXPos() + 4*(protagonist.getYPos()-1) + 2*myWorld.getCols()*4*(protagonist.getYPos()-1);// + 3*myWorld.getCols()*protagonist.getYPos();
+    // Find the index corresponding to the old protagonist's position in the ASCII representation
+    // >>>>>>>> onderstaande lijn is nog ni volledig juist >>>>>>>>>>>
+    int oldProtagonistIndex = myWorld.getCols()*4 + 4*protagonist.getXPos() + 4*(protagonist.getYPos()-1) + 2*myWorld.getCols()*4*(protagonist.getYPos()-1);// + 3*myWorld.getCols()*protagonist.getYPos();
 
-  // Replace the old representation of the protagonist with an empty tile
-  updatedAsciiRepresentation.replace(oldProtagonistIndex, 1, "X"); // "X" moet nog "\u00A0" worden, maar makkelijker om debuggen voor nu
+    // Replace the old representation of the protagonist with an empty tile
+    updatedAsciiRepresentation.replace(oldProtagonistIndex, 1, "X"); // "X" moet nog "\u00A0" worden, maar makkelijker om debuggen voor nu
 
-  // Find the index corresponding to the new protagonist's position in the ASCII representation
-  int newProtagonistIndex = myWorld.getCols()*4 + 4*protagonist.getXPos() + 2*myWorld.getCols()*4*protagonist.getYPos() + 4*protagonist.getYPos()+4;
+    // Find the index corresponding to the new protagonist's position in the ASCII representation
+    int newProtagonistIndex = myWorld.getCols()*4 + 4*protagonist.getXPos() + 2*myWorld.getCols()*4*protagonist.getYPos() + 4*protagonist.getYPos()+4;
 
-  // Replace the empty tile with the representation of the protagonist
-  updatedAsciiRepresentation.replace(newProtagonistIndex, 1, "P");
+    // Replace the empty tile with the representation of the protagonist
+    updatedAsciiRepresentation.replace(newProtagonistIndex, 1, "P");
 
-  // Display the updated ASCII representation in the QTextEdit
-  asciiTextEdit->setPlainText(updatedAsciiRepresentation);
+    // Display the updated ASCII representation in the QTextEdit
+    asciiTextEdit->setPlainText(updatedAsciiRepresentation);
 }
 
 void MainWindow::drawBars() {
@@ -306,28 +281,28 @@ void MainWindow::drawBars() {
 
 
 void MainWindow::keyPressEvent(QKeyEvent *event) {
-  int newX = protagonist.getXPos();
-  int newY = protagonist.getYPos();
+    int newX = protagonist.getXPos();
+    int newY = protagonist.getYPos();
 
-  switch (event->key()) {
-  case Qt::Key_Left: // If the left arrow key was pressed
+    switch (event->key()) {
+    case Qt::Key_Left: // If the left arrow key was pressed
         newX = protagonist.getXPos() - 1;
         break;
-  case Qt::Key_Right: // If the right arrow key was pressed
+    case Qt::Key_Right: // If the right arrow key was pressed
         newX = protagonist.getXPos() + 1;
         break;
-  case Qt::Key_Up: // If the up arrow key was pressed
+    case Qt::Key_Up: // If the up arrow key was pressed
         newY = protagonist.getYPos() - 1;
         break;
-  case Qt::Key_Down: // If the down arrow key was pressed
+    case Qt::Key_Down: // If the down arrow key was pressed
         newY = protagonist.getYPos() + 1;
         break;
-  default:
+    default:
         QMainWindow::keyPressEvent(event);
-  }
+    }
 
-  // Check if the new position is within the boundaries of the world
-  if (isValidPosition(newX, newY)) {
+    // Check if the new position is within the boundaries of the world
+    if (isValidPosition(newX, newY)) {
         // Update the protagonist's position only if it's a valid position
         protagonist.setXPos(newX);
         protagonist.setYPos(newY);
@@ -340,21 +315,21 @@ void MainWindow::keyPressEvent(QKeyEvent *event) {
         // Check if we can attack an enemy or use a healthpack
         attackEnemy();
         useHealthpack();
-  }
+    }
 }
 
 bool MainWindow::isValidPosition(int x, int y) {
-  // Check if the new position is within the boundaries of the world
-  return x >= 0 && x < myWorld.getCols() && y >= 0 && y < myWorld.getRows();
+    // Check if the new position is within the boundaries of the world
+    return x >= 0 && x < myWorld.getCols() && y >= 0 && y < myWorld.getRows();
 }
 
 void MainWindow::mousePressEvent(QMouseEvent *event) {
-  // Set focus to the main window when the mouse is clicked on the map
-  setFocus();
+    // Set focus to the main window when the mouse is clicked on the map
+    setFocus();
 
-  // Get the position of the click in scene coordinates
-  auto views = scene->views();
-  if (!views.isEmpty()) {
+    // Get the position of the click in scene coordinates
+    auto views = scene->views();
+    if (!views.isEmpty()) {
         QPointF clickedPoint = views.first()->mapToScene(event->pos());
 
         // Convert the scene coordinates to tile coordinates
@@ -372,21 +347,21 @@ void MainWindow::mousePressEvent(QMouseEvent *event) {
             attackEnemy();
             useHealthpack();
         }
-  }
+    }
 
-  // Call the base class implementation to ensure standard processing
-  QMainWindow::mousePressEvent(event);
+    // Call the base class implementation to ensure standard processing
+    QMainWindow::mousePressEvent(event);
 }
 
 void MainWindow::attackEnemy()
 {
-  // Get the current position of the protagonist
-  int x = protagonist.getXPos();
-  int y = protagonist.getYPos();
+    // Get the current position of the protagonist
+    int x = protagonist.getXPos();
+    int y = protagonist.getYPos();
 
-  // Check if there is an enemy at the current position
-  for (auto& enemy : myEnemies)
-  {
+    // Check if there is an enemy at the current position
+    for (auto& enemy : myEnemies)
+    {
         if (enemy->getXPos() == x && enemy->getYPos() == y)
         {
             if (enemy->getDefeated()){
@@ -415,18 +390,18 @@ void MainWindow::attackEnemy()
             // Exit the function since the attack has been resolved
             return;
         }
-  }
+    }
 }
 
 void MainWindow::useHealthpack()
 {
-  // Get the current position of the protagonist
-  int x = protagonist.getXPos();
-  int y = protagonist.getYPos();
+    // Get the current position of the protagonist
+    int x = protagonist.getXPos();
+    int y = protagonist.getYPos();
 
-  // Check if there is an enemy at the current position
-  for (auto& pack : myHealthpacks)
-  {
+    // Check if there is an enemy at the current position
+    for (auto& pack : myHealthpacks)
+    {
         if (pack->getXPos() == x && pack->getYPos() == y)
         {
             // Perform the attack logic here
@@ -447,5 +422,5 @@ void MainWindow::useHealthpack()
             // Exit the function since the attack has been resolved
             return;
         }
-  }
+    }
 }
