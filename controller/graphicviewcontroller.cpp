@@ -122,6 +122,10 @@ void GraphicViewController::drawBars(){
     // Calculate the width of the health bar based on the remaining health
     int healthBarWidth = static_cast<int>(worldController->getCols() * tileSize * healthRatio);
 
+    // Clear the old health bar rectangle
+    QRect oldHealthBarRect(barX, barY, worldController->getCols() * tileSize, tileSize / 2); // Full width of the map
+    scene->addRect(oldHealthBarRect, QPen(Qt::white), QBrush(Qt::white)); // Clear the old health bar
+
     // Add visualization for the sliding health bar
     QRect healthBarRect(barX, barY, healthBarWidth, tileSize / 2); // You can adjust the height as needed
     QColor healthBarColor = QColor::fromRgbF(1.0 - healthRatio, healthRatio, 0.0); // Red to green gradient
