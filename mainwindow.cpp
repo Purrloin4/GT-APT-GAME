@@ -8,6 +8,7 @@
 #include "pathfinder.h"
 #include "QLoggingCategory"
 #include <iostream>
+#include <QLabel>
 
 QLoggingCategory pathfinderCategory("pathfinder", QtDebugMsg);
 
@@ -20,35 +21,69 @@ MainWindow::MainWindow(QWidget *parent)
     worldController(std::make_shared<WorldController>()),
     graphicViewController(std::make_shared<GraphicViewController>(worldController)),
     textViewController(std::make_shared<TextViewController>(worldController))
-
 {
     ui->setupUi(this);
     graphicViewController->visualizeWorld();
 
+    // Create a vertical layout for the main window
+    QVBoxLayout *mainLayout = new QVBoxLayout;
+
     // Create tabs
     QTabWidget *tabWidget = new QTabWidget(this);
-
-    // Add tabs to the main window
     tabWidget->addTab(new QWidget, "Graphical View");
     tabWidget->addTab(new QWidget, "Text View");
 
+    // Add the tab widget to the main layout
+    mainLayout->addWidget(tabWidget);
 
-    //setCentralWidget(graphicViewController->getRawView());
-    setCentralWidget(tabWidget);
+    // Create additional widget
+    QWidget *additionalWidget = new QWidget;
+    QLabel *additionalLabel = new QLabel("Health and energy");
+    additionalLabel->setAlignment(Qt::AlignCenter);
+    QVBoxLayout *additionalLayout = new QVBoxLayout;
+    additionalLayout->addWidget(additionalLabel);
+    additionalWidget->setLayout(additionalLayout);
 
+    // Add the additional widget to the main layout
+    mainLayout->addWidget(additionalWidget);
+
+    // Set the main layout for the main window
+    QWidget *centralWidget = new QWidget(this);
+    centralWidget->setLayout(mainLayout);
+    setCentralWidget(centralWidget);
+
+    // Set the layout for the first tab
     tabWidget->widget(0)->setLayout(graphicViewController->getGraphLayout());
 
-    this->connectSignalsAndSlots();
+    connectSignalsAndSlots();
 }
+
 
 MainWindow::~MainWindow()
 {
     delete ui;
 }
 
-void MainWindow::keyPressEvent(QKeyEvent *event)
-{
+void MainWindow::keyPressEvent(QKeyEvent *event) {
     emit keyPressed(event);
+}
+
+void MainWindow::mousePressEvent(QMouseEvent *event) {
+    // Set focus to the main window when the mouse is clicked on the map
+    setFocus();
+
+    // Get the position of the click in scene coordinates
+    auto views = graphicViewController->scene->views();
+    if (!views.isEmpty()) {
+        QPointF clickedPoint = views.first()->mapToScene(event->pos());
+
+        // Convert the scene coordinates to tile coordinates
+        int x = static_cast<int>(clickedPoint.x()) / 10 - 1;
+        int y = static_cast<int>(clickedPoint.y()) / 10 - 1;
+
+        emit mousePressed(x, y);
+    }
+
 }
 
 void MainWindow::gameOverMessage(){
@@ -63,6 +98,9 @@ void MainWindow::connectSignalsAndSlots(){
     //keypress
     connect(this, &MainWindow::keyPressed,
             worldController.get(), &WorldController::handleKeyPressEvent);
+    //mousepress
+    connect(this, &MainWindow::mousePressed,
+            worldController.get(), &WorldController::handleMousePressEvent);
     //drawProtagonist
     connect(worldController.get(), &WorldController::drawProtagonist, // world geeft al een emit op poschange dus kan beter
             graphicViewController.get(), &GraphicViewController::drawProtagonist);

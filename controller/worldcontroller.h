@@ -60,6 +60,7 @@ public:
     bool isPoisoned(int x, int y);
 public slots:
     void handleKeyPressEvent(QKeyEvent *event);
+    void handleMousePressEvent(int x, int y);
 private:
     point start;
     point exit;
