@@ -163,6 +163,9 @@ void MainWindow::visualizeWorldText()
     asciiTextEdit = new QTextEdit(asciiRepresentation);
     asciiTextEdit->setFont(QFont("Courier")); // Set a monospaced font for better alignment
 
+    // Set line wrap mode to NoWrap
+    asciiTextEdit->setLineWrapMode(QTextEdit::NoWrap);
+
     // Add the text view to the layout
     textLayout->addWidget(asciiTextEdit);
 
