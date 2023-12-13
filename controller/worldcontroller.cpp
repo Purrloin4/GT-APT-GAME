@@ -106,7 +106,21 @@ void WorldController::handleKeyPressEvent(QKeyEvent *event){
             attackEnemy();
             useHealthpack();
       }
+}
 
+void WorldController::handleMousePressEvent(int x, int y) {
+
+    // Check if the clicked position is within the boundaries of the world
+    if (isValidPosition(x, y)) {
+        // Call findPathAndHighlight with the clicked tile's position
+        auto startTile = std::make_unique<Tile>(protagonist->getXPos(), protagonist->getYPos(), 0.0f);
+        auto endTile = std::make_unique<Tile>(x, y, 0.0f);
+        findPath(std::move(startTile), std::move(endTile));
+        protagonist->setPos(x, y);
+        emit drawProtagonist();
+        attackEnemy();
+        useHealthpack();
+    }
 }
 
 bool WorldController::isValidPosition(int x, int y) {

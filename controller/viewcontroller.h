@@ -9,6 +9,7 @@
 #include <QObject>
 #include "controller/worldcontroller.h"
 #include <QLayout>
+#include <QTextEdit>
 
 class ViewController: public QObject
 {
@@ -23,7 +24,6 @@ public:
     virtual void handleDeath() = 0;
     virtual void handleHealthPackTaken(int xPos, int yPos) = 0;
 private:
-
 };
 
 #endif // VIEWCONTROLLER_H
