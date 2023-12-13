@@ -9,6 +9,7 @@
 #include <QObject>
 #include "controller/worldcontroller.h"
 #include <QLayout>
+#include <QTextEdit>
 
 class ViewController: public QObject
 {
@@ -16,16 +17,13 @@ class ViewController: public QObject
 public:
     ViewController();
     ViewController(std::shared_ptr<WorldController> worldController)
-        : worldController(worldController), scene(std::make_shared<QGraphicsScene>()), rawView(new QGraphicsView(scene.get())){}
+        : worldController(worldController){}
     std::shared_ptr<WorldController> worldController;
-    std::shared_ptr<QGraphicsScene> scene;
-    QGraphicsView* rawView;
     virtual void visualizeWorld() = 0;
     virtual void drawProtagonist() = 0;
     virtual void handleDeath() = 0;
     virtual void handleHealthPackTaken(int xPos, int yPos) = 0;
 private:
-
 };
 
 #endif // VIEWCONTROLLER_H

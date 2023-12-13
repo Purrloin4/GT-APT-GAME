@@ -24,6 +24,7 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
     graphicViewController->visualizeWorld();
+    textViewController->visualizeWorld();
 
     // Create a vertical layout for the main window
     QVBoxLayout *mainLayout = new QVBoxLayout;
@@ -54,6 +55,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     // Set the layout for the first tab
     tabWidget->widget(0)->setLayout(graphicViewController->getGraphLayout());
+    tabWidget->widget(1)->setLayout(textViewController->getTextLayout());
 
     connectSignalsAndSlots();
 }
@@ -101,9 +103,12 @@ void MainWindow::connectSignalsAndSlots(){
     //mousepress
     connect(this, &MainWindow::mousePressed,
             worldController.get(), &WorldController::handleMousePressEvent);
-    //drawProtagonist
-    connect(worldController.get(), &WorldController::drawProtagonist, // world geeft al een emit op poschange dus kan beter
+    //drawProtagonistGraph
+    connect(worldController.get(), &WorldController::drawProtagonist,
             graphicViewController.get(), &GraphicViewController::drawProtagonist);
+    //drawProtagonistText
+    connect(worldController.get(), &WorldController::drawProtagonist,
+            textViewController.get(), &TextViewController::drawProtagonist);
     //handleDeath
     for (const auto &enemy : worldController->getEnemies() ){
         connect(enemy.get(), &Enemy::dead, graphicViewController.get(), &GraphicViewController::handleDeath);
