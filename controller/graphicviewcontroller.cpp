@@ -30,6 +30,18 @@ void GraphicViewController::visualizeWorld()
     // Add visualization for enemies
     for (const auto &enemy : enemies) {
         scene->addRect(enemy->getXPos() * tileSize, enemy->getYPos() * tileSize, tileSize, tileSize, QPen(Qt::black), QBrush(Qt::red));
+        QGraphicsTextItem *healthText = new QGraphicsTextItem(QString::number(enemy->getValue()));
+        healthText->setDefaultTextColor(Qt::blue);
+        healthText->adjustSize();
+        healthText->setPos((enemy->getXPos()-0.5) * tileSize, (enemy->getYPos() + 0.2) * tileSize);
+        scene->addItem(healthText);
+
+
+        //To store the health text with the correct enemy
+        TileVisualisation tileVis;
+        tileVis.enemy = enemy.get();
+        tileVis.enemyHealthText = healthText;
+        tileVisualisations.push_back(tileVis);
     }
 
     // Add visualization for health packs
@@ -82,6 +94,15 @@ void GraphicViewController::handleDeath() {
     Enemy* enemy = qobject_cast<Enemy*>(sender());
     // Visualization of defeated enemy
     scene->addRect(enemy->getXPos() * tileSize, enemy->getYPos() * tileSize, tileSize, tileSize, QPen(Qt::black), QBrush(QColorConstants::Svg::purple));
+    for (auto it = tileVisualisations.begin(); it != tileVisualisations.end();) {
+        if (it->enemy==enemy){
+            scene->removeItem(it->enemyHealthText);
+            break;
+        }
+        else{
+            ++it;
+        }
+    }
 }
 
 void GraphicViewController::handleHealthPackTaken(int xPos, int yPos){

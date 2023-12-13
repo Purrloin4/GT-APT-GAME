@@ -4,9 +4,14 @@
 #include "controller/viewcontroller.h"
 #include "controller/worldcontroller.h"
 
-struct EnemyVisualisation{
-    Enemy enemy;
+struct TileVisualisation{
+    int spreadXPos;
+    int spreadYPos;
+    Enemy* enemy;
+    PEnemy* pEnemy;
     QGraphicsTextItem* enemyHealthText;
+
+    TileVisualisation() : spreadXPos(0), spreadYPos(0), enemy(nullptr), enemyHealthText(nullptr) {}
 };
 
 class GraphicViewController : public ViewController
@@ -31,6 +36,7 @@ private:
     int tileSize = 10;
     QVBoxLayout* graphLayout;
     QWidget* graphViewWidget;
+    std::vector<TileVisualisation> tileVisualisations;
 };
 
 
