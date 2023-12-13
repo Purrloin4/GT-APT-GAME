@@ -24,6 +24,7 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
     graphicViewController->visualizeWorld();
+    textViewController->visualizeWorld();
 
     // Create tabs
     QTabWidget *tabWidget = new QTabWidget(this);
@@ -37,6 +38,7 @@ MainWindow::MainWindow(QWidget *parent)
     setCentralWidget(tabWidget);
 
     tabWidget->widget(0)->setLayout(graphicViewController->getGraphLayout());
+    tabWidget->widget(1)->setLayout(textViewController->getTextLayout());
 
     this->connectSignalsAndSlots();
 }
