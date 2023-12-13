@@ -8,6 +8,7 @@ class TextViewController: public ViewController
 public:
     TextViewController(std::shared_ptr<WorldController> worldController)
         : ViewController(worldController){}
+    void visualizeWorld() override;
 public slots:
     void drawProtagonist() override;
     void handleDeath() override;

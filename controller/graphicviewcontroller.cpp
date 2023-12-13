@@ -39,6 +39,10 @@ void GraphicViewController::visualizeWorld()
 
     this->drawProtagonist();
     this->drawBars();
+
+    graphViewWidget = new QWidget;
+    graphLayout = new QVBoxLayout(graphViewWidget);
+    graphLayout->addWidget(rawView);
 }
 
 void GraphicViewController::drawProtagonist() {

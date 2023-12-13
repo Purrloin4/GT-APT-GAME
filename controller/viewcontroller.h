@@ -8,6 +8,7 @@
 #include <QMessageBox>
 #include <QObject>
 #include "controller/worldcontroller.h"
+#include <QLayout>
 
 class ViewController: public QObject
 {
@@ -19,6 +20,7 @@ public:
     std::shared_ptr<WorldController> worldController;
     std::shared_ptr<QGraphicsScene> scene;
     QGraphicsView* rawView;
+    virtual void visualizeWorld() = 0;
     virtual void drawProtagonist() = 0;
     virtual void handleDeath() = 0;
     virtual void handleHealthPackTaken(int xPos, int yPos) = 0;

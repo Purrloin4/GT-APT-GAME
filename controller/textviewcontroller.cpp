@@ -1,5 +1,9 @@
 #include "textviewcontroller.h"
 
+void TextViewController::visualizeWorld(){
+
+}
+
 void TextViewController::drawProtagonist()
 {
     //TODO

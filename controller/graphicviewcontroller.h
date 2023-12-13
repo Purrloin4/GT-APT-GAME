@@ -9,8 +9,9 @@ class GraphicViewController : public ViewController
 public:
     GraphicViewController(std::shared_ptr<WorldController> worldController)
         : ViewController(worldController){}
-    void visualizeWorld();
+    void visualizeWorld() override;
     QGraphicsView* getRawView(){return rawView;};
+    QVBoxLayout* getGraphLayout(){return graphLayout;};
 public slots:
     void visualizePath(std::vector<int> path, std::shared_ptr<Tile> startTile);
     void drawProtagonist() override;
@@ -21,6 +22,8 @@ signals:
     void pathVisualizationRequested(std::vector<int> path, std::shared_ptr<Tile> startTile);
 private:
     int tileSize = 10;
+    QVBoxLayout* graphLayout;
+    QWidget* graphViewWidget;
 };
 
 
