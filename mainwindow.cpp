@@ -93,7 +93,7 @@ void MainWindow::gameOverMessage(){
     QCoreApplication::quit();
 }
 
-void MainWindow::connectSignalsAndSlots(){
+void MainWindow::connectSignalsAndSlots() {
     //visualize path
     connect(worldController.get(), &WorldController::pathFound,
             graphicViewController.get(), &GraphicViewController::visualizePath);
@@ -109,9 +109,12 @@ void MainWindow::connectSignalsAndSlots(){
     //drawProtagonistText
     connect(worldController.get(), &WorldController::drawProtagonist,
             textViewController.get(), &TextViewController::drawProtagonist);
-    //handleDeath
+    //handleDeath & handlePoisonLevelUpdated
     for (const auto &enemy : worldController->getEnemies() ){
         connect(enemy.get(), &Enemy::dead, graphicViewController.get(), &GraphicViewController::handleDeath);
+        if (auto pEnemy = dynamic_cast<PEnemy*>(enemy.get())) {
+            connect(pEnemy, &PEnemy::poisonLevelUpdated, graphicViewController.get(), &GraphicViewController::handlePoisonLevelUpdated);
+        }
     }
     //drawBars
     connect(worldController.get(), &WorldController::drawBars, //world geeft een emit op health- en energychange dus kan beter

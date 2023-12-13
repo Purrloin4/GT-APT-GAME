@@ -29,7 +29,13 @@ void GraphicViewController::visualizeWorld()
 
     // Add visualization for enemies
     for (const auto &enemy : enemies) {
-        scene->addRect(enemy->getXPos() * tileSize, enemy->getYPos() * tileSize, tileSize, tileSize, QPen(Qt::black), QBrush(Qt::red));
+        if (auto pEnemy = dynamic_cast<PEnemy*>(enemy.get())) {
+            // Visualize PEnemy instances in yellow
+            scene->addRect(pEnemy->getXPos() * tileSize, pEnemy->getYPos() * tileSize, tileSize, tileSize, QPen(Qt::black), QBrush(QColorConstants::Svg::yellow));
+        } else {
+            // Visualize regular enemies in red
+            scene->addRect(enemy->getXPos() * tileSize, enemy->getYPos() * tileSize, tileSize, tileSize, QPen(Qt::black), QBrush(Qt::red));
+        }
         QGraphicsTextItem *healthText = new QGraphicsTextItem(QString::number(enemy->getValue()));
         healthText->setDefaultTextColor(Qt::blue);
         healthText->adjustSize();
@@ -138,4 +144,8 @@ void GraphicViewController::drawBars(){
     double energyRatio = static_cast<double>(worldController->getProtagonist()->getEnergy()) / static_cast<double>(worldController->getMaxEH());
     QColor energyBarColor = QColor::fromRgbF(0.0, 0.0, 1.0 - energyRatio); // Blue to black gradient
     scene->addRect(energyBarRect, QPen(Qt::black), QBrush(energyBarColor));
+}
+
+void GraphicViewController::handlePoisonLevelUpdated() {
+
 }

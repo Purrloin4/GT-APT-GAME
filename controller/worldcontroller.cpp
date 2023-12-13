@@ -25,9 +25,15 @@ WorldController::WorldController()
 
         auto myEnemies = world->getEnemies();
         for (const auto &enemy : myEnemies){
-            auto sharedEnemy = std::make_shared<Enemy>(enemy->getXPos(),enemy->getYPos(), enemy->getValue());
-            this->enemies.push_back(sharedEnemy);
+            if (auto pEnemy = dynamic_cast<PEnemy*>(enemy.get())) {
+                auto sharedPEnemy = std::make_shared<PEnemy>(pEnemy->getXPos(), pEnemy->getYPos(), enemy->getValue());
+                this->enemies.push_back(sharedPEnemy);
+            } else {
+                auto sharedEnemy = std::make_shared<Enemy>(enemy->getXPos(),enemy->getYPos(), enemy->getValue());
+                this->enemies.push_back(sharedEnemy);
+            }
         }
+
         this->protagonist = std::make_shared<Protagonist>();
         this->protagonistItem = std::make_shared<QGraphicsRectItem*>();
 
@@ -65,8 +71,6 @@ void WorldController::findPath(std::shared_ptr<Tile> startTile, std::shared_ptr<
 void WorldController::handleKeyPressEvent(QKeyEvent *event){
         int newX = protagonist->getXPos();
         int newY = protagonist->getYPos();
-
-        //qCDebug(WorldControllerCategory) << event->key();
 
         switch (event->key()) {
             // arrow keys can act up so ZQSD also possible #Azerty koning

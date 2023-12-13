@@ -22,6 +22,7 @@ public:
     virtual void visualizeWorld() = 0;
     virtual void drawProtagonist() = 0;
     virtual void handleDeath() = 0;
+    virtual void handlePoisonLevelUpdated() = 0;
     virtual void handleHealthPackTaken(int xPos, int yPos) = 0;
 private:
 };

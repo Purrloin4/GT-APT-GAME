@@ -28,6 +28,7 @@ public slots:
     void visualizePath(std::vector<int> path, std::shared_ptr<Tile> startTile);
     void drawProtagonist() override;
     void handleDeath() override;
+    void handlePoisonLevelUpdated() override;
     void handleHealthPackTaken(int xPos, int yPos) override;
     void drawBars();
 signals:

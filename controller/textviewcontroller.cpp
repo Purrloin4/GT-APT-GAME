@@ -102,3 +102,7 @@ void TextViewController::handleDeath(){
 void TextViewController::handleHealthPackTaken(int xPos, int yPos){
     //TODO
 }
+
+void TextViewController::handlePoisonLevelUpdated() {
+
+}
