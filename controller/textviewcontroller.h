@@ -20,6 +20,7 @@ private:
     QTextEdit *asciiTextEdit;
     QWidget* textViewWidget;
     QVBoxLayout* textLayout;
+    QLineEdit* userInputLineEdit;
 
 };
 

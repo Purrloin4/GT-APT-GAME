@@ -68,6 +68,10 @@ void TextViewController::visualizeWorld(){
     // Add the text view to the layout
     textLayout->addWidget(asciiTextEdit);
 
+    // Add the text box to the layout
+    userInputLineEdit = new QLineEdit;
+    textLayout->addWidget(userInputLineEdit);
+
     // Set the widget as the content of the second tab
     //tabWidget->widget(1)->setLayout(textLayout);
 
