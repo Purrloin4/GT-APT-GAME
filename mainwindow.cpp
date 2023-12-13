@@ -65,9 +65,12 @@ void MainWindow::connectSignalsAndSlots(){
     //keypress
     connect(this, &MainWindow::keyPressed,
             worldController.get(), &WorldController::handleKeyPressEvent);
-    //drawProtagonist
-    connect(worldController.get(), &WorldController::drawProtagonist, // world geeft al een emit op poschange dus kan beter
+    //drawProtagonistGraph
+    connect(worldController.get(), &WorldController::drawProtagonist,
             graphicViewController.get(), &GraphicViewController::drawProtagonist);
+    //drawProtagonistText
+    connect(worldController.get(), &WorldController::drawProtagonist,
+            textViewController.get(), &TextViewController::drawProtagonist);
     //handleDeath
     for (const auto &enemy : worldController->getEnemies() ){
         connect(enemy.get(), &Enemy::dead, graphicViewController.get(), &GraphicViewController::handleDeath);
