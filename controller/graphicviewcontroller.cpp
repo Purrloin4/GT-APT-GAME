@@ -109,7 +109,25 @@ void GraphicViewController::handleDeath() {
             ++it;
         }
     }
+
+    // Remove poisoned tiles and their color from the scene
+    removePoisonedTiles(enemy);
+
 }
+
+void GraphicViewController::removePoisonedTiles(Enemy* enemy) {
+    if (PEnemy* pEnemy = dynamic_cast<PEnemy*>(enemy)) {
+        for (auto it = poisonedTiles.begin(); it != poisonedTiles.end();) {
+            if (it->enemy == enemy) {
+                scene->removeItem(it->graphicsItem);
+                it = poisonedTiles.erase(it);
+            } else {
+                ++it;
+            }
+        }
+    }
+}
+
 
 void GraphicViewController::handleHealthPackTaken(int xPos, int yPos){
      scene->addRect(xPos * tileSize, yPos * tileSize, tileSize, tileSize, QPen(Qt::black), QBrush(QColorConstants::Svg::purple));
@@ -146,6 +164,47 @@ void GraphicViewController::drawBars(){
     scene->addRect(energyBarRect, QPen(Qt::black), QBrush(energyBarColor));
 }
 
-void GraphicViewController::handlePoisonLevelUpdated() {
+void GraphicViewController::handlePoisonLevelUpdated(float poisonLevel) {
+    PEnemy* pEnemy = qobject_cast<PEnemy*>(sender());
+    qDebug() << "Poison level updated:" << poisonLevel << "Sender position:" << pEnemy->getXPos() << pEnemy->getYPos();
+
+    // If the PEnemy is not in the map, initialize its spread radius to 1
+    if (!spreadRadii.contains(pEnemy)) {
+        spreadRadii.insert(pEnemy, 1);
+    }
+
+    drawPoisonSpread(pEnemy, poisonLevel);
 
 }
+
+void GraphicViewController::drawPoisonSpread(PEnemy* pEnemy, float poisonLevel) {
+    int spreadRadius = spreadRadii.value(pEnemy);
+
+    qDebug() << "Drawing poison at position:" << pEnemy->getXPos() << pEnemy->getYPos() << "with level:" << poisonLevel;
+
+    // Calculate the color based on poison level
+    int greenValue = static_cast<int>((100.0 - poisonLevel) * 255 / 100.0);
+    QColor poisonColor = QColor(0, greenValue, 0);
+
+    // Spread poison in a square pattern around the given position
+    for (int i = -spreadRadius; i <= spreadRadius; ++i) {
+        for (int j = -spreadRadius; j <= spreadRadius; ++j) {
+            int spreadX = pEnemy->getXPos() + i;
+            int spreadY = pEnemy->getYPos() + j;
+
+            // Check if the position is within the bounds of the scene
+            if (spreadX >= 0 && spreadX < worldController->getCols() && spreadY >= 0 && spreadY < worldController->getRows()) {
+                TileVisualisation poisonedTile;
+                poisonedTile.spreadXPos = spreadX;
+                poisonedTile.spreadYPos = spreadY;
+                poisonedTile.graphicsItem = scene->addRect(spreadX * tileSize, spreadY * tileSize, tileSize, tileSize, QPen(Qt::black), QBrush(poisonColor));
+                poisonedTile.enemy = pEnemy;
+                poisonedTiles.push_back(poisonedTile);
+            }
+        }
+    }
+
+    // Update the spread radius for the next iteration
+    spreadRadii.insert(pEnemy, spreadRadius + 1);
+}
+

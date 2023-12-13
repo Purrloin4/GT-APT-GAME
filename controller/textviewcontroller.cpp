@@ -103,6 +103,6 @@ void TextViewController::handleHealthPackTaken(int xPos, int yPos){
     //TODO
 }
 
-void TextViewController::handlePoisonLevelUpdated() {
+void TextViewController::handlePoisonLevelUpdated(float poisonLevel) {
 
 }

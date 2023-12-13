@@ -14,7 +14,7 @@ public:
 public slots:
     void drawProtagonist() override;
     void handleDeath() override;
-    void handlePoisonLevelUpdated() override;
+    void handlePoisonLevelUpdated(float poisonLevel) override;
     void handleHealthPackTaken(int xPos, int yPos) override;
 private:
     QString asciiRepresentation;

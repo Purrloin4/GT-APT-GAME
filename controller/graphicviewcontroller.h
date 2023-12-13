@@ -8,10 +8,8 @@ struct TileVisualisation{
     int spreadXPos;
     int spreadYPos;
     Enemy* enemy;
-    PEnemy* pEnemy;
     QGraphicsTextItem* enemyHealthText;
-
-    TileVisualisation() : spreadXPos(0), spreadYPos(0), enemy(nullptr), enemyHealthText(nullptr) {}
+    QGraphicsRectItem* graphicsItem;
 };
 
 class GraphicViewController : public ViewController
@@ -24,11 +22,13 @@ public:
     void visualizeWorld() override;
     QGraphicsView* getRawView(){return rawView;};
     QVBoxLayout* getGraphLayout(){return graphLayout;};
+    void drawPoisonSpread(PEnemy* pEnemy, float poisonLevel);
+    void removePoisonedTiles(Enemy* enemy);
 public slots:
     void visualizePath(std::vector<int> path, std::shared_ptr<Tile> startTile);
     void drawProtagonist() override;
     void handleDeath() override;
-    void handlePoisonLevelUpdated() override;
+    void handlePoisonLevelUpdated(float poisonLevel) override;
     void handleHealthPackTaken(int xPos, int yPos) override;
     void drawBars();
 signals:
@@ -38,6 +38,7 @@ private:
     QVBoxLayout* graphLayout;
     QWidget* graphViewWidget;
     std::vector<TileVisualisation> tileVisualisations;
+    std::vector<TileVisualisation> poisonedTiles;
 };
 
 
