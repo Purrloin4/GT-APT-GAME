@@ -1,5 +1,8 @@
 #include "graphicviewcontroller.h"
 #include <iostream>
+#include "QLoggingCategory"
+
+QLoggingCategory GraphicViewControllerCategory("graphicViewController", QtDebugMsg);
 
 void GraphicViewController::visualizeWorld()
 {
@@ -53,6 +56,18 @@ void GraphicViewController::visualizeWorld()
     // Add visualization for health packs
     for (const auto &healthPack : healthPacks) {
         scene->addRect(healthPack->getXPos() * tileSize, healthPack->getYPos() * tileSize, tileSize, tileSize, QPen(Qt::black), QBrush(Qt::green));
+        QGraphicsTextItem *healthPackText = new QGraphicsTextItem(QString::number(healthPack->getValue()));
+        healthPackText->setDefaultTextColor(Qt::blue);
+        healthPackText->adjustSize();
+        healthPackText->setPos((healthPack->getXPos()-0.5) * tileSize, (healthPack->getYPos() + 0.2) * tileSize);
+        scene->addItem(healthPackText);
+
+
+        //To store the health text with the correct enemy
+        TileVisualisation tileVis;
+        tileVis.tile = healthPack.get();
+        tileVis.healthPackText = healthPackText;
+        tileVisualisations.push_back(tileVis);
     }
 
     this->drawProtagonist();
@@ -131,6 +146,16 @@ void GraphicViewController::removePoisonedTiles(Enemy* enemy) {
 
 void GraphicViewController::handleHealthPackTaken(int xPos, int yPos){
      scene->addRect(xPos * tileSize, yPos * tileSize, tileSize, tileSize, QPen(Qt::black), QBrush(QColorConstants::Svg::purple));
+    for (auto it = tileVisualisations.begin(); it != tileVisualisations.end();) {
+        if (it->tile->getXPos() == xPos && it->tile->getYPos() == yPos){
+            qCDebug(GraphicViewControllerCategory) << "found healthPackTile";
+            scene->removeItem(it->healthPackText);
+            break;
+         }
+        else{
+            ++it;
+        }
+    }
 }
 
 void GraphicViewController::drawBars(){

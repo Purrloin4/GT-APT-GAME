@@ -8,7 +8,9 @@ struct TileVisualisation{
     int spreadXPos;
     int spreadYPos;
     Enemy* enemy;
+    Tile* tile;
     QGraphicsTextItem* enemyHealthText;
+    QGraphicsTextItem* healthPackText;
     QGraphicsRectItem* graphicsItem;
 };
 

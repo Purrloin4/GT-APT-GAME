@@ -197,8 +197,8 @@ void WorldController::useHealthpack()
                 }
                 emit healthPackTaken(pack->getXPos(), pack->getYPos());
                 pack->setValue(0.0f);
-                drawProtagonist();
-                drawBars();
+                emit drawProtagonist();
+                emit drawBars();
             }
             // Exit the function since the attack has been resolved
             return;
