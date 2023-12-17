@@ -3,8 +3,15 @@
 
 #include <QObject>
 #include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QFormLayout>
 #include <QGraphicsScene>
 #include <QGraphicsView>
+#include <QWidget>
+#include <QPushButton>
+#include <QSlider>
+#include <QLineEdit>
+#include <QLabel>
 #include "worldcontroller.h"
 
 class WindowController: public QObject
@@ -18,7 +25,7 @@ public:
     void setupWindow();
     void updateHealthBar();
     void updateEnergyBar();
-    QVBoxLayout* getWindowLayout(){return windowLayout;};
+    QHBoxLayout* getWindowLayout(){return windowLayout;};
 public slots:
     void drawBars();
 
@@ -26,7 +33,9 @@ private:
     std::shared_ptr<WorldController> worldController;
     std::shared_ptr<QGraphicsScene> scene;
     QGraphicsView* rawView;
-    QVBoxLayout* windowLayout;
+    QHBoxLayout* windowLayout;
+    QVBoxLayout* controlLayout;
+    QVBoxLayout* infoLayout;
     QWidget* windowWidget;
 };
 
