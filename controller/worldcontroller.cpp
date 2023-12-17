@@ -195,7 +195,7 @@ void WorldController::useHealthpack()
                 } else {
                     protagonist->setHealth(newHealth);
                 }
-                emit healthPackTaken(pack->getXPos(), pack->getYPos());
+                emit healthPackTaken(pack);
                 pack->setValue(0.0f);
                 emit drawProtagonist();
                 emit drawBars();

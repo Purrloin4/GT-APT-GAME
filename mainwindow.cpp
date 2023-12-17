@@ -9,6 +9,7 @@
 #include "QLoggingCategory"
 #include <iostream>
 #include <QLabel>
+#include "controller/windowcontroller.h"
 
 QLoggingCategory pathfinderCategory("pathfinder", QtDebugMsg);
 
@@ -20,11 +21,13 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow),
     worldController(std::make_shared<WorldController>()),
     graphicViewController(std::make_shared<GraphicViewController>(worldController)),
-    textViewController(std::make_shared<TextViewController>(worldController))
+    textViewController(std::make_shared<TextViewController>(worldController)),
+    windowController(std::make_shared<WindowController>(worldController))
 {
     ui->setupUi(this);
     graphicViewController->visualizeWorld();
     textViewController->visualizeWorld();
+    windowController->setupWindow();
 
     // Create a vertical layout for the main window
     QVBoxLayout *mainLayout = new QVBoxLayout;
@@ -43,7 +46,6 @@ MainWindow::MainWindow(QWidget *parent)
     additionalLabel->setAlignment(Qt::AlignCenter);
     QVBoxLayout *additionalLayout = new QVBoxLayout;
     additionalLayout->addWidget(additionalLabel);
-    additionalWidget->setLayout(additionalLayout);
 
     // Add the additional widget to the main layout
     mainLayout->addWidget(additionalWidget);
@@ -56,6 +58,8 @@ MainWindow::MainWindow(QWidget *parent)
     // Set the layout for the first tab
     tabWidget->widget(0)->setLayout(graphicViewController->getGraphLayout());
     tabWidget->widget(1)->setLayout(textViewController->getTextLayout());
+
+    additionalWidget->setLayout(windowController->getWindowLayout());
 
     connectSignalsAndSlots();
 }
@@ -116,9 +120,9 @@ void MainWindow::connectSignalsAndSlots() {
             connect(pEnemy, &PEnemy::poisonLevelUpdated, graphicViewController.get(), &GraphicViewController::handlePoisonLevelUpdated);
         }
     }
-    //drawBars
-    connect(worldController.get(), &WorldController::drawBars, //world geeft een emit op health- en energychange dus kan beter
-            graphicViewController.get(), &GraphicViewController::drawBars);
+//    //drawBars
+//    connect(worldController.get(), &WorldController::drawBars,
+//            textViewController.get(), &ViewController::drawBars);
     //gameOverMessage
     connect(worldController.get(), &WorldController::gameOver,
             this, &MainWindow::gameOverMessage);

@@ -99,7 +99,7 @@ void TextViewController::handleDeath(){
     //TODO
 }
 
-void TextViewController::handleHealthPackTaken(int xPos, int yPos){
+void TextViewController::handleHealthPackTaken(std::shared_ptr<Tile> pack){
     //TODO
 }
 

@@ -13,6 +13,7 @@ SOURCES += \
     controller/textviewcontroller.cpp \
     controller/viewcontroller.cpp \
     controller/worldcontroller.cpp \
+    controller/windowcontroller.cpp\
     main.cpp \
     mainwindow.cpp \
 
@@ -21,6 +22,7 @@ HEADERS += \
     controller/textviewcontroller.h \
     controller/viewcontroller.h \
     controller/worldcontroller.h \
+    controller/windowcontroller.h\
     mainwindow.h \
     pathNode.h
 

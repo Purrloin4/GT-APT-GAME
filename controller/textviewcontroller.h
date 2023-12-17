@@ -15,7 +15,7 @@ public slots:
     void drawProtagonist() override;
     void handleDeath() override;
     void handlePoisonLevelUpdated(float poisonLevel) override;
-    void handleHealthPackTaken(int xPos, int yPos) override;
+    void handleHealthPackTaken(std::shared_ptr<Tile> pack) override;
 private:
     QString asciiRepresentation;
     QTextEdit *asciiTextEdit;

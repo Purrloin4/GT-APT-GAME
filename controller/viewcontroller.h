@@ -23,7 +23,7 @@ public:
     virtual void drawProtagonist() = 0;
     virtual void handleDeath() = 0;
     virtual void handlePoisonLevelUpdated(float poisonLevel) = 0;
-    virtual void handleHealthPackTaken(int xPos, int yPos) = 0;
+    virtual void handleHealthPackTaken(std::shared_ptr<Tile> pack) = 0;
     QMap<PEnemy*, int> spreadRadii;
 private:
 };

@@ -25,7 +25,7 @@ signals:
     void drawProtagonist();
     void drawBars();
     void gameOver();
-    void healthPackTaken(int xPos, int yPos);
+    void healthPackTaken(std::shared_ptr<Tile> pack);
 public:
     WorldController();
 

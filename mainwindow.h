@@ -8,6 +8,7 @@
 #include "controller/worldcontroller.h"
 #include "controller/graphicviewcontroller.h"
 #include "controller/textviewcontroller.h"
+#include "controller/windowcontroller.h"
 
 
 QT_BEGIN_NAMESPACE
@@ -33,12 +34,10 @@ private:
     std::shared_ptr<WorldController> worldController;
     std::shared_ptr<GraphicViewController> graphicViewController;
     std::shared_ptr<TextViewController> textViewController;
+    std::shared_ptr<WindowController> windowController;
     QGraphicsView* view;
 
     void connectSignalsAndSlots();
-
-    void visualizeWorld();
-    void findPathAndHighlight(QGraphicsScene* scene, int tileSize, std::unique_ptr<Tile> startTile, std::unique_ptr<Tile> endTile);
     void keyPressEvent(QKeyEvent *event);
     void mousePressEvent(QMouseEvent *event);
 
