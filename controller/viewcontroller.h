@@ -11,6 +11,7 @@
 #include <QLayout>
 #include <QTextEdit>
 #include <QLineEdit>
+#include <QPushButton>
 
 class ViewController: public QObject
 {

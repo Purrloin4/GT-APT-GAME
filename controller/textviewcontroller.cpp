@@ -68,13 +68,24 @@ void TextViewController::visualizeWorld(){
     // Add the text view to the layout
     textLayout->addWidget(asciiTextEdit);
 
+    // Use a QHBoxLayout to arrange the text box and button horizontally
+    inputLayout = new QHBoxLayout;
+
     // Add the text box to the layout
     userInputLineEdit = new QLineEdit;
-    textLayout->addWidget(userInputLineEdit);
+    inputLayout->addWidget(userInputLineEdit);
 
-    // Set the widget as the content of the second tab
-    //tabWidget->widget(1)->setLayout(textLayout);
+    // Create a button
+    actionButton = new QPushButton("Perform Action"); // Adjust the button text as needed
+    connect(actionButton, &QPushButton::clicked, this, &TextViewController::handleActionButtonClick);
+    inputLayout->addWidget(actionButton);
 
+    textLayout->addLayout(inputLayout);
+}
+
+void TextViewController::handleActionButtonClick(){
+    // Handle the button click event
+    // You can perform some action here when the button is clicked
 }
 
 void TextViewController::drawProtagonist() {
