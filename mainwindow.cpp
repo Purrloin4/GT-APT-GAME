@@ -131,4 +131,16 @@ void MainWindow::connectSignalsAndSlots() {
     //healthPackTaken
     connect(worldController.get(), &WorldController::healthPackTaken,
             graphicViewController.get(), &GraphicViewController::handleHealthPackTaken);
+    //zoomInGraphic
+    connect(windowController.get(), &WindowController::zoomInSignal,
+            graphicViewController.get(), &GraphicViewController::zoomIn);
+    //zoomOutGraphic
+    connect(windowController.get(), &WindowController::zoomOutSignal,
+            graphicViewController.get(), &GraphicViewController::zoomOut);
+    //zoomInText
+    connect(windowController.get(), &WindowController::zoomInSignal,
+            textViewController.get(), &TextViewController::zoomIn);
+    //zoomOutText
+    connect(windowController.get(), &WindowController::zoomOutSignal,
+            textViewController.get(), &TextViewController::zoomOut);
 }

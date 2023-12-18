@@ -212,3 +212,10 @@ void GraphicViewController::drawPoisonSpread(PEnemy* pEnemy, float poisonLevel) 
     spreadRadii.insert(pEnemy, spreadRadius + 1);
 }
 
+void GraphicViewController::zoomIn() {
+    rawView->scale(1.1, 1.1);
+}
+
+void GraphicViewController::zoomOut() {
+    rawView->scale(0.9, 0.9);
+}
