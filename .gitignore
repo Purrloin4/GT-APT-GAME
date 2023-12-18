@@ -5,3 +5,4 @@ Make*
 .qmake.stash
 .qtc_clangd/
 .vscode
+*AppDataLocalTempt*

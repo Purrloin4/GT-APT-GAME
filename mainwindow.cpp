@@ -132,4 +132,3 @@ void MainWindow::connectSignalsAndSlots() {
     connect(worldController.get(), &WorldController::healthPackTaken,
             graphicViewController.get(), &GraphicViewController::handleHealthPackTaken);
 }
-
