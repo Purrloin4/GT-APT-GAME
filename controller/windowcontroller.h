@@ -19,16 +19,14 @@ class WindowController: public QObject
     Q_OBJECT
 public:
     WindowController(std::shared_ptr<WorldController> worldController)
-        : worldController(worldController), scene(std::make_shared<QGraphicsScene>()), rawView(new QGraphicsView(scene.get())) {
-        connect(worldController.get(), &WorldController::drawBars, this, &WindowController::drawBars);
-    }
+        : worldController(worldController), scene(std::make_shared<QGraphicsScene>()), rawView(new QGraphicsView(scene.get())) {}
     void setupWindow();
     void updateHealthBar();
     void updateEnergyBar();
     QHBoxLayout* getWindowLayout(){return windowLayout;};
 public slots:
     void drawBars();
-
+    void handleTextChange(const QString &text);
 private:
     std::shared_ptr<WorldController> worldController;
     std::shared_ptr<QGraphicsScene> scene;
@@ -37,6 +35,9 @@ private:
     QVBoxLayout* controlLayout;
     QVBoxLayout* infoLayout;
     QWidget* windowWidget;
+    QLineEdit* tileSizeEdit;
+    QLineEdit* heuristicFactorEdit;
+    QLineEdit* heightFactorEdit;
 };
 
 #endif

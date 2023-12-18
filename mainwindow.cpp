@@ -120,9 +120,9 @@ void MainWindow::connectSignalsAndSlots() {
             connect(pEnemy, &PEnemy::poisonLevelUpdated, graphicViewController.get(), &GraphicViewController::handlePoisonLevelUpdated);
         }
     }
-//    //drawBars
-//    connect(worldController.get(), &WorldController::drawBars,
-//            textViewController.get(), &ViewController::drawBars);
+    //drawBars
+   connect(worldController.get(), &WorldController::drawBars,
+            windowController.get(), &WindowController::drawBars);
     //gameOverMessage
     connect(worldController.get(), &WorldController::gameOver,
             this, &MainWindow::gameOverMessage);

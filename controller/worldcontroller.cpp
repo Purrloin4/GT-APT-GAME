@@ -55,15 +55,12 @@ void WorldController::findPath(std::shared_ptr<Tile> startTile, std::shared_ptr<
             pathNodes.push_back(PathNode(*tile));
         }
 
-        auto weight = 0.1;
-        auto minimalCost = 0.1;
-
         Comparator<PathNode> comp = PathNode::Comparator();
 
       PathNode startNode(*startTile);
       PathNode endNode(*endTile);
 
-      std::vector<int> path = A_star(pathNodes, &startNode, &endNode, comp, cols, weight, minimalCost);
+      std::vector<int> path = A_star(pathNodes, &startNode, &endNode, comp, cols, heursticFactor, heightFactor);
 
       emit pathFound(path, std::move(startTile));
 }
@@ -206,6 +203,15 @@ void WorldController::useHealthpack()
       }
 }
 
+int WorldController::getHeursticFactor() const
+{
+    return heursticFactor;
+}
+
+int WorldController::getHeightFactor() const
+{
+    return heightFactor;
+}
 
 std::shared_ptr<Tile> WorldController::getTile(int x, int y) const
 {

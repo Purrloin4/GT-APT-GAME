@@ -49,6 +49,12 @@ public:
 
     std::shared_ptr<QGraphicsRectItem*> getProtagonistItem() const;
 
+    int getHeursticFactor() const;
+    int getHeightFactor() const;
+
+    void setHeuristicFactor(int factor){heursticFactor = factor;};
+    void setHeightFactor(int factor){heightFactor = factor;};
+
     int getRows() const;
     int getCols() const;
 
@@ -73,6 +79,8 @@ private:
     int cols;
     const float maxEH = 100.0f;
     std::shared_ptr<QGraphicsRectItem*> protagonistItem = nullptr;
+    double heursticFactor = 1.1f;
+    double heightFactor = 1.1f;
 };
 
 #endif // WORLDCONTROLLER_H

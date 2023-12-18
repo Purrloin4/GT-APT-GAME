@@ -1,4 +1,7 @@
 #include "controller/windowcontroller.h"
+#include "QLoggingCategory"
+
+QLoggingCategory WindowControllerCategory("WindowController", QtDebugMsg);
 
 void WindowController::setupWindow(){
     windowWidget = new QWidget;
@@ -11,12 +14,16 @@ void WindowController::setupWindow(){
     QPushButton *button = new QPushButton("AutoPlay");
 
     QLabel *heuristicFactorLabel = new QLabel("Heuristic Factor");
-    QLineEdit *heuristicFactor = new QLineEdit;
-    controlLayout->addRow(heuristicFactorLabel, heuristicFactor);
+    heuristicFactorEdit = new QLineEdit;
+    connect(heuristicFactorEdit, &QLineEdit::textChanged, this, &WindowController::handleTextChange);
+    heuristicFactorEdit->setPlaceholderText(QString::number(worldController->getHeursticFactor()));
+    controlLayout->addRow(heuristicFactorLabel, heuristicFactorEdit);
 
     QLabel *heightFactorLabel = new QLabel("Height Factor");
-    QLineEdit *heightFactor = new QLineEdit;
-    controlLayout->addRow(heightFactorLabel, heightFactor);
+    heightFactorEdit = new QLineEdit;
+    connect(heightFactorEdit, &QLineEdit::textChanged, this, &WindowController::handleTextChange);
+    heightFactorEdit->setPlaceholderText(QString::number(worldController->getHeightFactor()));
+    controlLayout->addRow(heightFactorLabel, heightFactorEdit);
 
     controlLayout->addWidget(button);
 
@@ -42,7 +49,7 @@ void WindowController::drawBars(){
     scene->addRect(oldHealthBarRect, QPen(Qt::white), QBrush(Qt::white)); // Clear the old health bar
 
     // Add visualization for the sliding health bar
-    QRect healthBarRect(barX, barY, healthBarWidth, tileSize / 2); // You can adjust the height as needed
+    QRect healthBarRect(barX, barY, healthBarWidth, tileSize); // You can adjust the height as needed
     QColor healthBarColor = QColor::fromRgbF(1.0 - healthRatio, healthRatio, 0.0); // Red to green gradient
     scene->addRect(healthBarRect, QPen(Qt::black), QBrush(healthBarColor));
 
@@ -53,4 +60,28 @@ void WindowController::drawBars(){
     double energyRatio = static_cast<double>(worldController->getProtagonist()->getEnergy()) / static_cast<double>(worldController->getMaxEH());
     QColor energyBarColor = QColor::fromRgbF(0.0, 0.0, 1.0 - energyRatio); // Blue to black gradient
     scene->addRect(energyBarRect, QPen(Qt::black), QBrush(energyBarColor));
+}
+
+void WindowController::handleTextChange(const QString &newText) {
+    QLineEdit *senderLineEdit = qobject_cast<QLineEdit *>(sender());
+    if (senderLineEdit) {
+        if (senderLineEdit == heuristicFactorEdit) {
+            bool ok;
+            double value = newText.toDouble(&ok);
+            if ( ok && value > 0){
+                qCDebug(WindowControllerCategory) << "Heuristic factor set to:" << value;
+                worldController->setHeuristicFactor(value);
+                heuristicFactorEdit->setPlaceholderText(newText);
+            }
+        }
+        else if (senderLineEdit == heightFactorEdit) {
+            bool ok;
+            double value = newText.toDouble(&ok);
+            if ( ok && value > 0){
+                qCDebug(WindowControllerCategory) << "Height factor set to:" << value;
+                worldController->setHeightFactor(value);
+                heightFactorEdit->setPlaceholderText(newText);
+            }
+        }
+    }
 }
