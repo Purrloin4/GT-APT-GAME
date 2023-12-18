@@ -1,5 +1,7 @@
 #include "textviewcontroller.h"
 
+QLoggingCategory TextViewControllerCategory("textviewcontroller", QtDebugMsg);
+
 void TextViewController::visualizeWorld(){
     auto myTiles = worldController->getTiles();
     auto myEnemies = worldController->getEnemies();
@@ -85,7 +87,11 @@ void TextViewController::visualizeWorld(){
 
 void TextViewController::handleActionButtonClick(){
     // Handle the button click event
-    // You can perform some action here when the button is clicked
+    // Retrieve text from the QLineEdit and store it in the member variable
+    storedText = userInputLineEdit->text();
+
+    // Print the text in the TextBox for debugging
+    qCDebug(TextViewControllerCategory) << storedText;
 }
 
 void TextViewController::drawProtagonist() {

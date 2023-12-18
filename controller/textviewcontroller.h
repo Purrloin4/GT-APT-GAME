@@ -25,6 +25,7 @@ private:
     QHBoxLayout* inputLayout;
     QLineEdit* userInputLineEdit;
     QPushButton* actionButton;
+    QString storedText;
 };
 
 #endif // TEXTVIEWCONTROLLER_H
