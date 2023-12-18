@@ -120,11 +120,11 @@ void TextViewController::handleActionButtonClick(){
 
         // Redraw the protagonist and energy bar
         emit drawProtagonist();
-        //emit drawBars();
+        emit worldController->drawBars();
 
         // Check if you can attack an enemy or use a healthpack
-        //attackEnemy();
-        //useHealthpack();
+        worldController->attackEnemy();
+        worldController->useHealthpack();
     }
 }
 
