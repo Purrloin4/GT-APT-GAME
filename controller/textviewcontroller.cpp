@@ -75,6 +75,7 @@ void TextViewController::visualizeWorld(){
 
     // Add the text box to the layout
     moveLineEdit = new QLineEdit;
+    moveLineEdit->setPlaceholderText("Enter your command (e.g. left, right, up, down)");
     moveLayout->addWidget(moveLineEdit);
 
     // Create a button
@@ -87,6 +88,7 @@ void TextViewController::visualizeWorld(){
 
     // Add the text box to the layout
     navigateLineEdit = new QLineEdit;
+    navigateLineEdit->setPlaceholderText("Enter your coordinate (e.g. 3,8)");
     navigateLayout->addWidget(navigateLineEdit);
 
     // Create a button
