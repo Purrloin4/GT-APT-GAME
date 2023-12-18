@@ -17,6 +17,8 @@ public slots:
     void handlePoisonLevelUpdated(float poisonLevel) override;
     void handleHealthPackTaken(std::shared_ptr<Tile> pack) override;
     void handleActionButtonClick();
+    void zoomIn() override;
+    void zoomOut() override;
 private:
     QString asciiRepresentation;
     QTextEdit* asciiTextEdit;
