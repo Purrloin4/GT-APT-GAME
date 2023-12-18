@@ -1,4 +1,5 @@
 #include "textviewcontroller.h"
+#include <QTimer>
 
 QLoggingCategory TextViewControllerCategory("textviewcontroller", QtDebugMsg);
 
@@ -113,18 +114,25 @@ void TextViewController::handleMoveButtonClick(){
     int newX = protagonist->getXPos();
     int newY = protagonist->getYPos();
 
+    // Flag to indicate whether the command is correct or not
+    bool correctCommand = false;
+
     if (moveText.toLower() == "left") {
         qCDebug(TextViewControllerCategory) << "left action was triggered";
         newX = protagonist->getXPos() - 1;
+        correctCommand = true;
     } else if (moveText.toLower() == "right") {
         qCDebug(TextViewControllerCategory) << "right action was triggered";
         newX = protagonist->getXPos() + 1;
+        correctCommand = true;
     } else if (moveText.toLower() == "up") {
         qCDebug(TextViewControllerCategory) << "up action was triggered";
         newY = protagonist->getYPos() - 1;
+        correctCommand = true;
     } else if (moveText.toLower() == "down") {
         qCDebug(TextViewControllerCategory) << "down action was triggered";
         newY = protagonist->getYPos() + 1;
+        correctCommand = true;
     }
 
     // Check if the new position is within the boundaries of the world
@@ -141,6 +149,22 @@ void TextViewController::handleMoveButtonClick(){
         worldController->attackEnemy();
         worldController->useHealthpack();
     }
+
+    // Change the background color of the button temporarily
+    if (correctCommand) {
+        // Green color for correct command
+        moveLineEdit->setStyleSheet("background-color: lightgreen;");
+    } else {
+        // Red color for incorrect command
+        moveLineEdit->setStyleSheet("background-color: lightcoral;");
+    }
+
+    // Set up a QTimer to revert the color after a short delay (e.g., 500 milliseconds)
+    QTimer::singleShot(250, this, [this]() {
+        // Restore the default background color
+        moveLineEdit->setStyleSheet("");
+        moveLineEdit->setText("");
+    });
 }
 
 void TextViewController::handleNavigateButtonClick(){
