@@ -22,3 +22,10 @@
 - Conversion to object oriented files and MVC design pattern - Cédric
 - Switching between views, protagonist movement - Bob
 - PEnemy implementation - Tiësto
+
+### Week 12
+- Display strength and healthpack levels - Cédric
+- PEnemy implementation in new file system - Tiësto
+- Protagonist movement in text-based view implementation in new file system - Bob
+
+### Week 13
