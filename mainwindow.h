@@ -3,60 +3,43 @@
 
 #include <QMainWindow>
 #include <QGraphicsScene>
-#include <QString>
-#include <QTextEdit>
-#include <QLayout>
 #include "world.h"
 #include "pathNode.h"
+#include "controller/worldcontroller.h"
+#include "controller/graphicviewcontroller.h"
+#include "controller/textviewcontroller.h"
+#include "controller/windowcontroller.h"
+
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
 
-class QTabWidget;
-class QWidget;
-
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
-
+signals:
+    void keyPressed(QKeyEvent *event);
+    void mousePressed(int x, int y);
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
-
-private slots:
-    void showGraphicalView();
-    void showTextView();
-
+public slots:
+        void gameOverMessage();
 private:
     Ui::MainWindow *ui;
     World myWorld;
     int tileSize;
-    QGraphicsScene *scene;
-    QString asciiRepresentation;
-    QTextEdit *asciiTextEdit;
     std::vector<std::unique_ptr<Tile>> myTiles;
-    std::vector<std::unique_ptr<Enemy>> myEnemies;
-    std::vector<std::unique_ptr<Tile>> myHealthpacks;
-    Protagonist protagonist;
-    QGraphicsRectItem *protagonistItem = nullptr;
-    std::vector<std::unique_ptr<Enemy>> enemies;
-    std::vector<std::unique_ptr<Tile>> healthPacks;
-    const float maxEH = 100.0f;
+    std::shared_ptr<WorldController> worldController;
+    std::shared_ptr<GraphicViewController> graphicViewController;
+    std::shared_ptr<TextViewController> textViewController;
+    std::shared_ptr<WindowController> windowController;
+    QGraphicsView* view;
 
-    QTabWidget *tabWidget;
-
-    void visualizeWorldGraph();
-    void visualizeWorldText();
-    void findPathAndHighlight(QGraphicsScene* scene, int tileSize, std::unique_ptr<Tile> startTile, std::unique_ptr<Tile> endTile, float heurWeight, float minimalCost);
+    void connectSignalsAndSlots();
     void keyPressEvent(QKeyEvent *event);
-    void drawProtagonist();
-    void drawProtagonistText();
-    void drawBars();
-    bool isValidPosition(int x, int y);
     void mousePressEvent(QMouseEvent *event);
-    void attackEnemy();
-    void useHealthpack();
 
 };
 
