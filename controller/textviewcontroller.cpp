@@ -63,7 +63,7 @@ void TextViewController::visualizeWorld(){
     asciiTextEdit->setFont(QFont("Courier")); // Set a monospaced font for better alignment
 
     // Set line wrap mode to NoWrap
-    //asciiTextEdit->setLineWrapMode(QTextEdit::NoWrap);
+    //asciiTextEdit->setLineWrapMode(QTextEdit::NoWrap); // Deze lijn zorgt voor delay wanneer movement
 
     asciiTextEdit->setPlainText(asciiRepresentation);
 
@@ -119,7 +119,7 @@ void TextViewController::handleActionButtonClick(){
         protagonist->setYPos(newY);
 
         // Redraw the protagonist and energy bar
-        emit drawProtagonist();
+        emit worldController->drawProtagonist();
         emit worldController->drawBars();
 
         // Check if you can attack an enemy or use a healthpack
