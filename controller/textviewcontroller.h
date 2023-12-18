@@ -16,16 +16,21 @@ public slots:
     void handleDeath() override;
     void handlePoisonLevelUpdated(float poisonLevel) override;
     void handleHealthPackTaken(std::shared_ptr<Tile> pack) override;
-    void handleActionButtonClick();
+    void handleMoveButtonClick();
+    void handleNavigateButtonClick();
 private:
     QString asciiRepresentation;
     QTextEdit* asciiTextEdit;
     QWidget* textViewWidget;
     QVBoxLayout* textLayout;
-    QHBoxLayout* inputLayout;
-    QLineEdit* userInputLineEdit;
-    QPushButton* actionButton;
-    QString storedText;
+    QHBoxLayout* moveLayout;
+    QHBoxLayout* navigateLayout;
+    QLineEdit* moveLineEdit;
+    QLineEdit* navigateLineEdit;
+    QPushButton* moveButton;
+    QPushButton* navigateButton;
+    QString moveText;
+    QString navigateText;
 };
 
 #endif // TEXTVIEWCONTROLLER_H
