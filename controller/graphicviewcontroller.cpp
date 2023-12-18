@@ -90,6 +90,14 @@ void GraphicViewController::drawProtagonist() {
 }
 
 void GraphicViewController::visualizePath(std::vector<int> path, std::shared_ptr<Tile> startTile){
+    for (const auto &tileVis : previousPath) {
+        if (tileVis.graphicsItem) {
+            scene->removeItem(tileVis.graphicsItem);
+            delete tileVis.graphicsItem;
+        }
+    }
+    previousPath.clear();
+
     auto xPos = startTile->getXPos();
     auto yPos = startTile->getYPos();
     for (const auto &move : path) {
@@ -105,8 +113,10 @@ void GraphicViewController::visualizePath(std::vector<int> path, std::shared_ptr
         case 7: xPos += 1; yPos -= 1; break;  // Move to the top-left
         default: break;
         }
-
-        scene->addRect(xPos * tileSize, yPos * tileSize, tileSize, tileSize, QPen(Qt::black), QBrush(Qt::red));
+        TileVisualisation tileVis;
+        tileVis.tile = worldController->getTile(xPos, yPos).get();
+        tileVis.graphicsItem = scene->addRect(xPos * tileSize, yPos * tileSize, tileSize, tileSize, QPen(Qt::black), QBrush(Qt::red));
+        previousPath.push_back(tileVis);
     }
 }
 

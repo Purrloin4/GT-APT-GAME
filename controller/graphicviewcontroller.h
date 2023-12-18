@@ -39,6 +39,7 @@ private:
     QVBoxLayout* graphLayout;
     QWidget* graphViewWidget;
     std::vector<TileVisualisation> tileVisualisations;
+    std::vector<TileVisualisation> previousPath;
     std::vector<TileVisualisation> poisonedTiles;
 };
 
