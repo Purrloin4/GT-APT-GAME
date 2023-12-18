@@ -29,6 +29,8 @@ MainWindow::MainWindow(QWidget *parent)
     textViewController->visualizeWorld();
     windowController->setupWindow();
 
+    setFocus();
+
     // Create a vertical layout for the main window
     QVBoxLayout *mainLayout = new QVBoxLayout;
 
@@ -84,8 +86,8 @@ void MainWindow::mousePressEvent(QMouseEvent *event) {
         QPointF clickedPoint = views.first()->mapToScene(event->pos());
 
         // Convert the scene coordinates to tile coordinates
-        int x = static_cast<int>(clickedPoint.x()) / 10 - 1;
-        int y = static_cast<int>(clickedPoint.y()) / 10 - 1;
+        int x = static_cast<int>(clickedPoint.x()) / 10 - 2;
+        int y = static_cast<int>(clickedPoint.y()) / 10 - 4;
 
         emit mousePressed(x, y);
     }
