@@ -10,6 +10,7 @@
 #include "controller/worldcontroller.h"
 #include <QLayout>
 #include <QTextEdit>
+#include <QLineEdit>
 
 class ViewController: public QObject
 {
