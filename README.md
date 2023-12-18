@@ -25,7 +25,9 @@
 
 ### Week 12
 - Display strength and healthpack levels - Cédric
+- Display health and energy bar and controls in additional widget -Cédric
 - PEnemy implementation in new file system - Tiësto
 - Protagonist movement in text-based view implementation in new file system - Bob
 
 ### Week 13
+- Implement weight controls - Cédric
