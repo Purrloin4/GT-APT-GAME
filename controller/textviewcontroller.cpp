@@ -214,18 +214,26 @@ void TextViewController::drawProtagonist() {
     // Update ASCII representation for Text view
     QString updatedAsciiRepresentation = asciiRepresentation;
 
-    // Find the index corresponding to the old protagonist's position in the ASCII representation
-    // >>>>>>>> onderstaande lijn is nog ni volledig juist >>>>>>>>>>>
-    int oldProtagonistIndex = worldController->getCols()*4 + 4*worldController->getProtagonist()->getXPos() + 4*(worldController->getProtagonist()->getYPos()-1) + 2*worldController->getCols()*4*(worldController->getProtagonist()->getYPos()-1);// + 3*myWorld.getCols()*protagonist.getYPos();
-
     // Replace the old representation of the protagonist with an empty tile
-    updatedAsciiRepresentation.replace(oldProtagonistIndex, 1, "X"); // "X" moet nog "\u00A0" worden, maar makkelijker om debuggen voor nu
+    updatedAsciiRepresentation.replace(startProtagonistIndex, 1, "\u00A0");
+
+    // Check what was under old position
+    if (updatedAsciiRepresentation.at(oldProtagonistIndex) == 'E') {
+        qCDebug(TextViewControllerCategory) << "previous was enemy";
+        // TODO: handle E
+    } else if (updatedAsciiRepresentation.at(oldProtagonistIndex) == 'H') {
+        qCDebug(TextViewControllerCategory) << "previous was healthpack";
+        // TODO: handle H
+    }
 
     // Find the index corresponding to the new protagonist's position in the ASCII representation
     int newProtagonistIndex = worldController->getCols()*4 + 4*worldController->getProtagonist()->getXPos() + 2*worldController->getCols()*4*worldController->getProtagonist()->getYPos() + 4*worldController->getProtagonist()->getYPos()+4;
 
     // Replace the empty tile with the representation of the protagonist
     updatedAsciiRepresentation.replace(newProtagonistIndex, 1, "P");
+
+    // Update oldIndex with newIndex
+    oldProtagonistIndex = newProtagonistIndex;
 
     // Display the updated ASCII representation in the QTextEdit
     asciiTextEdit->setPlainText(updatedAsciiRepresentation);

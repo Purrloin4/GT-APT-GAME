@@ -19,6 +19,8 @@ public slots:
     void handleMoveButtonClick();
     void handleNavigateButtonClick();
 private:
+    const int startProtagonistIndex = worldController->getCols()*4 + 4;
+    int oldProtagonistIndex = worldController->getCols()*4 + 4;
     QString asciiRepresentation;
     QTextEdit* asciiTextEdit;
     QWidget* textViewWidget;
