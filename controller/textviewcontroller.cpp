@@ -215,18 +215,26 @@ void TextViewController::handleNavigateButtonClick(){
 }
 
 void TextViewController::drawProtagonist() {
+    auto protagonist = worldController->getProtagonist();
+    auto currentHealth = protagonist->getHealth();
+
     // Replace the old representation of the protagonist with an empty tile
     updatedAsciiRepresentation.replace(oldProtagonistIndex, 1, "\u00A0");
 
     // Check what was under old position
     if (initialAsciiRepresentation.at(oldProtagonistIndex) == 'E') {
         qCDebug(TextViewControllerCategory) << "Previous position was E";
-        //updatedAsciiRepresentation.replace(oldProtagonistIndex, 1, "\u00A0");
-        updatedAsciiRepresentation.replace(oldProtagonistIndex, 1, "\u0332E"); // Underlined 'E'
+        updatedAsciiRepresentation.replace(oldProtagonistIndex, 1, "\u00A0");
+        //updatedAsciiRepresentation.replace(oldProtagonistIndex, 1, "\u0332E"); // Underlined 'E'
     } else if (initialAsciiRepresentation.at(oldProtagonistIndex) == 'H') {
         qCDebug(TextViewControllerCategory) << "Previous position was H";
-        //updatedAsciiRepresentation.replace(oldProtagonistIndex, 1, "\u00A0");
-        updatedAsciiRepresentation.replace(oldProtagonistIndex, 1, "\u0332H");  // Underlined 'H'
+        if (currentHealth < 100.0) {
+            qCDebug(TextViewControllerCategory) << "CurrentHealth =" << currentHealth;
+            updatedAsciiRepresentation.replace(oldProtagonistIndex, 1, "\u00A0");
+            //updatedAsciiRepresentation.replace(oldProtagonistIndex, 1, "\u0332H");  // Underlined 'H'
+        } else {
+            updatedAsciiRepresentation.replace(oldProtagonistIndex, 1, "H");
+        }
     } else {
         qCDebug(TextViewControllerCategory) << "Previous position was empty";
     }
