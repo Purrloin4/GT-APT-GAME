@@ -7,7 +7,6 @@ void TextViewController::visualizeWorld(){
     auto myTiles = worldController->getTiles();
     auto myEnemies = worldController->getEnemies();
     auto myHealthpacks = worldController->getHealthpacks();
-    auto protagonist = worldController->getProtagonist();
 
     // Determine the ASCII representation of different entities
     const QString horizontalBorder = "+---";
@@ -114,7 +113,6 @@ void TextViewController::handleMoveButtonClick(){
     qCDebug(TextViewControllerCategory) << moveText;
 
     // Check the stored text and perform actions accordingly
-    auto protagonist = worldController->getProtagonist();
     int newX = protagonist->getXPos();
     int newY = protagonist->getYPos();
 
@@ -180,7 +178,6 @@ void TextViewController::handleNavigateButtonClick(){
     qCDebug(TextViewControllerCategory) << navigateText;
 
     // Check the stored text and perform actions accordingly
-    auto protagonist = worldController->getProtagonist();
     int newX = protagonist->getXPos();
     int newY = protagonist->getYPos();
 
@@ -215,9 +212,6 @@ void TextViewController::handleNavigateButtonClick(){
 }
 
 void TextViewController::drawProtagonist() {
-    auto protagonist = worldController->getProtagonist();
-    auto currentHealth = protagonist->getHealth();
-
     // Replace the old representation of the protagonist with an empty tile
     updatedAsciiRepresentation.replace(oldProtagonistIndex, 1, "\u00A0");
 
@@ -228,8 +222,8 @@ void TextViewController::drawProtagonist() {
         //updatedAsciiRepresentation.replace(oldProtagonistIndex, 1, "\u0332E"); // Underlined 'E'
     } else if (initialAsciiRepresentation.at(oldProtagonistIndex) == 'H') {
         qCDebug(TextViewControllerCategory) << "Previous position was H";
+        qCDebug(TextViewControllerCategory) << "Health before HP =" << currentHealth;
         if (currentHealth < 100.0) {
-            qCDebug(TextViewControllerCategory) << "CurrentHealth =" << currentHealth;
             updatedAsciiRepresentation.replace(oldProtagonistIndex, 1, "\u00A0");
             //updatedAsciiRepresentation.replace(oldProtagonistIndex, 1, "\u0332H");  // Underlined 'H'
         } else {
@@ -251,6 +245,11 @@ void TextViewController::drawProtagonist() {
     // Update old with new
     oldProtagonistIndex = newProtagonistIndex;
     oldAsciiRepresentation = updatedAsciiRepresentation;
+
+    // Do not update health when you enter H-tile
+    if (initialAsciiRepresentation.at(newProtagonistIndex) != 'H') {
+        currentHealth = protagonist->getHealth();
+    }
 }
 
 void TextViewController::handleDeath(){

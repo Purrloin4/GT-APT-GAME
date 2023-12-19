@@ -19,6 +19,8 @@ public slots:
     void handleMoveButtonClick();
     void handleNavigateButtonClick();
 private:
+    std::shared_ptr<Protagonist> protagonist = worldController->getProtagonist();
+    float currentHealth = protagonist->getHealth();
     const int startProtagonistIndex = worldController->getCols()*4 + 4;
     int oldProtagonistIndex = worldController->getCols()*4 + 4;
     int newProtagonistIndex;
