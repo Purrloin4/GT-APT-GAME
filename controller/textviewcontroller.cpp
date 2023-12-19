@@ -221,18 +221,20 @@ void TextViewController::drawProtagonist() {
     // Check what was under old position
     if (initialAsciiRepresentation.at(oldProtagonistIndex) == 'E') {
         qCDebug(TextViewControllerCategory) << "Previous position was E";
-        updatedAsciiRepresentation.replace(oldProtagonistIndex, 1, "\u00A0");
+        //updatedAsciiRepresentation.replace(oldProtagonistIndex, 1, "\u00A0");
+        updatedAsciiRepresentation.replace(oldProtagonistIndex, 1, "\u0332E"); // Underlined 'E'
     } else if (initialAsciiRepresentation.at(oldProtagonistIndex) == 'H') {
         qCDebug(TextViewControllerCategory) << "Previous position was H";
-        updatedAsciiRepresentation.replace(oldProtagonistIndex, 1, "\u00A0");
+        //updatedAsciiRepresentation.replace(oldProtagonistIndex, 1, "\u00A0");
+        updatedAsciiRepresentation.replace(oldProtagonistIndex, 1, "\u0332H");  // Underlined 'H'
     } else {
-        qCDebug(TextViewControllerCategory) << "Previous position was \u00A0";
+        qCDebug(TextViewControllerCategory) << "Previous position was empty";
     }
 
     // Find the index corresponding to the new protagonist's position in the ASCII representation
     newProtagonistIndex = worldController->getCols()*4 + 4*worldController->getProtagonist()->getXPos() + 2*worldController->getCols()*4*worldController->getProtagonist()->getYPos() + 4*worldController->getProtagonist()->getYPos()+4;
 
-    // Replace the empty tile with the representation of the protagonist
+    // Place the 'P' character at the new position
     updatedAsciiRepresentation.replace(newProtagonistIndex, 1, "P");
 
     // Display the updated ASCII representation in the QTextEdit
