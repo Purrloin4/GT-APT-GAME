@@ -21,7 +21,10 @@ public slots:
 private:
     const int startProtagonistIndex = worldController->getCols()*4 + 4;
     int oldProtagonistIndex = worldController->getCols()*4 + 4;
-    QString asciiRepresentation;
+    int newProtagonistIndex;
+    QString initialAsciiRepresentation;
+    QString oldAsciiRepresentation;
+    QString updatedAsciiRepresentation;
     QTextEdit* asciiTextEdit;
     QWidget* textViewWidget;
     QVBoxLayout* textLayout;

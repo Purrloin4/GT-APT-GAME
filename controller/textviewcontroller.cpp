@@ -20,10 +20,10 @@ void TextViewController::visualizeWorld(){
     for (int y = 0; y < worldController->getRows(); ++y) {
         // Add the horizontal border for each tile in the row
         for (int x = 0; x < worldController->getCols(); ++x) {
-            asciiRepresentation += horizontalBorder;
+            initialAsciiRepresentation += horizontalBorder;
         }
-        asciiRepresentation += "+"; // Add last '+' of every row
-        asciiRepresentation += QChar(0x2029); // Unicode for 'PARAGRAPH SEPARATOR' = '\n'
+        initialAsciiRepresentation += "+"; // Add last '+' of every row
+        initialAsciiRepresentation += QChar(0x2029); // Unicode for 'PARAGRAPH SEPARATOR' = '\n'
 
         // Loop through each column
         for (int x = 0; x < worldController->getCols(); ++x) {
@@ -36,37 +36,41 @@ void TextViewController::visualizeWorld(){
 
             // Append the corresponding ASCII representation to the overall representation string
             if (isHealthPack != myHealthpacks.end()) {
-                asciiRepresentation += verticalHealthPackTile;
+                initialAsciiRepresentation += verticalHealthPackTile;
             } else if (isEnemy != myEnemies.end()) {
-                asciiRepresentation += verticalEnemyTile;
+                initialAsciiRepresentation += verticalEnemyTile;
             } else if (isProtagonist) {
-                asciiRepresentation += verticalProtagonistTile;
+                initialAsciiRepresentation += verticalProtagonistTile;
             } else {
-                asciiRepresentation += verticalEmptyTile; // Spaces for empty tile
+                initialAsciiRepresentation += verticalEmptyTile; // Spaces for empty tile
             }
         }
-        asciiRepresentation += "|"; // Add last '|' of every row
-        asciiRepresentation += QChar(0x2029); // Unicode for 'PARAGRAPH SEPARATOR' = '\n'
+        initialAsciiRepresentation += "|"; // Add last '|' of every row
+        initialAsciiRepresentation += QChar(0x2029); // Unicode for 'PARAGRAPH SEPARATOR' = '\n'
     }
 
     // Add the horizontal border after the last row
     for (int x = 0; x < worldController->getCols(); ++x) {
-        asciiRepresentation += horizontalBorder;
+        initialAsciiRepresentation += horizontalBorder;
     }
-    asciiRepresentation += "+"; // Add last '+' of map
+    initialAsciiRepresentation += "+"; // Add last '+' of map
+
+    // Set ascii to other representations
+    updatedAsciiRepresentation = initialAsciiRepresentation;
+    oldAsciiRepresentation = initialAsciiRepresentation;
 
     // Create a widget to contain the text view
     textViewWidget = new QWidget;
     textLayout = new QVBoxLayout(textViewWidget);
 
     // Display the ASCII representation in a QTextEdit
-    asciiTextEdit = new QTextEdit(asciiRepresentation);
+    asciiTextEdit = new QTextEdit(initialAsciiRepresentation);
     asciiTextEdit->setFont(QFont("Courier")); // Set a monospaced font for better alignment
 
     // Set line wrap mode to NoWrap
     //asciiTextEdit->setLineWrapMode(QTextEdit::NoWrap); // Deze lijn zorgt voor delay wanneer movement
 
-    asciiTextEdit->setPlainText(asciiRepresentation);
+    asciiTextEdit->setPlainText(initialAsciiRepresentation);
 
     // Add the text view to the layout
     textLayout->addWidget(asciiTextEdit);
@@ -211,33 +215,32 @@ void TextViewController::handleNavigateButtonClick(){
 }
 
 void TextViewController::drawProtagonist() {
-    // Update ASCII representation for Text view
-    QString updatedAsciiRepresentation = asciiRepresentation;
-
-    // Replace the old representation of the protagonist with an empty tile
-    updatedAsciiRepresentation.replace(startProtagonistIndex, 1, "\u00A0");
-
     // Check what was under old position
-    if (updatedAsciiRepresentation.at(oldProtagonistIndex) == 'E') {
-        qCDebug(TextViewControllerCategory) << "previous was enemy";
-        // TODO: handle E
-    } else if (updatedAsciiRepresentation.at(oldProtagonistIndex) == 'H') {
-        qCDebug(TextViewControllerCategory) << "previous was healthpack";
-        // TODO: handle H
+    if (oldAsciiRepresentation.at(oldProtagonistIndex) == 'P') {
+        qCDebug(TextViewControllerCategory) << "Previous position was P";
+        updatedAsciiRepresentation.replace(oldProtagonistIndex, 1, "\u00A0");
+    } else if (oldAsciiRepresentation.at(oldProtagonistIndex) == 'E') {
+        qCDebug(TextViewControllerCategory) << "Previous position was E";
+        updatedAsciiRepresentation.replace(oldProtagonistIndex, 1, "\u00A0");
+    } else if (oldAsciiRepresentation.at(oldProtagonistIndex) == 'H') {
+        qCDebug(TextViewControllerCategory) << "Previous position was H";
+        updatedAsciiRepresentation.replace(oldProtagonistIndex, 1, "\u00A0");
+    } else {
+        qCDebug(TextViewControllerCategory) << "Previous position was \u00A0";
     }
 
     // Find the index corresponding to the new protagonist's position in the ASCII representation
-    int newProtagonistIndex = worldController->getCols()*4 + 4*worldController->getProtagonist()->getXPos() + 2*worldController->getCols()*4*worldController->getProtagonist()->getYPos() + 4*worldController->getProtagonist()->getYPos()+4;
+    newProtagonistIndex = worldController->getCols()*4 + 4*worldController->getProtagonist()->getXPos() + 2*worldController->getCols()*4*worldController->getProtagonist()->getYPos() + 4*worldController->getProtagonist()->getYPos()+4;
 
     // Replace the empty tile with the representation of the protagonist
     updatedAsciiRepresentation.replace(newProtagonistIndex, 1, "P");
 
-    // Update oldIndex with newIndex
-    oldProtagonistIndex = newProtagonistIndex;
-
     // Display the updated ASCII representation in the QTextEdit
     asciiTextEdit->setPlainText(updatedAsciiRepresentation);
 
+    // Update old with new
+    oldProtagonistIndex = newProtagonistIndex;
+    oldAsciiRepresentation = updatedAsciiRepresentation;
 }
 
 void TextViewController::handleDeath(){
