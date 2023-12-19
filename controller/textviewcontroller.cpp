@@ -215,14 +215,14 @@ void TextViewController::handleNavigateButtonClick(){
 }
 
 void TextViewController::drawProtagonist() {
+    // Replace the old representation of the protagonist with an empty tile
+    updatedAsciiRepresentation.replace(oldProtagonistIndex, 1, "\u00A0");
+
     // Check what was under old position
-    if (oldAsciiRepresentation.at(oldProtagonistIndex) == 'P') {
-        qCDebug(TextViewControllerCategory) << "Previous position was P";
-        updatedAsciiRepresentation.replace(oldProtagonistIndex, 1, "\u00A0");
-    } else if (oldAsciiRepresentation.at(oldProtagonistIndex) == 'E') {
+    if (initialAsciiRepresentation.at(oldProtagonistIndex) == 'E') {
         qCDebug(TextViewControllerCategory) << "Previous position was E";
         updatedAsciiRepresentation.replace(oldProtagonistIndex, 1, "\u00A0");
-    } else if (oldAsciiRepresentation.at(oldProtagonistIndex) == 'H') {
+    } else if (initialAsciiRepresentation.at(oldProtagonistIndex) == 'H') {
         qCDebug(TextViewControllerCategory) << "Previous position was H";
         updatedAsciiRepresentation.replace(oldProtagonistIndex, 1, "\u00A0");
     } else {
