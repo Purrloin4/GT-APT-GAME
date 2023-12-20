@@ -43,3 +43,6 @@ win32: LIBS += -L$$PWD/../WorldSource/release/ -lworld
 
 INCLUDEPATH += $$PWD/../WorldSource
 DEPENDPATH += $$PWD/../WorldSource
+
+INCLUDEPATH += $$PWD/../worldsource
+DEPENDPATH += $$PWD/../worldsource
