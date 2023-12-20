@@ -1,6 +1,7 @@
 #include "worldcontroller.h"
 #include <iostream>
 #include "QLoggingCategory"
+#include "controller/graphicviewcontroller.h"
 
 QLoggingCategory WorldControllerCategory("worldController", QtDebugMsg);
 
@@ -98,6 +99,21 @@ void WorldController::handleKeyPressEvent(QKeyEvent *event){
             // Update the protagonist's position only if it's a valid position
             protagonist->setXPos(newX);
             protagonist->setYPos(newY);
+
+            for (auto it = poisonedTiles.begin(); it != poisonedTiles.end();) {
+                if (it->spreadXPos == newX && it->spreadYPos == newY) {
+                    float newHealth = protagonist->getHealth() - it->poisonLevel;
+                    if (newHealth > 0) {
+                        protagonist->setHealth(newHealth);
+                    } else {
+                        protagonist->setHealth(0);
+                        emit gameOver();
+                    }
+                    break;
+                } else {
+                    ++it;
+                }
+            }
 
             // Redraw the protagonist and energy bar
             emit drawProtagonist();
@@ -300,12 +316,6 @@ bool WorldController::isEnemy(int x, int y)
             return true;
         }
     }
-    return false;
-}
-
-bool WorldController::isPoisoned(int x, int y)
-{
-    // We do not yet have poisoned tiles
     return false;
 }
 
