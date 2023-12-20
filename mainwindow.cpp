@@ -1,11 +1,10 @@
-    #include "mainwindow.h"
+#include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <QGraphicsScene>
 #include <QGraphicsView>
 #include <QImage>
 #include <QGraphicsRectItem>
 #include <QMessageBox>
-#include "pathfinder.h"
 #include "QLoggingCategory"
 #include <iostream>
 #include <QLabel>
