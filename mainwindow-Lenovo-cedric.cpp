@@ -11,6 +11,8 @@
 #include <QLabel>
 #include "controller/windowcontroller.h"
 
+QLoggingCategory pathfinderCategory("pathfinder", QtDebugMsg);
+
 QLoggingCategory mainwindowCategory("mainwindow");
 
 
@@ -26,8 +28,6 @@ MainWindow::MainWindow(QWidget *parent)
     graphicViewController->visualizeWorld();
     textViewController->visualizeWorld();
     windowController->setupWindow();
-
-    setFocus();
 
     // Create a vertical layout for the main window
     QVBoxLayout *mainLayout = new QVBoxLayout;
@@ -84,8 +84,8 @@ void MainWindow::mousePressEvent(QMouseEvent *event) {
         QPointF clickedPoint = views.first()->mapToScene(event->pos());
 
         // Convert the scene coordinates to tile coordinates
-        int x = static_cast<int>(clickedPoint.x()) / 10 - 2;
-        int y = static_cast<int>(clickedPoint.y()) / 10 - 4;
+        int x = static_cast<int>(clickedPoint.x()) / 10 - 1;
+        int y = static_cast<int>(clickedPoint.y()) / 10 - 1;
 
         emit mousePressed(x, y);
     }
@@ -129,16 +129,5 @@ void MainWindow::connectSignalsAndSlots() {
     //healthPackTaken
     connect(worldController.get(), &WorldController::healthPackTaken,
             graphicViewController.get(), &GraphicViewController::handleHealthPackTaken);
-    //zoomInGraphic
-    connect(windowController.get(), &WindowController::zoomInSignal,
-            graphicViewController.get(), &GraphicViewController::zoomIn);
-    //zoomOutGraphic
-    connect(windowController.get(), &WindowController::zoomOutSignal,
-            graphicViewController.get(), &GraphicViewController::zoomOut);
-    //zoomInText
-    connect(windowController.get(), &WindowController::zoomInSignal,
-            textViewController.get(), &TextViewController::zoomIn);
-    //zoomOutText
-    connect(windowController.get(), &WindowController::zoomOutSignal,
-            textViewController.get(), &TextViewController::zoomOut);
 }
+

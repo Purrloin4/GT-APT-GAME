@@ -8,7 +8,8 @@
 #include <QGraphicsRectItem>
 #include <QKeyEvent>
 #include "pathNode.h"
-#include "pathfinder.h"
+//#include "pathfinder.h"
+#include "pathfinder function.h"
 
 
 struct point {
