@@ -14,7 +14,7 @@ void TextViewController::visualizeWorld(){
     const QString verticalHealthPackTile = "| H ";
     const QString verticalEnemyTile = "| E ";
     const QString verticalProtagonistTile = "| P ";
-    const QString verticalPEnemyTile = "| p ";
+    const QString verticalPEnemyTile = "| ¶ ";
 
     // Loop through each row
     for (int y = 0; y < worldController->getRows(); ++y) {
