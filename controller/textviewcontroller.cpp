@@ -14,6 +14,7 @@ void TextViewController::visualizeWorld(){
     const QString verticalHealthPackTile = "| H ";
     const QString verticalEnemyTile = "| E ";
     const QString verticalProtagonistTile = "| P ";
+    const QString verticalPEnemyTile = "| p ";
 
     // Loop through each row
     for (int y = 0; y < worldController->getRows(); ++y) {
@@ -29,6 +30,13 @@ void TextViewController::visualizeWorld(){
             // Check if the current position contains an entity (health pack, enemy, protagonist)
             auto isHealthPack = std::find_if(myHealthpacks.begin(), myHealthpacks.end(),
                                              [x, y](const auto &hp) { return hp->getXPos() == x && hp->getYPos() == y; });
+            auto isPEnemy = std::find_if(myEnemies.begin(), myEnemies.end(),
+                                         [x, y](const auto &enemy) {
+                                             if (auto pEnemy = std::dynamic_pointer_cast<PEnemy>(enemy)) {
+                                                 return pEnemy->getXPos() == x && pEnemy->getYPos() == y;
+                                             }
+                                             return false;
+                                         });
             auto isEnemy = std::find_if(myEnemies.begin(), myEnemies.end(),
                                         [x, y](const auto &enemy) { return enemy->getXPos() == x && enemy->getYPos() == y; });
             auto isProtagonist = (protagonist->getXPos() == x && protagonist->getYPos() == y);
@@ -36,6 +44,8 @@ void TextViewController::visualizeWorld(){
             // Append the corresponding ASCII representation to the overall representation string
             if (isHealthPack != myHealthpacks.end()) {
                 initialAsciiRepresentation += verticalHealthPackTile;
+            } else if (isPEnemy != myEnemies.end()) {
+                initialAsciiRepresentation += verticalPEnemyTile;
             } else if (isEnemy != myEnemies.end()) {
                 initialAsciiRepresentation += verticalEnemyTile;
             } else if (isProtagonist) {
