@@ -10,7 +10,7 @@ WorldController::WorldController()
     // Create the world
     try {
         world = std::make_shared<World>();
-        world->createWorld(":/world_images/worldmap.png", 20, 20, 0.25f);
+        world->createWorld(":/world_images/worldmap.png", 8, 8, 0.25f);
 
         auto myTiles = world->getTiles();
         for (const auto &tile : myTiles){
@@ -239,6 +239,14 @@ void WorldController::useHealthpack()
             return;
             }
       }
+}
+
+void WorldController::handleAllHalfDead() {
+    for (auto& enemy : enemies) {
+        if (auto xEnemy = dynamic_cast<XEnemy*>(enemy.get())) {
+            xEnemy->setDefeated(true);
+        }
+    }
 }
 
 int WorldController::getHeursticFactor() const

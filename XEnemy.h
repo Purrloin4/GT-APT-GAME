@@ -7,11 +7,12 @@ class XEnemy : public Enemy {
 
     Q_OBJECT
 
-protected:
+private:
 
     bool defeated;
     bool halfDead;
     static int halfDeadCount;
+    static int totalEnemies;
     QTimer *timer;
 
 public:
@@ -29,6 +30,7 @@ public:
 signals:
     void timerExpired();
     void halfDeadSet();
+    void allHalfDead();
 
 };
 

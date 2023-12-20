@@ -121,6 +121,7 @@ void MainWindow::connectSignalsAndSlots() {
         if (auto xEnemy = dynamic_cast<XEnemy*>(enemy.get())) {
             connect(xEnemy, &XEnemy::timerExpired, graphicViewController.get(), &GraphicViewController::handleAlive);
             connect(xEnemy, &XEnemy::halfDeadSet, graphicViewController.get(), &GraphicViewController::handleHalfDead);
+            connect(xEnemy, &XEnemy::allHalfDead, worldController.get(), &WorldController::handleAllHalfDead);
         }
     }
     //drawBars
