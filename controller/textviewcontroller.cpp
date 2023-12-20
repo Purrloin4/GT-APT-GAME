@@ -193,17 +193,7 @@ void TextViewController::handleNavigateButtonClick(){
     int y = navigateText[2].digitValue() - 1;
     qCDebug(TextViewControllerCategory) << "teleport y value =" << y;
 
-    // Check if the clicked position is within the boundaries of the world
-    if (worldController->isValidPosition(x, y)) {
-        // Call findPathAndHighlight with the clicked tile's position
-        auto startTile = std::make_unique<Tile>(protagonist->getXPos(), protagonist->getYPos(), 0.0f);
-        auto endTile = std::make_unique<Tile>(x, y, 0.0f);
-        worldController->findPath(std::move(startTile), std::move(endTile));
-        protagonist->setPos(x, y);
-        emit drawProtagonist();
-        worldController->attackEnemy();
-        worldController->useHealthpack();
-    }
+    worldController->handleMousePressEvent(x,y);
 }
 
 void TextViewController::drawProtagonist() {
