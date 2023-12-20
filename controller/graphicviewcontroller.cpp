@@ -122,9 +122,18 @@ void GraphicViewController::visualizePath(std::vector<int> path, std::shared_ptr
     }
 }
 
+void GraphicViewController::handleAlive() {
+    Enemy* enemy = qobject_cast<Enemy*>(sender());
+    scene->addRect(enemy->getXPos() * tileSize, enemy->getYPos() * tileSize, tileSize, tileSize, QPen(Qt::black), QBrush(QColorConstants::Svg::orange));
+}
+
+void GraphicViewController::handleHalfDead() {
+    Enemy* enemy = qobject_cast<Enemy*>(sender());
+    scene->addRect(enemy->getXPos() * tileSize, enemy->getYPos() * tileSize, tileSize, tileSize, QPen(Qt::black), QBrush(QColorConstants::Svg::lightblue));
+}
+
 void GraphicViewController::handleDeath() {
     Enemy* enemy = qobject_cast<Enemy*>(sender());
-    // Visualization of defeated enemy
     scene->addRect(enemy->getXPos() * tileSize, enemy->getYPos() * tileSize, tileSize, tileSize, QPen(Qt::black), QBrush(QColorConstants::Svg::purple));
     for (auto it = tileVisualisations.begin(); it != tileVisualisations.end();) {
         if (it->enemy==enemy){
@@ -144,7 +153,7 @@ void GraphicViewController::handleDeath() {
 void GraphicViewController::removePoisonedTiles(Enemy* enemy) {
     if (PEnemy* pEnemy = dynamic_cast<PEnemy*>(enemy)) {
         for (auto it = worldController->poisonedTiles.begin(); it != worldController->poisonedTiles.end();) {
-            if (it->enemy == enemy) {
+            if (it->enemy == pEnemy) {
                 scene->removeItem(it->graphicsItem);
                 it = worldController->poisonedTiles.erase(it);
             } else {

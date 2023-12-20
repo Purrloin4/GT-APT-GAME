@@ -35,12 +35,11 @@ WorldController::WorldController()
             }
         }
 
-        // Calculate the number of enemies to convert to XEnemy (25% of total)
+        // Conversion of 25% of regual enemies to XEnemies
         int numXEnemies = static_cast<int>(0.25 * myEnemies.size());
         int i = 0;
 
-        // Handle conversion from Enemy to XEnemy
-        for (auto enemy : enemies) {
+        for (const auto &enemy : enemies) {
             if (i == numXEnemies) {
                 break;
             }
@@ -58,8 +57,6 @@ WorldController::WorldController()
 
         this->cols = world->getCols();
         this->rows = world->getRows();
-
-
 
     } catch (const std::exception& e) {
         // Handle any exceptions here
@@ -183,6 +180,13 @@ void WorldController::attackEnemy(){
                     // Call the poison method for PEnemy
                     pEnemy->poison();
                     qCDebug(WorldControllerCategory) << "Attacked a poison enemy";
+                // Check if enemy is an XEnemy
+                } else if (auto xEnemy = dynamic_cast<XEnemy*>(enemy.get())) {
+                    if (!xEnemy->isHalfDead()) {
+                        xEnemy->setHalfDead(true);
+                    } else {
+                        xEnemy->setHalfDead(false);
+                    }
                 } else {
                     enemy->setDefeated(true);
                     qCDebug(WorldControllerCategory) << "Defeated an enemy";
