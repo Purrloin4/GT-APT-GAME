@@ -6,5 +6,6 @@
         <file>world_images/maze3.png</file>
         <file>world_images/worldmap.png</file>
         <file>world_images/worldmap4.png</file>
+        <file>world_images/worldmap4_downscaled.png</file>
     </qresource>
 </RCC>
