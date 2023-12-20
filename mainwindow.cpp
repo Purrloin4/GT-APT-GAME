@@ -49,6 +49,9 @@ MainWindow::MainWindow(QWidget *parent)
     // Add the additional widget to the main layout
     mainLayout->addWidget(additionalWidget);
 
+    mainLayout->setStretch(0, 5); // tabWidget
+    mainLayout->setStretch(1, 1); // additionalWidget
+
     // Set the main layout for the main window
     QWidget *centralWidget = new QWidget(this);
     centralWidget->setLayout(mainLayout);
