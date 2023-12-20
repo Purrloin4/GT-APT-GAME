@@ -10,7 +10,7 @@ WorldController::WorldController()
     // Create the world
     try {
         world = std::make_shared<World>();
-        world->createWorld(":/world_images/grobu.png", 20, 20, 0.25f);
+        world->createWorld(":/world_images/worldmap.png", 8, 8, 0.25f);
 
         auto myTiles = world->getTiles();
         for (const auto &tile : myTiles){
@@ -35,13 +35,28 @@ WorldController::WorldController()
             }
         }
 
+        // Conversion of 25% of regual enemies to XEnemies
+        int numXEnemies = static_cast<int>(0.25 * myEnemies.size());
+        int i = 0;
+
+        for (const auto &enemy : enemies) {
+            if (i == numXEnemies) {
+                break;
+            }
+
+            // Create XEnemy from Enemy
+            auto xEnemy = std::make_shared<XEnemy>(enemy->getXPos(), enemy->getYPos(), enemy->getValue());
+
+            // Replace the original enemy with the XEnemy
+            this->enemies[i] = xEnemy;
+            i++;
+        }
+
         this->protagonist = std::make_shared<Protagonist>();
         this->protagonistItem = std::make_shared<QGraphicsRectItem*>();
 
         this->cols = world->getCols();
         this->rows = world->getRows();
-
-
 
     } catch (const std::exception& e) {
         // Handle any exceptions here
@@ -165,6 +180,13 @@ void WorldController::attackEnemy(){
                     // Call the poison method for PEnemy
                     pEnemy->poison();
                     qCDebug(WorldControllerCategory) << "Attacked a poison enemy";
+                // Check if enemy is an XEnemy
+                } else if (auto xEnemy = dynamic_cast<XEnemy*>(enemy.get())) {
+                    if (!xEnemy->isHalfDead()) {
+                        xEnemy->setHalfDead(true);
+                    } else {
+                        xEnemy->setHalfDead(false);
+                    }
                 } else {
                     enemy->setDefeated(true);
                     qCDebug(WorldControllerCategory) << "Defeated an enemy";
@@ -217,6 +239,14 @@ void WorldController::useHealthpack()
             return;
             }
       }
+}
+
+void WorldController::handleAllHalfDead() {
+    for (auto& enemy : enemies) {
+        if (auto xEnemy = dynamic_cast<XEnemy*>(enemy.get())) {
+            xEnemy->setDefeated(true);
+        }
+    }
 }
 
 int WorldController::getHeursticFactor() const

@@ -39,6 +39,7 @@ void GraphicViewController::visualizeWorld()
 
     QPixmap enemyTexture(":/texture_images/enemy.png");
     QPixmap PEnemyTexture(":/texture_images/PEnemy.png");
+    QPixmap XEnemyTexture(":/texture_images/XEnemy.png");
 
     // Add visualization for enemies
     for (const auto &enemy : enemies) {
@@ -46,6 +47,10 @@ void GraphicViewController::visualizeWorld()
         if (auto pEnemy = dynamic_cast<PEnemy*>(enemy.get())) {
             enemyItem = new QGraphicsPixmapItem(PEnemyTexture.scaled(tileSize, tileSize, Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation));
             enemyItem->setPos(pEnemy->getXPos() * tileSize, pEnemy->getYPos() * tileSize);
+            scene->addItem(enemyItem);
+        } else if (auto xEnemy = dynamic_cast<XEnemy*>(enemy.get())) {
+            enemyItem = new QGraphicsPixmapItem(XEnemyTexture.scaled(tileSize, tileSize, Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation));
+            enemyItem->setPos(xEnemy->getXPos() * tileSize, xEnemy->getYPos() * tileSize);
             scene->addItem(enemyItem);
         } else {
             enemyItem = new QGraphicsPixmapItem(enemyTexture.scaled(tileSize, tileSize, Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation));
@@ -57,7 +62,6 @@ void GraphicViewController::visualizeWorld()
         healthText->adjustSize();
         healthText->setPos((enemy->getXPos()-0.5) * tileSize, (enemy->getYPos() + 0.2) * tileSize);
         scene->addItem(healthText);
-
 
         //To store the health text with the correct enemy
         TileVisualisation tileVis;
@@ -164,6 +168,16 @@ void GraphicViewController::visualizePath(std::vector<int> path, std::shared_ptr
     }
 }
 
+void GraphicViewController::handleAlive() {
+    Enemy* enemy = qobject_cast<Enemy*>(sender());
+    scene->addRect(enemy->getXPos() * tileSize, enemy->getYPos() * tileSize, tileSize, tileSize, QPen(Qt::black), QBrush(QColorConstants::Svg::orange));
+}
+
+void GraphicViewController::handleHalfDead() {
+    Enemy* enemy = qobject_cast<Enemy*>(sender());
+    scene->addRect(enemy->getXPos() * tileSize, enemy->getYPos() * tileSize, tileSize, tileSize, QPen(Qt::black), QBrush(QColorConstants::Svg::lightblue));
+}
+
 void GraphicViewController::handleDeath() {
     Enemy* enemy = qobject_cast<Enemy*>(sender());
     // Visualization of defeated enemy
@@ -191,7 +205,7 @@ void GraphicViewController::handleDeath() {
 void GraphicViewController::removePoisonedTiles(Enemy* enemy) {
     if (PEnemy* pEnemy = dynamic_cast<PEnemy*>(enemy)) {
         for (auto it = worldController->poisonedTiles.begin(); it != worldController->poisonedTiles.end();) {
-            if (it->enemy == enemy) {
+            if (it->enemy == pEnemy) {
                 scene->removeItem(it->graphicsItem);
                 it = worldController->poisonedTiles.erase(it);
             } else {

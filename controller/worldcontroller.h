@@ -10,6 +10,7 @@
 #include "pathNode.h"
 //#include "pathfinder.h"
 #include "pathfinder function.h"
+#include "XEnemy.h"
 
 
 struct point {
@@ -82,6 +83,7 @@ public:
 public slots:
     void handleKeyPressEvent(QKeyEvent *event);
     void handleMousePressEvent(int x, int y);
+    void handleAllHalfDead();
 private:
     point start;
     point exit;
