@@ -14,6 +14,8 @@ void GraphicViewController::visualizeWorld()
 
     auto protagonist = worldController->getProtagonist();
 
+    QPixmap brickTexture(":/texture_images/brickwall.jpg");
+
     // Loop through each tile and set its color based on its value
     for (const auto &tile : myTiles) {
         int xPos = tile->getXPos();
@@ -23,12 +25,16 @@ void GraphicViewController::visualizeWorld()
         // Determine the color of the tile based on its value
         QColor brush;
         if(std::isinf(value)){
-            brush = Qt::black;
+            //brush = Qt::black;
+            QGraphicsPixmapItem *brickItem = new QGraphicsPixmapItem(brickTexture.scaled(tileSize, tileSize, Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation));
+            brickItem->setPos(xPos * tileSize, yPos * tileSize);
+            scene->addItem(brickItem);
         }
         else {
             brush = QColor::fromRgbF(value, value, value);
+            scene->addRect(xPos * tileSize, yPos * tileSize, tileSize, tileSize, QPen(Qt::black), brush);
         }
-        scene->addRect(xPos * tileSize, yPos * tileSize, tileSize, tileSize, QPen(Qt::black), brush);
+
     }
 
     QPixmap enemyTexture(":/texture_images/enemy.png");
