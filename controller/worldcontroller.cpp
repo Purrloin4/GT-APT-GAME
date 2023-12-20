@@ -10,7 +10,7 @@ WorldController::WorldController()
     // Create the world
     try {
         world = std::make_shared<World>();
-        world->createWorld(":/world_images/worldmap4_downscaled.png", 20, 20, 0.25f);
+        world->createWorld(":/world_images/grobu.png", 20, 20, 0.25f);
 
         auto myTiles = world->getTiles();
         for (const auto &tile : myTiles){
