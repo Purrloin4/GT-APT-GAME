@@ -162,6 +162,10 @@ void GraphicViewController::handleDeath() {
     Enemy* enemy = qobject_cast<Enemy*>(sender());
     // Visualization of defeated enemy
     //scene->addRect(enemy->getXPos() * tileSize, enemy->getYPos() * tileSize, tileSize, tileSize, QPen(Qt::black), QBrush(QColorConstants::Svg::purple));
+    QPixmap tombStoneTexture(":/texture_images/tombstone.png");
+    QGraphicsPixmapItem *tombStoneItem = new QGraphicsPixmapItem(tombStoneTexture.scaled(tileSize, tileSize, Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation));
+    tombStoneItem->setPos(enemy->getXPos() * tileSize, enemy->getYPos() * tileSize);
+    scene->addItem(tombStoneItem);
     for (auto it = tileVisualisations.begin(); it != tileVisualisations.end();) {
         if (it->enemy==enemy){
             scene->removeItem(it->enemyHealthText);

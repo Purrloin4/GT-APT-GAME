@@ -11,5 +11,7 @@
         <file>texture_images/XEnemy.png</file>
         <file>texture_images/XEnemy_half.png</file>
         <file>texture_images/PEnemy.png</file>
+        <file>texture_images/brickwall.jpg</file>
+        <file>texture_images/tombstone.png</file>
     </qresource>
 </RCC>
