@@ -187,10 +187,13 @@ void TextViewController::handleNavigateButtonClick(){
     // Print the text in the TextBox for debugging
     qCDebug(TextViewControllerCategory) << navigateText;
 
-    // Check the stored text and perform actions accordingly
-    int x = navigateText[0].digitValue() - 1;
+    // Split the string into a QStringList using the comma as a delimiter
+    QStringList values = navigateText.split(',');
+
+    // Convert the first and second parts to integers
+    int x = values.value(0).toInt() - 1;
     qCDebug(TextViewControllerCategory) << "teleport x value =" << x;
-    int y = navigateText[2].digitValue() - 1;
+    int y = values.value(1).toInt() - 1;
     qCDebug(TextViewControllerCategory) << "teleport y value =" << y;
 
     worldController->handleMousePressEvent(x,y);
