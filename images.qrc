@@ -7,5 +7,9 @@
         <file>world_images/worldmap.png</file>
         <file>world_images/worldmap4.png</file>
         <file>texture_images/healthpack.png</file>
+        <file>texture_images/enemy.png</file>
+        <file>texture_images/XEnemy.png</file>
+        <file>texture_images/XEnemy_half.png</file>
+        <file>texture_images/PEnemy.png</file>
     </qresource>
 </RCC>
