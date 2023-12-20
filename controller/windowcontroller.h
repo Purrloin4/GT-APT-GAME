@@ -17,6 +17,9 @@
 class WindowController: public QObject
 {
     Q_OBJECT
+signals:
+    void zoomInSignal();
+    void zoomOutSignal();
 public:
     WindowController(std::shared_ptr<WorldController> worldController)
         : worldController(worldController), scene(std::make_shared<QGraphicsScene>()), rawView(new QGraphicsView(scene.get())) {}
@@ -27,6 +30,8 @@ public:
 public slots:
     void drawBars();
     void handleTextChange(const QString &text);
+    void zoomIn();
+    void zoomOut();
 private:
     std::shared_ptr<WorldController> worldController;
     std::shared_ptr<QGraphicsScene> scene;
@@ -38,6 +43,9 @@ private:
     QLineEdit* tileSizeEdit;
     QLineEdit* heuristicFactorEdit;
     QLineEdit* heightFactorEdit;
+    QPushButton* autoPlayButton;
+    QPushButton* zoomInButton;
+    QPushButton* zoomOutButton;
 };
 
 #endif

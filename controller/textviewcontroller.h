@@ -18,6 +18,9 @@ public slots:
     void handleHealthPackTaken(std::shared_ptr<Tile> pack) override;
     void handleMoveButtonClick();
     void handleNavigateButtonClick();
+    void handleActionButtonClick();
+    void zoomIn() override;
+    void zoomOut() override;
 private:
     std::shared_ptr<Protagonist> protagonist = worldController->getProtagonist();
     float currentHealth = protagonist->getHealth();

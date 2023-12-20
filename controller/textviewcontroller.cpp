@@ -263,3 +263,16 @@ void TextViewController::handleHealthPackTaken(std::shared_ptr<Tile> pack){
 void TextViewController::handlePoisonLevelUpdated(float poisonLevel) {
 
 }
+
+void TextViewController::zoomIn() {
+    QFont currentFont = asciiTextEdit->font();
+    currentFont.setPointSize(currentFont.pointSize() + 1);
+    asciiTextEdit->setFont(currentFont);
+
+}
+
+void TextViewController::zoomOut() {
+    QFont currentFont = asciiTextEdit->font();
+    currentFont.setPointSize(currentFont.pointSize() - 1);
+    asciiTextEdit->setFont(currentFont);
+}
