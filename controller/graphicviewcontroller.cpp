@@ -170,18 +170,42 @@ void GraphicViewController::visualizePath(std::vector<int> path, std::shared_ptr
 
 void GraphicViewController::handleAlive() {
     Enemy* enemy = qobject_cast<Enemy*>(sender());
-    scene->addRect(enemy->getXPos() * tileSize, enemy->getYPos() * tileSize, tileSize, tileSize, QPen(Qt::black), QBrush(QColorConstants::Svg::orange));
+    QPixmap tombStoneTexture(":/texture_images/XEnemy.png");
+    QGraphicsPixmapItem *xEnemyItem = new QGraphicsPixmapItem(tombStoneTexture.scaled(tileSize, tileSize, Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation));
+    xEnemyItem->setPos(enemy->getXPos() * tileSize, enemy->getYPos() * tileSize);
+    scene->addItem(xEnemyItem);
+    for (auto it = tileVisualisations.begin(); it != tileVisualisations.end();) {
+        if (it->enemy==enemy){
+            scene->removeItem(it->texturePixmapItem);
+            it->texturePixmapItem = xEnemyItem;
+            break;
+        }
+        else{
+            ++it;
+        }
+    }
 }
 
 void GraphicViewController::handleHalfDead() {
     Enemy* enemy = qobject_cast<Enemy*>(sender());
-    scene->addRect(enemy->getXPos() * tileSize, enemy->getYPos() * tileSize, tileSize, tileSize, QPen(Qt::black), QBrush(QColorConstants::Svg::lightblue));
+    QPixmap tombStoneTexture(":/texture_images/XEnemy_half.png");
+    QGraphicsPixmapItem *halfXEnemyItem = new QGraphicsPixmapItem(tombStoneTexture.scaled(tileSize, tileSize, Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation));
+    halfXEnemyItem->setPos(enemy->getXPos() * tileSize, enemy->getYPos() * tileSize);
+    scene->addItem(halfXEnemyItem);
+    for (auto it = tileVisualisations.begin(); it != tileVisualisations.end();) {
+        if (it->enemy==enemy){
+            scene->removeItem(it->texturePixmapItem);
+            it->texturePixmapItem = halfXEnemyItem;
+            break;
+        }
+        else{
+            ++it;
+        }
+    }
 }
 
 void GraphicViewController::handleDeath() {
     Enemy* enemy = qobject_cast<Enemy*>(sender());
-    // Visualization of defeated enemy
-    //scene->addRect(enemy->getXPos() * tileSize, enemy->getYPos() * tileSize, tileSize, tileSize, QPen(Qt::black), QBrush(QColorConstants::Svg::purple));
     QPixmap tombStoneTexture(":/texture_images/tombstone.png");
     QGraphicsPixmapItem *tombStoneItem = new QGraphicsPixmapItem(tombStoneTexture.scaled(tileSize, tileSize, Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation));
     tombStoneItem->setPos(enemy->getXPos() * tileSize, enemy->getYPos() * tileSize);

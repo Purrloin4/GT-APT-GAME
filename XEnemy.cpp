@@ -27,7 +27,12 @@ void XEnemy::setHalfDead(bool value) {
         emit halfDeadSet();
         incrementHalfDeadCount();
         std::cout << "starting timer for 10 seconds" << std::endl;
-        timer->singleShot(10000, this, [=, this]() { setHalfDead(false); emit timerExpired(); });
+        timer->singleShot(10000, this, [=, this]() {
+            if (!defeated) {
+                setHalfDead(false);
+                emit timerExpired();
+            }
+        });
 
         if (halfDeadCount == totalEnemies) {
             emit allHalfDead();
