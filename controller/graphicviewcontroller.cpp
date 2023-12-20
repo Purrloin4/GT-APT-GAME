@@ -1,6 +1,7 @@
 #include "graphicviewcontroller.h"
 #include <iostream>
 #include "QLoggingCategory"
+#include "qtimer.h"
 
 QLoggingCategory GraphicViewControllerCategory("graphicViewController", QtDebugMsg);
 
@@ -13,6 +14,8 @@ void GraphicViewController::visualizeWorld()
 
     auto protagonist = worldController->getProtagonist();
 
+    QPixmap brickTexture(":/texture_images/brickwall.jpg");
+
     // Loop through each tile and set its color based on its value
     for (const auto &tile : myTiles) {
         int xPos = tile->getXPos();
@@ -22,25 +25,37 @@ void GraphicViewController::visualizeWorld()
         // Determine the color of the tile based on its value
         QColor brush;
         if(std::isinf(value)){
-            brush = Qt::black;
+            //brush = Qt::black;
+            QGraphicsPixmapItem *brickItem = new QGraphicsPixmapItem(brickTexture.scaled(tileSize, tileSize, Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation));
+            brickItem->setPos(xPos * tileSize, yPos * tileSize);
+            scene->addItem(brickItem);
         }
         else {
             brush = QColor::fromRgbF(value, value, value);
+            scene->addRect(xPos * tileSize, yPos * tileSize, tileSize, tileSize, QPen(Qt::black), brush);
         }
-        scene->addRect(xPos * tileSize, yPos * tileSize, tileSize, tileSize, QPen(Qt::black), brush);
+
     }
+
+    QPixmap enemyTexture(":/texture_images/enemy.png");
+    QPixmap PEnemyTexture(":/texture_images/PEnemy.png");
+    QPixmap XEnemyTexture(":/texture_images/XEnemy.png");
 
     // Add visualization for enemies
     for (const auto &enemy : enemies) {
+        QGraphicsPixmapItem *enemyItem;
         if (auto pEnemy = dynamic_cast<PEnemy*>(enemy.get())) {
-            // Visualize PEnemy instances in yellow
-            scene->addRect(pEnemy->getXPos() * tileSize, pEnemy->getYPos() * tileSize, tileSize, tileSize, QPen(Qt::black), QBrush(QColorConstants::Svg::yellow));
+            enemyItem = new QGraphicsPixmapItem(PEnemyTexture.scaled(tileSize, tileSize, Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation));
+            enemyItem->setPos(pEnemy->getXPos() * tileSize, pEnemy->getYPos() * tileSize);
+            scene->addItem(enemyItem);
         } else if (auto xEnemy = dynamic_cast<XEnemy*>(enemy.get())) {
-            // Visualize PEnemy instances in orange
-            scene->addRect(xEnemy->getXPos() * tileSize, xEnemy->getYPos() * tileSize, tileSize, tileSize, QPen(Qt::black), QBrush(QColorConstants::Svg::orange));
+            enemyItem = new QGraphicsPixmapItem(XEnemyTexture.scaled(tileSize, tileSize, Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation));
+            enemyItem->setPos(xEnemy->getXPos() * tileSize, xEnemy->getYPos() * tileSize);
+            scene->addItem(enemyItem);
         } else {
-            // Visualize regular enemies in red
-            scene->addRect(enemy->getXPos() * tileSize, enemy->getYPos() * tileSize, tileSize, tileSize, QPen(Qt::black), QBrush(Qt::red));
+            enemyItem = new QGraphicsPixmapItem(enemyTexture.scaled(tileSize, tileSize, Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation));
+            enemyItem->setPos(enemy->getXPos() * tileSize, enemy->getYPos() * tileSize);
+            scene->addItem(enemyItem);
         }
         QGraphicsTextItem *healthText = new QGraphicsTextItem(QString::number(enemy->getValue()));
         healthText->setDefaultTextColor(Qt::blue);
@@ -52,12 +67,18 @@ void GraphicViewController::visualizeWorld()
         TileVisualisation tileVis;
         tileVis.enemy = enemy.get();
         tileVis.enemyHealthText = healthText;
+        tileVis.texturePixmapItem = enemyItem;
         tileVisualisations.push_back(tileVis);
     }
 
+    QPixmap healthPackTexture(":/texture_images/healthpack.png");
+
     // Add visualization for health packs
     for (const auto &healthPack : healthPacks) {
-        scene->addRect(healthPack->getXPos() * tileSize, healthPack->getYPos() * tileSize, tileSize, tileSize, QPen(Qt::black), QBrush(Qt::green));
+        QGraphicsPixmapItem *healthPackItem = new QGraphicsPixmapItem(healthPackTexture.scaled(tileSize, tileSize, Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation));
+        healthPackItem->setPos(healthPack->getXPos() * tileSize, healthPack->getYPos() * tileSize);
+        scene->addItem(healthPackItem);
+
         QGraphicsTextItem *healthPackText = new QGraphicsTextItem(QString::number(healthPack->getValue()));
         healthPackText->setDefaultTextColor(Qt::blue);
         healthPackText->adjustSize();
@@ -69,6 +90,7 @@ void GraphicViewController::visualizeWorld()
         TileVisualisation tileVis;
         tileVis.tile = healthPack.get();
         tileVis.healthPackText = healthPackText;
+        tileVis.texturePixmapItem = healthPackItem;
         tileVisualisations.push_back(tileVis);
     }
 
@@ -92,13 +114,37 @@ void GraphicViewController::drawProtagonist() {
 }
 
 void GraphicViewController::visualizePath(std::vector<int> path, std::shared_ptr<Tile> startTile){
-    for (const auto &tileVis : previousPath) {
-        if (tileVis.graphicsItem) {
-            scene->removeItem(tileVis.graphicsItem);
-            delete tileVis.graphicsItem;
+    if (pathDeletionTimer) {
+        pathDeletionTimer->stop();
+        delete pathDeletionTimer;
+        pathDeletionTimer = nullptr;
+
+        for (const auto &tileVis : previousPath) {
+            if (tileVis.graphicsItem) {
+                scene->removeItem(tileVis.graphicsItem);
+                delete tileVis.graphicsItem;
+            }
         }
+        previousPath.clear();
     }
-    previousPath.clear();
+
+    pathDeletionTimer = new QTimer(this);
+
+    connect(pathDeletionTimer, &QTimer::timeout, [this]() {
+        for (const auto &tileVis : previousPath) {
+            if (tileVis.graphicsItem) {
+                scene->removeItem(tileVis.graphicsItem);
+                delete tileVis.graphicsItem;
+            }
+        }
+        previousPath.clear();
+
+        pathDeletionTimer->stop();
+        delete pathDeletionTimer;
+        pathDeletionTimer = nullptr;
+    });
+
+    pathDeletionTimer->start(2000);
 
     auto xPos = startTile->getXPos();
     auto yPos = startTile->getYPos();
@@ -134,10 +180,20 @@ void GraphicViewController::handleHalfDead() {
 
 void GraphicViewController::handleDeath() {
     Enemy* enemy = qobject_cast<Enemy*>(sender());
+<<<<<<< controller/graphicviewcontroller.cpp
     scene->addRect(enemy->getXPos() * tileSize, enemy->getYPos() * tileSize, tileSize, tileSize, QPen(Qt::black), QBrush(QColorConstants::Svg::purple));
+=======
+    // Visualization of defeated enemy
+    //scene->addRect(enemy->getXPos() * tileSize, enemy->getYPos() * tileSize, tileSize, tileSize, QPen(Qt::black), QBrush(QColorConstants::Svg::purple));
+    QPixmap tombStoneTexture(":/texture_images/tombstone.png");
+    QGraphicsPixmapItem *tombStoneItem = new QGraphicsPixmapItem(tombStoneTexture.scaled(tileSize, tileSize, Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation));
+    tombStoneItem->setPos(enemy->getXPos() * tileSize, enemy->getYPos() * tileSize);
+    scene->addItem(tombStoneItem);
+>>>>>>> controller/graphicviewcontroller.cpp
     for (auto it = tileVisualisations.begin(); it != tileVisualisations.end();) {
         if (it->enemy==enemy){
             scene->removeItem(it->enemyHealthText);
+            scene->removeItem(it->texturePixmapItem);
             break;
         }
         else{
@@ -165,12 +221,13 @@ void GraphicViewController::removePoisonedTiles(Enemy* enemy) {
 
 
 void GraphicViewController::handleHealthPackTaken(std::shared_ptr<Tile> pack){
-     scene->addRect(pack->getXPos() * tileSize, pack->getYPos() * tileSize, tileSize, tileSize, QPen(Qt::black), QBrush(QColorConstants::Svg::purple));
+     //scene->addRect(pack->getXPos() * tileSize, pack->getYPos() * tileSize, tileSize, tileSize, QPen(Qt::black), QBrush(QColorConstants::Svg::purple));
     for (auto it = tileVisualisations.begin(); it != tileVisualisations.end();) {
         //if (it->tile->getXPos() == xPos && it->tile->getYPos() == yPos){
         if(it->tile == pack.get()){
             qCDebug(GraphicViewControllerCategory) << "found healthPackTile";
             scene->removeItem(it->healthPackText);
+            scene->removeItem(it->texturePixmapItem);
             break;
          }
         else{

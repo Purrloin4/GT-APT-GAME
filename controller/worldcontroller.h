@@ -27,6 +27,7 @@ struct TileVisualisation{
     QGraphicsTextItem* enemyHealthText;
     QGraphicsTextItem* healthPackText;
     QGraphicsRectItem* graphicsItem;
+    QGraphicsPixmapItem* texturePixmapItem;
 };
 
 
