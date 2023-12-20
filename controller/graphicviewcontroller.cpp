@@ -35,6 +35,9 @@ void GraphicViewController::visualizeWorld()
         if (auto pEnemy = dynamic_cast<PEnemy*>(enemy.get())) {
             // Visualize PEnemy instances in yellow
             scene->addRect(pEnemy->getXPos() * tileSize, pEnemy->getYPos() * tileSize, tileSize, tileSize, QPen(Qt::black), QBrush(QColorConstants::Svg::yellow));
+        } else if (auto xEnemy = dynamic_cast<XEnemy*>(enemy.get())) {
+            // Visualize PEnemy instances in orange
+            scene->addRect(xEnemy->getXPos() * tileSize, xEnemy->getYPos() * tileSize, tileSize, tileSize, QPen(Qt::black), QBrush(QColorConstants::Svg::orange));
         } else {
             // Visualize regular enemies in red
             scene->addRect(enemy->getXPos() * tileSize, enemy->getYPos() * tileSize, tileSize, tileSize, QPen(Qt::black), QBrush(Qt::red));
@@ -44,7 +47,6 @@ void GraphicViewController::visualizeWorld()
         healthText->adjustSize();
         healthText->setPos((enemy->getXPos()-0.5) * tileSize, (enemy->getYPos() + 0.2) * tileSize);
         scene->addItem(healthText);
-
 
         //To store the health text with the correct enemy
         TileVisualisation tileVis;

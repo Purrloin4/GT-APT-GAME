@@ -35,6 +35,24 @@ WorldController::WorldController()
             }
         }
 
+        // Calculate the number of enemies to convert to XEnemy (25% of total)
+        int numXEnemies = static_cast<int>(0.25 * myEnemies.size());
+        int i = 0;
+
+        // Handle conversion from Enemy to XEnemy
+        for (auto enemy : enemies) {
+            if (i == numXEnemies) {
+                break;
+            }
+
+            // Create XEnemy from Enemy
+            auto xEnemy = std::make_shared<XEnemy>(enemy->getXPos(), enemy->getYPos(), enemy->getValue());
+
+            // Replace the original enemy with the XEnemy
+            this->enemies[i] = xEnemy;
+            i++;
+        }
+
         this->protagonist = std::make_shared<Protagonist>();
         this->protagonistItem = std::make_shared<QGraphicsRectItem*>();
 

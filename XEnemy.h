@@ -7,9 +7,16 @@ class XEnemy : public Enemy {
 
     Q_OBJECT
 
+protected:
+
+    bool halfDead;
+
 public:
+
     XEnemy(int xPosition, int yPosition, float strength);
-    ~XEnemy();
+
+    bool isHalfDead() const;
+    void setHalfDead(bool value);
 
 };
 

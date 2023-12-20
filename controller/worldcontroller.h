@@ -10,6 +10,7 @@
 #include "pathNode.h"
 //#include "pathfinder.h"
 #include "pathfinder function.h"
+#include "XEnemy.h"
 
 
 struct point {
