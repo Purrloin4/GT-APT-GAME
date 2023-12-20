@@ -11,7 +11,17 @@ void WindowController::setupWindow(){
     infoLayout->addWidget(rawView);
 
     QFormLayout *controlLayout = new QFormLayout;
-    QPushButton *button = new QPushButton("AutoPlay");
+
+    zoomInButton = new QPushButton("Zoom In");
+    zoomOutButton = new QPushButton("Zoom Out");
+
+    zoomInButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Minimum);
+    zoomOutButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Minimum);
+
+    controlLayout->addRow(zoomInButton, zoomOutButton);
+
+    connect(zoomInButton, &QPushButton::clicked, this, &WindowController::zoomIn);
+    connect(zoomOutButton, &QPushButton::clicked, this, &WindowController::zoomOut);
 
     QLabel *heuristicFactorLabel = new QLabel("Heuristic Factor");
     heuristicFactorEdit = new QLineEdit;
@@ -25,7 +35,8 @@ void WindowController::setupWindow(){
     heightFactorEdit->setPlaceholderText(QString::number(worldController->getHeightFactor()));
     controlLayout->addRow(heightFactorLabel, heightFactorEdit);
 
-    controlLayout->addWidget(button);
+    autoPlayButton = new QPushButton("AutoPlay");
+    controlLayout->addWidget(autoPlayButton);
 
     windowLayout->addLayout(infoLayout);
     windowLayout->addLayout(controlLayout);
@@ -84,4 +95,14 @@ void WindowController::handleTextChange(const QString &newText) {
             }
         }
     }
+}
+
+void WindowController::zoomIn(){
+    qCDebug(WindowControllerCategory) << "Zooming in";
+    emit zoomInSignal();
+}
+
+void WindowController::zoomOut(){
+    qCDebug(WindowControllerCategory) << "Zooming out";
+    emit zoomOutSignal();
 }
