@@ -5,7 +5,7 @@
 #include <QImage>
 #include <QGraphicsRectItem>
 #include <QMessageBox>
-#include "pathfinder.h"
+//#include "pathfinder.h"
 #include "QLoggingCategory"
 #include <iostream>
 #include <QLabel>

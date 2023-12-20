@@ -188,34 +188,19 @@ void TextViewController::handleNavigateButtonClick(){
     qCDebug(TextViewControllerCategory) << navigateText;
 
     // Check the stored text and perform actions accordingly
-    int newX = protagonist->getXPos();
-    int newY = protagonist->getYPos();
+    int x = navigateText[0].digitValue() - 1;
+    qCDebug(TextViewControllerCategory) << "teleport x value =" << x;
+    int y = navigateText[2].digitValue() - 1;
+    qCDebug(TextViewControllerCategory) << "teleport y value =" << y;
 
-    if (navigateText.toLower() == "left") {
-        qCDebug(TextViewControllerCategory) << "left action was triggered";
-        newX = protagonist->getXPos() - 1;
-    } else if (navigateText.toLower() == "right") {
-        qCDebug(TextViewControllerCategory) << "right action was triggered";
-        newX = protagonist->getXPos() + 1;
-    } else if (navigateText.toLower() == "up") {
-        qCDebug(TextViewControllerCategory) << "up action was triggered";
-        newY = protagonist->getYPos() - 1;
-    } else if (navigateText.toLower() == "down") {
-        qCDebug(TextViewControllerCategory) << "down action was triggered";
-        newY = protagonist->getYPos() + 1;
-    }
-
-    // Check if the new position is within the boundaries of the world
-    if(newX >= 0 && newX < worldController->getCols() && newY >= 0 && newY < worldController->getRows()) {
-        // Update the protagonist's position only if it's a valid position
-        protagonist->setXPos(newX);
-        protagonist->setYPos(newY);
-
-        // Redraw the protagonist and energy bar
-        emit worldController->drawProtagonist();
-        emit worldController->drawBars();
-
-        // Check if you can attack an enemy or use a healthpack
+    // Check if the clicked position is within the boundaries of the world
+    if (worldController->isValidPosition(x, y)) {
+        // Call findPathAndHighlight with the clicked tile's position
+        auto startTile = std::make_unique<Tile>(protagonist->getXPos(), protagonist->getYPos(), 0.0f);
+        auto endTile = std::make_unique<Tile>(x, y, 0.0f);
+        worldController->findPath(std::move(startTile), std::move(endTile));
+        protagonist->setPos(x, y);
+        emit drawProtagonist();
         worldController->attackEnemy();
         worldController->useHealthpack();
     }
