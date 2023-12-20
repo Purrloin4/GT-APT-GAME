@@ -13,5 +13,6 @@
         <file>texture_images/PEnemy.png</file>
         <file>texture_images/brickwall.jpg</file>
         <file>texture_images/tombstone.png</file>
+        <file>world_images/worldmap4_downscaled.png</file>
     </qresource>
 </RCC>
