@@ -16,6 +16,17 @@ struct point {
     int yCoordinate;
 };
 
+struct TileVisualisation{
+    int spreadXPos;
+    int spreadYPos;
+    float poisonLevel;
+    Enemy* enemy;
+    Tile* tile;
+    QGraphicsTextItem* enemyHealthText;
+    QGraphicsTextItem* healthPackText;
+    QGraphicsRectItem* graphicsItem;
+};
+
 
 class WorldController : public QObject
 {
@@ -49,6 +60,8 @@ public:
 
     std::shared_ptr<QGraphicsRectItem*> getProtagonistItem() const;
 
+    std::vector<TileVisualisation> poisonedTiles;
+
     int getHeursticFactor() const;
     int getHeightFactor() const;
 
@@ -63,7 +76,7 @@ public:
 
     bool isHealthPack(int x, int y);
     bool isEnemy(int x, int y);
-    bool isPoisoned(int x, int y);
+
 public slots:
     void handleKeyPressEvent(QKeyEvent *event);
     void handleMousePressEvent(int x, int y);

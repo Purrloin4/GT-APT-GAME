@@ -141,10 +141,10 @@ void GraphicViewController::handleDeath() {
 
 void GraphicViewController::removePoisonedTiles(Enemy* enemy) {
     if (PEnemy* pEnemy = dynamic_cast<PEnemy*>(enemy)) {
-        for (auto it = poisonedTiles.begin(); it != poisonedTiles.end();) {
+        for (auto it = worldController->poisonedTiles.begin(); it != worldController->poisonedTiles.end();) {
             if (it->enemy == enemy) {
                 scene->removeItem(it->graphicsItem);
-                it = poisonedTiles.erase(it);
+                it = worldController->poisonedTiles.erase(it);
             } else {
                 ++it;
             }
@@ -203,10 +203,13 @@ void GraphicViewController::drawPoisonSpread(PEnemy* pEnemy, float poisonLevel) 
                 poisonedTile.spreadYPos = spreadY;
                 poisonedTile.graphicsItem = scene->addRect(spreadX * tileSize, spreadY * tileSize, tileSize, tileSize, QPen(Qt::black), QBrush(poisonColor));
                 poisonedTile.enemy = pEnemy;
-                poisonedTiles.push_back(poisonedTile);
+                poisonedTile.poisonLevel = poisonLevel;
+                worldController->poisonedTiles.push_back(poisonedTile);
             }
         }
     }
+
+    drawProtagonist();
 
     // Update the spread radius for the next iteration
     spreadRadii.insert(pEnemy, spreadRadius + 1);

@@ -4,16 +4,6 @@
 #include "controller/viewcontroller.h"
 #include "controller/worldcontroller.h"
 
-struct TileVisualisation{
-    int spreadXPos;
-    int spreadYPos;
-    Enemy* enemy;
-    Tile* tile;
-    QGraphicsTextItem* enemyHealthText;
-    QGraphicsTextItem* healthPackText;
-    QGraphicsRectItem* graphicsItem;
-};
-
 class GraphicViewController : public ViewController
 {
 public:
@@ -42,7 +32,6 @@ private:
     QWidget* graphViewWidget;
     std::vector<TileVisualisation> tileVisualisations;
     std::vector<TileVisualisation> previousPath;
-    std::vector<TileVisualisation> poisonedTiles;
 };
 
 
