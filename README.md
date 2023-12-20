@@ -31,3 +31,4 @@
 
 ### Week 13
 - Implement weight controls - Cédric
+- Implement command movement TextBased - Bob
