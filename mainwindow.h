@@ -4,7 +4,6 @@
 #include <QMainWindow>
 #include <QGraphicsScene>
 #include "world.h"
-#include "pathNode.h"
 #include "controller/worldcontroller.h"
 #include "controller/graphicviewcontroller.h"
 #include "controller/textviewcontroller.h"

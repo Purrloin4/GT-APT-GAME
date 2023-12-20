@@ -1,6 +1,7 @@
 #include "graphicviewcontroller.h"
 #include <iostream>
 #include "QLoggingCategory"
+#include "qtimer.h"
 
 QLoggingCategory GraphicViewControllerCategory("graphicViewController", QtDebugMsg);
 
@@ -90,13 +91,37 @@ void GraphicViewController::drawProtagonist() {
 }
 
 void GraphicViewController::visualizePath(std::vector<int> path, std::shared_ptr<Tile> startTile){
-    for (const auto &tileVis : previousPath) {
-        if (tileVis.graphicsItem) {
-            scene->removeItem(tileVis.graphicsItem);
-            delete tileVis.graphicsItem;
+    if (pathDeletionTimer) {
+        pathDeletionTimer->stop();
+        delete pathDeletionTimer;
+        pathDeletionTimer = nullptr;
+
+        for (const auto &tileVis : previousPath) {
+            if (tileVis.graphicsItem) {
+                scene->removeItem(tileVis.graphicsItem);
+                delete tileVis.graphicsItem;
+            }
         }
+        previousPath.clear();
     }
-    previousPath.clear();
+
+    pathDeletionTimer = new QTimer(this);
+
+    connect(pathDeletionTimer, &QTimer::timeout, [this]() {
+        for (const auto &tileVis : previousPath) {
+            if (tileVis.graphicsItem) {
+                scene->removeItem(tileVis.graphicsItem);
+                delete tileVis.graphicsItem;
+            }
+        }
+        previousPath.clear();
+
+        pathDeletionTimer->stop();
+        delete pathDeletionTimer;
+        pathDeletionTimer = nullptr;
+    });
+
+    pathDeletionTimer->start(2000);
 
     auto xPos = startTile->getXPos();
     auto yPos = startTile->getYPos();

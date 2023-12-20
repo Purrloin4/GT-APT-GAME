@@ -3,6 +3,7 @@
 
 #include "controller/viewcontroller.h"
 #include "controller/worldcontroller.h"
+#include <QTimer>
 
 class GraphicViewController : public ViewController
 {
@@ -27,6 +28,7 @@ public slots:
 signals:
     void pathVisualizationRequested(std::vector<int> path, std::shared_ptr<Tile> startTile);
 private:
+    QTimer *pathDeletionTimer = nullptr;
     int tileSize = 10;
     QVBoxLayout* graphLayout;
     QWidget* graphViewWidget;
