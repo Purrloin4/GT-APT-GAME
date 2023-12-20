@@ -34,6 +34,7 @@ private:
     QWidget* graphViewWidget;
     std::vector<TileVisualisation> tileVisualisations;
     std::vector<TileVisualisation> previousPath;
+    QGraphicsPixmapItem* healthPackTextureItem;
 };
 
 

@@ -54,9 +54,14 @@ void GraphicViewController::visualizeWorld()
         tileVisualisations.push_back(tileVis);
     }
 
+    QPixmap healthPackTexture(":/texture_images/healthpack.png");
+
     // Add visualization for health packs
     for (const auto &healthPack : healthPacks) {
-        scene->addRect(healthPack->getXPos() * tileSize, healthPack->getYPos() * tileSize, tileSize, tileSize, QPen(Qt::black), QBrush(Qt::green));
+        QGraphicsPixmapItem *healthPackItem = new QGraphicsPixmapItem(healthPackTexture.scaled(tileSize, tileSize, Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation));
+        healthPackItem->setPos(healthPack->getXPos() * tileSize, healthPack->getYPos() * tileSize);
+        scene->addItem(healthPackItem);
+
         QGraphicsTextItem *healthPackText = new QGraphicsTextItem(QString::number(healthPack->getValue()));
         healthPackText->setDefaultTextColor(Qt::blue);
         healthPackText->adjustSize();
@@ -68,6 +73,7 @@ void GraphicViewController::visualizeWorld()
         TileVisualisation tileVis;
         tileVis.tile = healthPack.get();
         tileVis.healthPackText = healthPackText;
+        tileVis.texturePixmapItem = healthPackItem;
         tileVisualisations.push_back(tileVis);
     }
 
@@ -179,12 +185,13 @@ void GraphicViewController::removePoisonedTiles(Enemy* enemy) {
 
 
 void GraphicViewController::handleHealthPackTaken(std::shared_ptr<Tile> pack){
-     scene->addRect(pack->getXPos() * tileSize, pack->getYPos() * tileSize, tileSize, tileSize, QPen(Qt::black), QBrush(QColorConstants::Svg::purple));
+     //scene->addRect(pack->getXPos() * tileSize, pack->getYPos() * tileSize, tileSize, tileSize, QPen(Qt::black), QBrush(QColorConstants::Svg::purple));
     for (auto it = tileVisualisations.begin(); it != tileVisualisations.end();) {
         //if (it->tile->getXPos() == xPos && it->tile->getYPos() == yPos){
         if(it->tile == pack.get()){
             qCDebug(GraphicViewControllerCategory) << "found healthPackTile";
             scene->removeItem(it->healthPackText);
+            scene->removeItem(it->texturePixmapItem);
             break;
          }
         else{
