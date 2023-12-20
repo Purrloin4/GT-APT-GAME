@@ -39,10 +39,7 @@ qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
-win32: LIBS += -L$$PWD/../WorldSource/release/ -lworld
-
-INCLUDEPATH += $$PWD/../WorldSource
-DEPENDPATH += $$PWD/../WorldSource
+win32: LIBS += -L$$PWD/../worldsource/release/ -lworld
 
 INCLUDEPATH += $$PWD/../worldsource
 DEPENDPATH += $$PWD/../worldsource
