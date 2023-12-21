@@ -32,4 +32,5 @@
 ### Week 13
 - Weight controls and animations implementation - Cédric
 - Implement command movement TextBased - Bob
+- Implement command teleport TextBased - Bob
 - Poisoning of protagonist by PEnemy, XEnemy implementation - Tiësto
