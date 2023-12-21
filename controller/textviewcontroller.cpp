@@ -75,6 +75,7 @@ void TextViewController::visualizeWorld(){
     // Display the ASCII representation in a QTextEdit
     asciiTextEdit = new QTextEdit(initialAsciiRepresentation);
     asciiTextEdit->setFont(QFont("Courier")); // Set a monospaced font for better alignment
+    asciiTextEdit->setReadOnly(true);
 
     // Set line wrap mode to NoWrap
     //asciiTextEdit->setLineWrapMode(QTextEdit::NoWrap); // Deze lijn zorgt voor delay wanneer movement
