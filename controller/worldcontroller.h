@@ -40,6 +40,8 @@ signals:
     void drawBars();
     void gameOver();
     void healthPackTaken(std::shared_ptr<Tile> pack);
+    void moveProtagonistPosSignal(int x, int y);
+    void moveProtagonistPathSignal(std::vector<int> path, std::shared_ptr<Tile> startTile);
 public:
     WorldController();
 

@@ -112,8 +112,7 @@ void WorldController::handleKeyPressEvent(QKeyEvent *event){
         // Check if the new position is within the boundaries of the world
         if (isValidPosition(newX, newY)) {
             // Update the protagonist's position only if it's a valid position
-            protagonist->setXPos(newX);
-            protagonist->setYPos(newY);
+            emit moveProtagonistPosSignal(newX, newY);
 
             for (auto it = poisonedTiles.begin(); it != poisonedTiles.end();) {
                 if (it->spreadXPos == newX && it->spreadYPos == newY) {

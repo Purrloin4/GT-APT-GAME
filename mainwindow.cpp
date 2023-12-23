@@ -19,7 +19,8 @@ MainWindow::MainWindow(QWidget *parent)
     worldController(std::make_shared<WorldController>()),
     graphicViewController(std::make_shared<GraphicViewController>(worldController)),
     textViewController(std::make_shared<TextViewController>(worldController)),
-    windowController(std::make_shared<WindowController>(worldController))
+    windowController(std::make_shared<WindowController>(worldController)),
+    movementController(std::make_shared<MovementController>(worldController))
 {
     ui->setupUi(this);
     graphicViewController->visualizeWorld();
@@ -128,7 +129,7 @@ void MainWindow::connectSignalsAndSlots() {
         }
     }
     //drawBars
-   connect(worldController.get(), &WorldController::drawBars,
+    connect(worldController.get(), &WorldController::drawBars,
             windowController.get(), &WindowController::drawBars);
     //gameOverMessage
     connect(worldController.get(), &WorldController::gameOver,
@@ -148,4 +149,10 @@ void MainWindow::connectSignalsAndSlots() {
     //zoomOutText
     connect(windowController.get(), &WindowController::zoomOutSignal,
             textViewController.get(), &TextViewController::zoomOut);
+    //moveProtagonistPos
+    connect(worldController.get(), &WorldController::moveProtagonistPosSignal,
+            movementController.get(), &MovementController::moveProtagonistPos);
+    //moveProtagonistPath
+    connect(worldController.get(), &WorldController::moveProtagonistPathSignal,
+            movementController.get(), &MovementController::moveProtagonistPath);
 }

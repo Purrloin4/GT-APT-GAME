@@ -69,6 +69,7 @@ void WindowController::drawBars(){
     int energyBarHeight = tileSize; // You can adjust the height as needed
     QRect energyBarRect(barX, barY - energyBarHeight, energyBarWidth, energyBarHeight);
     double energyRatio = static_cast<double>(worldController->getProtagonist()->getEnergy()) / static_cast<double>(worldController->getMaxEH());
+    qCDebug(WindowControllerCategory) << "energyRatio" << energyRatio;
     QColor energyBarColor = QColor::fromRgbF(0.0, 0.0, 1.0 - energyRatio); // Blue to black gradient
     scene->addRect(energyBarRect, QPen(Qt::black), QBrush(energyBarColor));
 }
