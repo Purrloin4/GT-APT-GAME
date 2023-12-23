@@ -93,6 +93,9 @@ void TextViewController::visualizeWorld(){
     moveLineEdit->setPlaceholderText("Enter your command (e.g. left, right, up, down)");
     moveLayout->addWidget(moveLineEdit);
 
+    // Enter to move
+    connect(moveLineEdit, &QLineEdit::returnPressed, this, &TextViewController::handleMoveButtonClick);
+
     // Create a button
     moveButton = new QPushButton("MOVE");
     connect(moveButton, &QPushButton::clicked, this, &TextViewController::handleMoveButtonClick);
@@ -105,6 +108,9 @@ void TextViewController::visualizeWorld(){
     navigateLineEdit = new QLineEdit;
     navigateLineEdit->setPlaceholderText("Enter your coordinate (e.g. 3,8)");
     navigateLayout->addWidget(navigateLineEdit);
+
+    // Enter to navigate
+    connect(navigateLineEdit, &QLineEdit::returnPressed, this, &TextViewController::handleNavigateButtonClick);
 
     // Create a button
     navigateButton = new QPushButton("NAVIGATE");
