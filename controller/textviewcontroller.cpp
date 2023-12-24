@@ -85,6 +85,7 @@ void TextViewController::visualizeWorld(){
     // Display the ASCII representation in a QTextEdit
     asciiTextEdit = new QTextEdit(initialAsciiRepresentation);
     asciiTextEdit->setFont(QFont("Courier")); // Set a monospaced font for better alignment
+    asciiTextEdit->setReadOnly(true);
 
     // Set line wrap mode to NoWrap
     //asciiTextEdit->setLineWrapMode(QTextEdit::NoWrap); // Deze lijn zorgt voor delay wanneer movement
@@ -102,6 +103,9 @@ void TextViewController::visualizeWorld(){
     moveLineEdit->setPlaceholderText("Enter your command (e.g. left, right, up, down)");
     moveLayout->addWidget(moveLineEdit);
 
+    // Enter to move
+    connect(moveLineEdit, &QLineEdit::returnPressed, this, &TextViewController::handleMoveButtonClick);
+
     // Create a button
     moveButton = new QPushButton("MOVE");
     connect(moveButton, &QPushButton::clicked, this, &TextViewController::handleMoveButtonClick);
@@ -114,6 +118,9 @@ void TextViewController::visualizeWorld(){
     navigateLineEdit = new QLineEdit;
     navigateLineEdit->setPlaceholderText("Enter your coordinate (e.g. 3,8)");
     navigateLayout->addWidget(navigateLineEdit);
+
+    // Enter to navigate
+    connect(navigateLineEdit, &QLineEdit::returnPressed, this, &TextViewController::handleNavigateButtonClick);
 
     // Create a button
     navigateButton = new QPushButton("NAVIGATE");
@@ -197,16 +204,41 @@ void TextViewController::handleNavigateButtonClick(){
     // Print the text in the TextBox for debugging
     qCDebug(TextViewControllerCategory) << navigateText;
 
+    // Flag to indicate whether the command is correct or not
+    bool correctCommand = false;
+
     // Split the string into a QStringList using the comma as a delimiter
     QStringList values = navigateText.split(',');
 
-    // Convert the first and second parts to integers
-    int x = values.value(0).toInt() - 1;
-    qCDebug(TextViewControllerCategory) << "teleport x value =" << x;
-    int y = values.value(1).toInt() - 1;
-    qCDebug(TextViewControllerCategory) << "teleport y value =" << y;
+    // Check if there are exactly two values after splitting
+    if (values.size() == 2) {
+        // Convert the first and second parts to integers
+        int x = values.value(0).toInt();
+        int y = values.value(1).toInt();
 
-    worldController->handleMousePressEvent(x,y);
+        // Check if the command is correct (add your specific conditions here)
+        if (worldController->isValidPosition(x, y)) {
+            correctCommand = true;
+            qCDebug(TextViewControllerCategory) << "Teleport action was triggered";
+            worldController->handleMousePressEvent(x - 1, y - 1);
+        }
+    }
+
+    // Change the background color of the button temporarily
+    if (correctCommand) {
+        // Green color for correct command
+        navigateLineEdit->setStyleSheet("background-color: lightgreen;");
+    } else {
+        // Red color for incorrect command
+        navigateLineEdit->setStyleSheet("background-color: lightcoral;");
+    }
+
+    // Set up a QTimer to revert the color after a short delay (e.g., 500 milliseconds)
+    QTimer::singleShot(250, this, [this]() {
+        // Restore the default background color
+        navigateLineEdit->setStyleSheet("");
+        navigateLineEdit->setText("");
+    });
 }
 
 void TextViewController::drawProtagonist() {
