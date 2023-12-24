@@ -20,9 +20,9 @@ public:
 public slots:
     void visualizePath(std::vector<int> path, std::shared_ptr<Tile> startTile);
     void drawProtagonist() override;
-    void handleDeath() override;
-    void handlePoisonLevelUpdated(float poisonLevel) override;
-    void handleHealthPackTaken(std::shared_ptr<Tile> pack) override;
+    void handleDeath();
+    void handlePoisonLevelUpdated(float poisonLevel);
+    void handleHealthPackTaken(std::shared_ptr<Tile> pack);
     void zoomIn() override;
     void zoomOut() override;
     void handleAlive();

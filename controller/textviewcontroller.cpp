@@ -114,9 +114,9 @@ void TextViewController::visualizeWorld(){
     textLayout->addLayout(navigateLayout);
 
     // Add a QLabel for additional text
-    additionalTextLabelNavigate = new QLabel;
-    additionalTextLabelNavigate->setTextFormat(Qt::RichText);
-    textLayout->addWidget(additionalTextLabelNavigate);
+    commandMessageLabel = new QLabel;
+    commandMessageLabel->setTextFormat(Qt::RichText);
+    textLayout->addWidget(commandMessageLabel);
 }
 
 void TextViewController::drawProtagonist() {
@@ -158,18 +158,6 @@ void TextViewController::drawProtagonist() {
     if (initialAsciiRepresentation.at(newProtagonistIndex) != 'H') {
         currentHealth = protagonist->getHealth();
     }
-}
-
-void TextViewController::handleDeath(){
-    //TODO
-}
-
-void TextViewController::handleHealthPackTaken(std::shared_ptr<Tile> pack){
-    //TODO
-}
-
-void TextViewController::handlePoisonLevelUpdated(float poisonLevel) {
-
 }
 
 void TextViewController::zoomIn() {
@@ -240,7 +228,7 @@ void TextViewController::handleMoveCommand(const QString &direction) {
         worldController->useHealthpack();
     }
 
-    additionalTextLabelNavigate->setText("Protagonist moved <b>" + direction + "</b>");
+    commandMessageLabel->setText("Protagonist moved <b>" + direction + "</b>");
 }
 
 void TextViewController::handleGotoCommand() {
@@ -267,27 +255,30 @@ void TextViewController::handleGotoCommand() {
         if (worldController->isValidPosition(x - 1, y - 1)) {
             worldController->handleMousePressEvent(x - 1, y - 1);
 
-            additionalTextLabelNavigate->setText("Protagonist moved to <b>(" + QString::number(x) + "," + QString::number(y) + ")</b>");
+            commandMessageLabel->setText("Protagonist moved to <b>(" + QString::number(x) + "," + QString::number(y) + ")</b>");
         }
         else {
-            additionalTextLabelNavigate->setText("<font color='red'>Error: Cannot go to the specified position. Coordinates <b>(" + QString::number(x) + "," + QString::number(y) + ")</b> are outside the world boundaries.<br>"
+            commandMessageLabel->setText("<font color='red'>Error: Cannot go to the specified position. Coordinates <b>(" + QString::number(x) + "," + QString::number(y) + ")</b> are outside the world boundaries.<br>"
                                                  "World boundaries: X [1, " + QString::number(worldController->getCols()) + "], Y [1, " + QString::number(worldController->getRows()) + "]</font>");
 
         }
+    }
+    else {
+        commandMessageLabel->setText("<font color='red'>Error: Invalid coordinates after 'goto' command. Use 'goto x y'.</font>");
     }
 }
 
 void TextViewController::handleAttackCommand() {
     qCDebug(TextViewControllerCategory) << "Attack nearest enemy command triggered";
 
-    additionalTextLabelNavigate->setText("Nearest enemy has been attacked!");
+    commandMessageLabel->setText("Nearest enemy has been attacked!");
     // TODO
 }
 
 void TextViewController::handleTakeCommand() {
     qCDebug(TextViewControllerCategory) << "Take nearest health pack command triggered";
 
-    additionalTextLabelNavigate->setText("Nearest healthpack has been taken!");
+    commandMessageLabel->setText("Nearest healthpack has been taken!");
     // TODO
 }
 
@@ -295,11 +286,11 @@ void TextViewController::handleHelpCommand() {
     qCDebug(TextViewControllerCategory) << "Help command triggered";
 
     // Update the additional text in the QLabel
-    additionalTextLabelNavigate->setText("Available commands:");
+    commandMessageLabel->setText("Available commands:");
 
     // Append each command to the QLabel
     for (const auto& command : commandHandlers.keys()) {
-        additionalTextLabelNavigate->setText(additionalTextLabelNavigate->text() + "\n  - " + command);
+        commandMessageLabel->setText(commandMessageLabel->text() + "\n  - " + command);
     }
 }
 
@@ -308,7 +299,7 @@ void TextViewController::handleUnknownCommand() {
 
     // Retrieve text from the QLineEdit and store it in the member variable
     navigateText = navigateLineEdit->text();
-    additionalTextLabelNavigate->setText("<font color='red'>Error: Unknown command: <b>" + navigateText + "</b><br>Enter \"help\" to see available commands!</font>");
+    commandMessageLabel->setText("<font color='red'>Error: Unknown command: <b>" + navigateText + "</b><br>Enter \"help\" to see available commands!</font>");
 }
 
 void TextViewController::commandCheckVisual(bool correctCommand) {

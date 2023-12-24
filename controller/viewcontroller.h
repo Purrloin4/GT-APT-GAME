@@ -23,9 +23,6 @@ public:
     std::shared_ptr<WorldController> worldController;
     virtual void visualizeWorld() = 0;
     virtual void drawProtagonist() = 0;
-    virtual void handleDeath() = 0;
-    virtual void handlePoisonLevelUpdated(float poisonLevel) = 0;
-    virtual void handleHealthPackTaken(std::shared_ptr<Tile> pack) = 0;
     virtual void zoomIn() = 0;
     virtual void zoomOut() = 0;
     QMap<PEnemy*, int> spreadRadii;
