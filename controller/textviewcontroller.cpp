@@ -121,6 +121,8 @@ void TextViewController::visualizeWorld(){
 
     // Enter to navigate
     connect(navigateLineEdit, &QLineEdit::returnPressed, this, &TextViewController::handleNavigateButtonClick);
+    connect(navigateLineEdit, &QLineEdit::returnPressed, this, &TextViewController::handleTextCommand);
+
 
     // Create a button
     navigateButton = new QPushButton("NAVIGATE");
@@ -305,4 +307,56 @@ void TextViewController::zoomOut() {
     QFont currentFont = asciiTextEdit->font();
     currentFont.setPointSize(currentFont.pointSize() - 1);
     asciiTextEdit->setFont(currentFont);
+}
+
+void TextViewController::handleTextCommand() {
+    navigateText = navigateLineEdit->text();
+
+    // Split the command into parts
+    QStringList parts = navigateText.split(" ", Qt::SkipEmptyParts);
+
+    // Check if the command has at least one part
+    if (!parts.isEmpty()) {
+        // Find the corresponding handler in the map
+        auto handler = commandHandlers.find(parts[0].toLower());
+
+        // If the handler is found, call it with the remaining parts
+        if (handler != commandHandlers.end()) {
+            handler.value()(parts.mid(1));
+        } else {
+            // Handle unknown command
+            qCDebug(TextViewControllerCategory) << "Unknown command: " << parts[0];
+            handleUnknownCommand(parts[0]);
+        }
+    }
+}
+
+void TextViewController::handleGotoCommand(const QStringList &args) {
+    qCDebug(TextViewControllerCategory) << "Goto command triggered!";
+}
+
+void TextViewController::handleAttackCommand() {
+    qCDebug(TextViewControllerCategory) << "Attack nearest enemy command triggered";
+    // Add logic for attacking nearest enemy
+    // For example, you can call a function from worldController or perform other actions
+}
+
+void TextViewController::handleTakeCommand() {
+    qCDebug(TextViewControllerCategory) << "Take nearest health pack command triggered";
+    // Add logic for taking nearest health pack
+    // For example, you can call a function from worldController or perform other actions
+}
+
+void TextViewController::handleHelpCommand() {
+    qCDebug(TextViewControllerCategory) << "Help command triggered";
+    // Print a list of available commands
+    qCDebug(TextViewControllerCategory) << "Available commands:";
+    qCDebug(TextViewControllerCategory) << "  goto x y";
+    qCDebug(TextViewControllerCategory) << "  attack";
+    qCDebug(TextViewControllerCategory) << "  take";
+    qCDebug(TextViewControllerCategory) << "  help";
+}
+
+void TextViewController::handleUnknownCommand(const QString &command) {
+
 }

@@ -13,8 +13,8 @@ public:
     std::shared_ptr<QGraphicsScene> scene;
     QGraphicsView* rawView;
     void visualizeWorld() override;
-    QGraphicsView* getRawView(){return rawView;};
-    QVBoxLayout* getGraphLayout(){return graphLayout;};
+    QGraphicsView* getRawView(){return rawView;}
+    QVBoxLayout* getGraphLayout(){return graphLayout;}
     void drawPoisonSpread(PEnemy* pEnemy, float poisonLevel);
     void removePoisonedTiles(Enemy* enemy);
 public slots:
