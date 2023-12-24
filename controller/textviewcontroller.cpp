@@ -96,22 +96,6 @@ void TextViewController::visualizeWorld(){
     textLayout->addWidget(asciiTextEdit);
 
     // Use a QHBoxLayout to arrange the text box and button horizontally
-    moveLayout = new QHBoxLayout;
-
-    // Add the text box to the layout
-    moveLineEdit = new QLineEdit;
-    moveLineEdit->setPlaceholderText("Enter your command (e.g. left, right, up, down)");
-    moveLayout->addWidget(moveLineEdit);
-
-    // Enter to move
-    connect(moveLineEdit, &QLineEdit::returnPressed, this, &TextViewController::handleMoveButtonClick);
-
-    // Create a button
-    moveButton = new QPushButton("MOVE");
-    connect(moveButton, &QPushButton::clicked, this, &TextViewController::handleMoveButtonClick);
-    moveLayout->addWidget(moveButton);
-
-    // Use a QHBoxLayout to arrange the text box and button horizontally
     navigateLayout = new QHBoxLayout;
 
     // Add the text box to the layout
@@ -127,78 +111,12 @@ void TextViewController::visualizeWorld(){
     connect(navigateButton, &QPushButton::clicked, this, &TextViewController::handleTextCommand);
     navigateLayout->addWidget(navigateButton);
 
-    textLayout->addLayout(moveLayout);
     textLayout->addLayout(navigateLayout);
 
     // Add a QLabel for additional text
     additionalTextLabelNavigate = new QLabel;
     additionalTextLabelNavigate->setText("Additional Text");
     textLayout->addWidget(additionalTextLabelNavigate);
-}
-
-void TextViewController::handleMoveButtonClick(){
-    // Handle the button click event
-    // Retrieve text from the QLineEdit and store it in the member variable
-    moveText = moveLineEdit->text();
-
-    // Print the text in the TextBox for debugging
-    qCDebug(TextViewControllerCategory) << moveText;
-
-    // Check the stored text and perform actions accordingly
-    int newX = protagonist->getXPos();
-    int newY = protagonist->getYPos();
-
-    // Flag to indicate whether the command is correct or not
-    bool correctCommand = false;
-
-    if (moveText.toLower() == "left") {
-        qCDebug(TextViewControllerCategory) << "left action was triggered";
-        newX = protagonist->getXPos() - 1;
-        correctCommand = true;
-    } else if (moveText.toLower() == "right") {
-        qCDebug(TextViewControllerCategory) << "right action was triggered";
-        newX = protagonist->getXPos() + 1;
-        correctCommand = true;
-    } else if (moveText.toLower() == "up") {
-        qCDebug(TextViewControllerCategory) << "up action was triggered";
-        newY = protagonist->getYPos() - 1;
-        correctCommand = true;
-    } else if (moveText.toLower() == "down") {
-        qCDebug(TextViewControllerCategory) << "down action was triggered";
-        newY = protagonist->getYPos() + 1;
-        correctCommand = true;
-    }
-
-    // Check if the new position is within the boundaries of the world
-    if(newX >= 0 && newX < worldController->getCols() && newY >= 0 && newY < worldController->getRows()) {
-        // Update the protagonist's position only if it's a valid position
-        protagonist->setXPos(newX);
-        protagonist->setYPos(newY);
-
-        // Redraw the protagonist and energy bar
-        emit worldController->drawProtagonist();
-        emit worldController->drawBars();
-
-        // Check if you can attack an enemy or use a healthpack
-        worldController->attackEnemy();
-        worldController->useHealthpack();
-    }
-
-    // Change the background color of the button temporarily
-    if (correctCommand) {
-        // Green color for correct command
-        moveLineEdit->setStyleSheet("background-color: lightgreen;");
-    } else {
-        // Red color for incorrect command
-        moveLineEdit->setStyleSheet("background-color: lightcoral;");
-    }
-
-    // Set up a QTimer to revert the color after a short delay (e.g., 500 milliseconds)
-    QTimer::singleShot(250, this, [this]() {
-        // Restore the default background color
-        moveLineEdit->setStyleSheet("");
-        moveLineEdit->setText("");
-    });
 }
 
 void TextViewController::drawProtagonist() {
@@ -314,6 +232,39 @@ void TextViewController::handleGotoCommand() {
         if (worldController->isValidPosition(x - 1, y - 1)) {
             worldController->handleMousePressEvent(x - 1, y - 1);
         }
+    }
+}
+
+void TextViewController::handleMoveCommand(const QString &direction) {
+    qCDebug(TextViewControllerCategory) << direction << " action was triggered";
+
+    // Your logic for handling the move command based on the direction
+    int newX = protagonist->getXPos();
+    int newY = protagonist->getYPos();
+
+    if (direction == "left") {
+        newX = protagonist->getXPos() - 1;
+    } else if (direction == "right") {
+        newX = protagonist->getXPos() + 1;
+    } else if (direction == "up") {
+        newY = protagonist->getYPos() - 1;
+    } else if (direction == "down") {
+        newY = protagonist->getYPos() + 1;
+    }
+
+    // Check if the new position is within the boundaries of the world
+    if(newX >= 0 && newX < worldController->getCols() && newY >= 0 && newY < worldController->getRows()) {
+        // Update the protagonist's position only if it's a valid position
+        protagonist->setXPos(newX);
+        protagonist->setYPos(newY);
+
+        // Redraw the protagonist and energy bar
+        emit worldController->drawProtagonist();
+        emit worldController->drawBars();
+
+        // Check if you can attack an enemy or use a healthpack
+        worldController->attackEnemy();
+        worldController->useHealthpack();
     }
 }
 

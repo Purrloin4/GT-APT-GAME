@@ -15,6 +15,10 @@ public:
         : ViewController(worldController)
     {
         // Add available commands and their corresponding handlers to the map
+        commandHandlers["left"] = std::bind(&TextViewController::handleMoveCommand, this, "left");
+        commandHandlers["right"] = std::bind(&TextViewController::handleMoveCommand, this, "right");
+        commandHandlers["up"] = std::bind(&TextViewController::handleMoveCommand, this, "up");
+        commandHandlers["down"] = std::bind(&TextViewController::handleMoveCommand, this, "down");
         commandHandlers["goto"] = std::bind(&TextViewController::handleGotoCommand, this);
         commandHandlers["attack"] = std::bind(&TextViewController::handleAttackCommand, this);
         commandHandlers["take"] = std::bind(&TextViewController::handleTakeCommand, this);
@@ -29,7 +33,6 @@ public slots:
     void handleDeath() override;
     void handlePoisonLevelUpdated(float poisonLevel) override;
     void handleHealthPackTaken(std::shared_ptr<Tile> pack) override;
-    void handleMoveButtonClick();
     void handleTextCommand();
     void zoomIn() override;
     void zoomOut() override;
@@ -39,6 +42,7 @@ private:
 
     // Command handling functions
     void handleGotoCommand();
+    void handleMoveCommand(const QString& direction);
     void handleAttackCommand();
     void handleTakeCommand();
     void handleHelpCommand();
@@ -56,13 +60,9 @@ private:
     QTextEdit* asciiTextEdit;
     QWidget* textViewWidget;
     QVBoxLayout* textLayout;
-    QHBoxLayout* moveLayout;
     QHBoxLayout* navigateLayout;
-    QLineEdit* moveLineEdit;
     QLineEdit* navigateLineEdit;
-    QPushButton* moveButton;
     QPushButton* navigateButton;
-    QString moveText;
     QString navigateText;
     QLabel* additionalTextLabelNavigate;
 };
