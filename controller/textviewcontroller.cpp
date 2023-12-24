@@ -15,6 +15,7 @@ void TextViewController::visualizeWorld(){
     const QString verticalEnemyTile = "| E ";
     const QString verticalProtagonistTile = "| P ";
     const QString verticalPEnemyTile = "| ¶ ";
+    const QString verticalXEnemyTile = "| X ";
 
     // Loop through each row
     for (int y = 0; y < worldController->getRows(); ++y) {
@@ -37,6 +38,13 @@ void TextViewController::visualizeWorld(){
                                              }
                                              return false;
                                          });
+            auto isXEnemy = std::find_if(myEnemies.begin(), myEnemies.end(),
+                                         [x, y](const auto &enemy) {
+                                             if (auto xEnemy = std::dynamic_pointer_cast<XEnemy>(enemy)) {
+                                                 return xEnemy->getXPos() == x && xEnemy->getYPos() == y;
+                                             }
+                                             return false;
+                                         });
             auto isEnemy = std::find_if(myEnemies.begin(), myEnemies.end(),
                                         [x, y](const auto &enemy) { return enemy->getXPos() == x && enemy->getYPos() == y; });
             auto isProtagonist = (protagonist->getXPos() == x && protagonist->getYPos() == y);
@@ -46,6 +54,8 @@ void TextViewController::visualizeWorld(){
                 initialAsciiRepresentation += verticalHealthPackTile;
             } else if (isPEnemy != myEnemies.end()) {
                 initialAsciiRepresentation += verticalPEnemyTile;
+            } else if (isXEnemy != myEnemies.end()) {
+                initialAsciiRepresentation += verticalXEnemyTile;
             } else if (isEnemy != myEnemies.end()) {
                 initialAsciiRepresentation += verticalEnemyTile;
             } else if (isProtagonist) {

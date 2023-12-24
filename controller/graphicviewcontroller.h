@@ -25,6 +25,8 @@ public slots:
     void handleHealthPackTaken(std::shared_ptr<Tile> pack) override;
     void zoomIn() override;
     void zoomOut() override;
+    void handleAlive();
+    void handleHalfDead();
 signals:
     void pathVisualizationRequested(std::vector<int> path, std::shared_ptr<Tile> startTile);
 private:
@@ -34,6 +36,7 @@ private:
     QWidget* graphViewWidget;
     std::vector<TileVisualisation> tileVisualisations;
     std::vector<TileVisualisation> previousPath;
+    QGraphicsPixmapItem* healthPackTextureItem;
 };
 
 

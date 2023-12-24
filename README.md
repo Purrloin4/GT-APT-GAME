@@ -25,11 +25,12 @@
 
 ### Week 12
 - Display strength and healthpack levels - Cédric
-- Display health and energy bar and controls in additional widget -Cédric
+- Display health and energy bar and controls in additional widget - Cédric
 - PEnemy implementation in new file system - Tiësto
 - Protagonist movement in text-based view implementation in new file system - Bob
 
 ### Week 13
-- Implement weight controls - Cédric
+- Weight controls and animations implementation - Cédric
 - Implement command movement TextBased - Bob
-- Poisoning of protagonist by PEnemy - Tiësto
+- Implement command teleport TextBased - Bob
+- Poisoning of protagonist by PEnemy, XEnemy implementation - Tiësto

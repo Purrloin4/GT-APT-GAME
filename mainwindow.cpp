@@ -121,6 +121,11 @@ void MainWindow::connectSignalsAndSlots() {
         if (auto pEnemy = dynamic_cast<PEnemy*>(enemy.get())) {
             connect(pEnemy, &PEnemy::poisonLevelUpdated, graphicViewController.get(), &GraphicViewController::handlePoisonLevelUpdated);
         }
+        if (auto xEnemy = dynamic_cast<XEnemy*>(enemy.get())) {
+            connect(xEnemy, &XEnemy::timerExpired, graphicViewController.get(), &GraphicViewController::handleAlive);
+            connect(xEnemy, &XEnemy::halfDeadSet, graphicViewController.get(), &GraphicViewController::handleHalfDead);
+            connect(xEnemy, &XEnemy::allHalfDead, worldController.get(), &WorldController::handleAllHalfDead);
+        }
     }
     //drawBars
    connect(worldController.get(), &WorldController::drawBars,
