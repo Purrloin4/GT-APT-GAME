@@ -101,6 +101,8 @@ private:
     std::shared_ptr<QGraphicsRectItem*> protagonistItem = nullptr;
     double heursticFactor = 1.1f;
     double heightFactor = 1.1f;
+    QTimer* energyRegenTimer;
+    void regenerateEnergy();
 };
 
 #endif // WORLDCONTROLLER_H

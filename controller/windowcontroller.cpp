@@ -73,7 +73,6 @@ void WindowController::drawBars(){
     scene->addRect(oldEnergyBarRect, QPen(Qt::white), QBrush(Qt::white)); // Clear the old energy bar
 
     QRect energyBarRect(barX, barY - energyBarHeight, energyBarWidth, energyBarHeight);
-    qCDebug(WindowControllerCategory) << "energyRatio" << energyRatio;
     QColor energyBarColor = QColor::fromRgbF(0.0, 0.0, 1.0 - energyRatio); // Blue to black gradient
     scene->addRect(energyBarRect, QPen(Qt::black), QBrush(energyBarColor));
 }

@@ -58,6 +58,10 @@ WorldController::WorldController()
         this->cols = world->getCols();
         this->rows = world->getRows();
 
+        energyRegenTimer = new QTimer(this);
+        connect(energyRegenTimer, &QTimer::timeout, this, &WorldController::regenerateEnergy);
+        energyRegenTimer->start(100);
+
     } catch (const std::exception& e) {
         // Handle any exceptions here
         std::cout << "Exeption during create world" << std::endl;
@@ -250,6 +254,23 @@ void WorldController::handleAllHalfDead() {
             xEnemy->setDefeated(true);
         }
     }
+}
+
+void WorldController::regenerateEnergy() {
+    static int lastX = protagonist->getXPos();
+    static int lastY = protagonist->getYPos();
+
+    if (lastX == protagonist->getXPos() && lastY == protagonist->getYPos()) {
+        double newEnergy = protagonist->getEnergy() + 0.5;
+        if (newEnergy > getMaxEH()) {
+            newEnergy = getMaxEH();
+        }
+        protagonist->setEnergy(newEnergy);
+        drawBars();
+    }
+
+    lastX = protagonist->getXPos();
+    lastY = protagonist->getYPos();
 }
 
 int WorldController::getHeursticFactor() const
