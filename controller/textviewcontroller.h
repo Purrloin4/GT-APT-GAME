@@ -3,9 +3,10 @@
 
 #include "controller/viewcontroller.h"
 #include "controller/worldcontroller.h"
-//#include <functional>
+#include <functional>
 #include <QStringList>
 #include <QMap>
+#include <QLabel>
 
 class TextViewController: public ViewController
 {
@@ -62,6 +63,7 @@ private:
     QPushButton* navigateButton;
     QString moveText;
     QString navigateText;
+    QLabel* additionalTextLabelNavigate;
 };
 
 #endif // TEXTVIEWCONTROLLER_H

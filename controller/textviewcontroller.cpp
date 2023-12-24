@@ -129,6 +129,11 @@ void TextViewController::visualizeWorld(){
 
     textLayout->addLayout(moveLayout);
     textLayout->addLayout(navigateLayout);
+
+    // Add a QLabel for additional text
+    additionalTextLabelNavigate = new QLabel;
+    additionalTextLabelNavigate->setText("Additional Text");
+    textLayout->addWidget(additionalTextLabelNavigate);
 }
 
 void TextViewController::handleMoveButtonClick(){
@@ -310,7 +315,6 @@ void TextViewController::handleGotoCommand() {
         // Check if the command is correct (add your specific conditions here)
         if (worldController->isValidPosition(x - 1, y - 1)) {
             correctCommand = true;
-            qCDebug(TextViewControllerCategory) << "Teleport action was triggered";
             worldController->handleMousePressEvent(x - 1, y - 1);
         }
     }
@@ -334,22 +338,28 @@ void TextViewController::handleGotoCommand() {
 
 void TextViewController::handleAttackCommand() {
     qCDebug(TextViewControllerCategory) << "Attack nearest enemy command triggered";
+
+    additionalTextLabelNavigate->setText("Nearest enemy has been attacked!");
     // TODO
 }
 
 void TextViewController::handleTakeCommand() {
     qCDebug(TextViewControllerCategory) << "Take nearest health pack command triggered";
+
+    additionalTextLabelNavigate->setText("Nearest healthpack has been taken!");
     // TODO
 }
 
 void TextViewController::handleHelpCommand() {
     qCDebug(TextViewControllerCategory) << "Help command triggered";
-    // Print a list of available commands
-    qCDebug(TextViewControllerCategory) << "Available commands:";
-    qCDebug(TextViewControllerCategory) << "  goto x y";
-    qCDebug(TextViewControllerCategory) << "  attack";
-    qCDebug(TextViewControllerCategory) << "  take";
-    qCDebug(TextViewControllerCategory) << "  help";
+
+    // Update the additional text in the QLabel
+    additionalTextLabelNavigate->setText("Available commands:");
+
+    // Append each command to the QLabel
+    for (const auto& command : commandHandlers.keys()) {
+        additionalTextLabelNavigate->setText(additionalTextLabelNavigate->text() + "\n  - " + command);
+    }
 }
 
 void TextViewController::handleUnknownCommand() {
