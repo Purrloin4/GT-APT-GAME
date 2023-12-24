@@ -266,7 +266,7 @@ void WorldController::regenerateEnergy() {
             newEnergy = getMaxEH();
         }
         protagonist->setEnergy(newEnergy);
-        drawBars();
+        emit drawBars();
     }
 
     lastX = protagonist->getXPos();
