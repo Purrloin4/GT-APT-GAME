@@ -116,7 +116,7 @@ void TextViewController::visualizeWorld(){
 
     // Add the text box to the layout
     navigateLineEdit = new QLineEdit;
-    navigateLineEdit->setPlaceholderText("Enter your command, type help for help");
+    navigateLineEdit->setPlaceholderText("Enter your command");
     navigateLayout->addWidget(navigateLineEdit);
 
     // Enter to navigate
@@ -280,10 +280,11 @@ void TextViewController::handleTextCommand() {
 
         // If the handler is found, call it with the remaining parts
         if (handler != commandHandlers.end()) {
+            commandCheckVisual(true);
             handler.value()(parts.mid(1));
         } else {
             // Handle unknown command
-            qCDebug(TextViewControllerCategory) << "Unknown command: " << parts[0];
+            commandCheckVisual(false);
             handleUnknownCommand();
         }
     }
@@ -298,9 +299,6 @@ void TextViewController::handleGotoCommand() {
     // Print the text in the TextBox for debugging
     qCDebug(TextViewControllerCategory) << navigateText;
 
-    // Flag to indicate whether the command is correct or not
-    bool correctCommand = false;
-
     // Split the string into a QStringList using the space as a delimiter
     QStringList values = navigateText.split(' ');
 
@@ -314,26 +312,9 @@ void TextViewController::handleGotoCommand() {
         qCDebug(TextViewControllerCategory) << y << "---> y value";
         // Check if the command is correct (add your specific conditions here)
         if (worldController->isValidPosition(x - 1, y - 1)) {
-            correctCommand = true;
             worldController->handleMousePressEvent(x - 1, y - 1);
         }
     }
-
-    // Change the background color of the button temporarily
-    if (correctCommand) {
-        // Green color for correct command
-        navigateLineEdit->setStyleSheet("background-color: lightgreen;");
-    } else {
-        // Red color for incorrect command
-        navigateLineEdit->setStyleSheet("background-color: lightcoral;");
-    }
-
-    // Set up a QTimer to revert the color after a short delay (e.g., 500 milliseconds)
-    QTimer::singleShot(250, this, [this]() {
-        // Restore the default background color
-        navigateLineEdit->setStyleSheet("");
-        navigateLineEdit->setText("");
-    });
 }
 
 void TextViewController::handleAttackCommand() {
@@ -363,5 +344,27 @@ void TextViewController::handleHelpCommand() {
 }
 
 void TextViewController::handleUnknownCommand() {
-    // TODO
+    qCDebug(TextViewControllerCategory) << "Unknown command";
+
+    // Retrieve text from the QLineEdit and store it in the member variable
+    navigateText = navigateLineEdit->text();
+    additionalTextLabelNavigate->setText("Unknown command: " + navigateText + "\n" + "Enter \"help\" to see available commands!");
+}
+
+void TextViewController::commandCheckVisual(bool correctCommand) {
+    // Change the background color of the button temporarily
+    if (correctCommand) {
+        // Green color for correct command
+        navigateLineEdit->setStyleSheet("background-color: lightgreen;");
+    } else {
+        // Red color for incorrect command
+        navigateLineEdit->setStyleSheet("background-color: lightcoral;");
+    }
+
+    // Set up a QTimer to revert the color after a short delay (e.g., 500 milliseconds)
+    QTimer::singleShot(250, this, [this]() {
+        // Restore the default background color
+        navigateLineEdit->setStyleSheet("");
+        navigateLineEdit->setText("");
+    });
 }

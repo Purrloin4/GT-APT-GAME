@@ -43,6 +43,7 @@ private:
     void handleTakeCommand();
     void handleHelpCommand();
     void handleUnknownCommand();
+    void commandCheckVisual(bool correctCommand);
 
     std::shared_ptr<Protagonist> protagonist = worldController->getProtagonist();
     float currentHealth = protagonist->getHealth();
