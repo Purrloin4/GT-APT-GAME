@@ -115,7 +115,7 @@ void TextViewController::visualizeWorld(){
 
     // Add a QLabel for additional text
     additionalTextLabelNavigate = new QLabel;
-    additionalTextLabelNavigate->setText("Additional Text");
+    additionalTextLabelNavigate->setTextFormat(Qt::RichText);
     textLayout->addWidget(additionalTextLabelNavigate);
 }
 
@@ -208,33 +208,6 @@ void TextViewController::handleTextCommand() {
     }
 }
 
-void TextViewController::handleGotoCommand() {
-    qCDebug(TextViewControllerCategory) << "Goto command triggered!";
-
-    // Retrieve text from the QLineEdit and store it in the member variable
-    navigateText = navigateLineEdit->text();
-
-    // Print the text in the TextBox for debugging
-    qCDebug(TextViewControllerCategory) << navigateText;
-
-    // Split the string into a QStringList using the space as a delimiter
-    QStringList values = navigateText.split(' ');
-
-    // Check if there are exactly three parts (including "goto")
-    if (values.size() == 3 && values[0].toLower() == "goto") {
-        // Convert the second and third parts to integers
-        int x = values[1].toInt();
-        int y = values[2].toInt();
-
-        qCDebug(TextViewControllerCategory) << x << "---> x value";
-        qCDebug(TextViewControllerCategory) << y << "---> y value";
-        // Check if the command is correct (add your specific conditions here)
-        if (worldController->isValidPosition(x - 1, y - 1)) {
-            worldController->handleMousePressEvent(x - 1, y - 1);
-        }
-    }
-}
-
 void TextViewController::handleMoveCommand(const QString &direction) {
     qCDebug(TextViewControllerCategory) << direction << " action was triggered";
 
@@ -265,6 +238,42 @@ void TextViewController::handleMoveCommand(const QString &direction) {
         // Check if you can attack an enemy or use a healthpack
         worldController->attackEnemy();
         worldController->useHealthpack();
+    }
+
+    additionalTextLabelNavigate->setText("Protagonist moved <b>" + direction + "</b>");
+}
+
+void TextViewController::handleGotoCommand() {
+    qCDebug(TextViewControllerCategory) << "Goto command triggered!";
+
+    // Retrieve text from the QLineEdit and store it in the member variable
+    navigateText = navigateLineEdit->text();
+
+    // Print the text in the TextBox for debugging
+    qCDebug(TextViewControllerCategory) << navigateText;
+
+    // Split the string into a QStringList using the space as a delimiter
+    QStringList values = navigateText.split(' ');
+
+    // Check if there are exactly three parts (including "goto")
+    if (values.size() == 3 && values[0].toLower() == "goto") {
+        // Convert the second and third parts to integers
+        int x = values[1].toInt();
+        int y = values[2].toInt();
+
+        qCDebug(TextViewControllerCategory) << x << "---> x value";
+        qCDebug(TextViewControllerCategory) << y << "---> y value";
+        // Check if the command is correct (add your specific conditions here)
+        if (worldController->isValidPosition(x - 1, y - 1)) {
+            worldController->handleMousePressEvent(x - 1, y - 1);
+
+            additionalTextLabelNavigate->setText("Protagonist moved to <b>(" + QString::number(x) + "," + QString::number(y) + ")</b>");
+        }
+        else {
+            additionalTextLabelNavigate->setText("<font color='red'>Error: Cannot go to the specified position. Coordinates <b>(" + QString::number(x) + "," + QString::number(y) + ")</b> are outside the world boundaries.<br>"
+                                                 "World boundaries: X [1, " + QString::number(worldController->getCols()) + "], Y [1, " + QString::number(worldController->getRows()) + "]</font>");
+
+        }
     }
 }
 
@@ -299,7 +308,7 @@ void TextViewController::handleUnknownCommand() {
 
     // Retrieve text from the QLineEdit and store it in the member variable
     navigateText = navigateLineEdit->text();
-    additionalTextLabelNavigate->setText("Unknown command: " + navigateText + "\n" + "Enter \"help\" to see available commands!");
+    additionalTextLabelNavigate->setText("<font color='red'>Error: Unknown command: <b>" + navigateText + "</b><br>Enter \"help\" to see available commands!</font>");
 }
 
 void TextViewController::commandCheckVisual(bool correctCommand) {
