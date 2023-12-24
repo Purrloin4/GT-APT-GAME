@@ -8,6 +8,7 @@
 #include "controller/graphicviewcontroller.h"
 #include "controller/textviewcontroller.h"
 #include "controller/windowcontroller.h"
+#include "controller/movementcontroller.h"
 
 
 QT_BEGIN_NAMESPACE
@@ -34,6 +35,7 @@ private:
     std::shared_ptr<GraphicViewController> graphicViewController;
     std::shared_ptr<TextViewController> textViewController;
     std::shared_ptr<WindowController> windowController;
+    std::shared_ptr<MovementController> movementController;
     QGraphicsView* view;
 
     void connectSignalsAndSlots();

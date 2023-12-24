@@ -58,13 +58,17 @@ WorldController::WorldController()
         this->cols = world->getCols();
         this->rows = world->getRows();
 
+        energyRegenTimer = new QTimer(this);
+        connect(energyRegenTimer, &QTimer::timeout, this, &WorldController::regenerateEnergy);
+        energyRegenTimer->start(100);
+
     } catch (const std::exception& e) {
         // Handle any exceptions here
         std::cout << "Exeption during create world" << std::endl;
     }
 }
 
-void WorldController::findPath(std::shared_ptr<Tile> startTile, std::shared_ptr<Tile> endTile)
+std::vector<int> WorldController::findPath(std::shared_ptr<Tile> startTile, std::shared_ptr<Tile> endTile)
 {
       std::vector<PathNode> pathNodes;
         for (const auto &tile : tiles) {
@@ -79,64 +83,66 @@ void WorldController::findPath(std::shared_ptr<Tile> startTile, std::shared_ptr<
       std::vector<int> path = A_star(pathNodes, &startNode, &endNode, comp, cols, heursticFactor, heightFactor);
 
       emit pathFound(path, std::move(startTile));
+      return path;
 }
 
 void WorldController::handleKeyPressEvent(QKeyEvent *event){
-        int newX = protagonist->getXPos();
-        int newY = protagonist->getYPos();
+      int newX = protagonist->getXPos();
+      int newY = protagonist->getYPos();
 
-        switch (event->key()) {
-            // arrow keys can act up so ZQSD also possible #Azerty koning
-            case Qt::Key_Q:
-            case Qt::Key_Left:
-                qCDebug(WorldControllerCategory) << "left key was pressed";
-                newX = protagonist->getXPos() - 1;
-                break;
-            case Qt::Key_D:
-            case Qt::Key_Right:
-                qCDebug(WorldControllerCategory) << "right key was pressed";
-                newX = protagonist->getXPos() + 1;
-                break;
-            case Qt::Key_Z:
-            case Qt::Key_Up:
-                qCDebug(WorldControllerCategory) << "up key was pressed";
-                newY = protagonist->getYPos() - 1;
-                break;
-            case Qt::Key_S:
-            case Qt::Key_Down:
-                qCDebug(WorldControllerCategory) << "down key was pressed";
-                newY = protagonist->getYPos() + 1;
-                break;
-        }
+      switch (event->key()) {
+      // arrow keys can act up so ZQSD also possible #Azerty koning
+      case Qt::Key_Q:
+      case Qt::Key_Left:
+            qCDebug(WorldControllerCategory) << "left key was pressed";
+            newX = protagonist->getXPos() - 1;
+            break;
+      case Qt::Key_D:
+      case Qt::Key_Right:
+            qCDebug(WorldControllerCategory) << "right key was pressed";
+            newX = protagonist->getXPos() + 1;
+            break;
+      case Qt::Key_Z:
+      case Qt::Key_Up:
+            qCDebug(WorldControllerCategory) << "up key was pressed";
+            newY = protagonist->getYPos() - 1;
+            break;
+      case Qt::Key_S:
+      case Qt::Key_Down:
+            qCDebug(WorldControllerCategory) << "down key was pressed";
+            newY = protagonist->getYPos() + 1;
+            break;
+      }
 
-        // Check if the new position is within the boundaries of the world
-        if (isValidPosition(newX, newY)) {
-            // Update the protagonist's position only if it's a valid position
-            protagonist->setXPos(newX);
-            protagonist->setYPos(newY);
+      emit moveProtagonistPosSignal(newX, newY);
 
-            for (auto it = poisonedTiles.begin(); it != poisonedTiles.end();) {
-                if (it->spreadXPos == newX && it->spreadYPos == newY) {
-                    float newHealth = protagonist->getHealth() - it->poisonLevel;
-                    if (newHealth > 0) {
-                        protagonist->setHealth(newHealth);
-                    } else {
-                        protagonist->setHealth(0);
-                        emit gameOver();
-                    }
-                    break;
-                } else {
-                    ++it;
-                }
-            }
+      // Redraw the protagonist and energy bar
+      emit drawProtagonist();
+      emit drawBars();
 
-            // Redraw the protagonist and energy bar
-            emit drawProtagonist();
+      // Check if we can attack an enemy or use a healthpack
+      attackEnemy();
+      useHealthpack();
+
+}
+
+void WorldController::checkPoisonDamage() {
+      int newX = protagonist->getXPos();
+      int newY = protagonist->getYPos();
+      for (auto it = poisonedTiles.begin(); it != poisonedTiles.end();) {
+            if (it->spreadXPos == newX && it->spreadYPos == newY) {
+            float newHealth = protagonist->getHealth() - it->poisonLevel;
             emit drawBars();
-
-            // Check if we can attack an enemy or use a healthpack
-            attackEnemy();
-            useHealthpack();
+            if (newHealth > 0) {
+                protagonist->setHealth(newHealth);
+            } else {
+                protagonist->setHealth(0);
+                emit gameOver();
+            }
+            break;
+            } else {
+            ++it;
+            }
       }
 }
 
@@ -147,9 +153,10 @@ void WorldController::handleMousePressEvent(int x, int y) {
         // Call findPathAndHighlight with the clicked tile's position
         auto startTile = std::make_unique<Tile>(protagonist->getXPos(), protagonist->getYPos(), 0.0f);
         auto endTile = std::make_unique<Tile>(x, y, 0.0f);
-        findPath(std::move(startTile), std::move(endTile));
-        protagonist->setPos(x, y);
+        auto path = findPath(std::move(startTile), std::move(endTile));
+        emit moveProtagonistPathSignal(path);
         emit drawProtagonist();
+        emit drawBars();
         attackEnemy();
         useHealthpack();
     }
@@ -247,6 +254,23 @@ void WorldController::handleAllHalfDead() {
             xEnemy->setDefeated(true);
         }
     }
+}
+
+void WorldController::regenerateEnergy() {
+    static int lastX = protagonist->getXPos();
+    static int lastY = protagonist->getYPos();
+
+    if (lastX == protagonist->getXPos() && lastY == protagonist->getYPos()) {
+        double newEnergy = protagonist->getEnergy() + 0.5;
+        if (newEnergy > getMaxEH()) {
+            newEnergy = getMaxEH();
+        }
+        protagonist->setEnergy(newEnergy);
+        drawBars();
+    }
+
+    lastX = protagonist->getXPos();
+    lastY = protagonist->getYPos();
 }
 
 int WorldController::getHeursticFactor() const

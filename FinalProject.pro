@@ -11,6 +11,7 @@ CONFIG += c++20
 SOURCES += \
     XEnemy.cpp \
     controller/graphicviewcontroller.cpp \
+    controller/movementcontroller.cpp \
     controller/textviewcontroller.cpp \
     controller/viewcontroller.cpp \
     controller/worldcontroller.cpp \
@@ -21,6 +22,7 @@ SOURCES += \
 HEADERS += \
     XEnemy.h \
     controller/graphicviewcontroller.h \
+    controller/movementcontroller.h \
     controller/textviewcontroller.h \
     controller/viewcontroller.h \
     controller/worldcontroller.h \

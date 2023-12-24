@@ -40,10 +40,12 @@ signals:
     void drawBars();
     void gameOver();
     void healthPackTaken(std::shared_ptr<Tile> pack);
+    void moveProtagonistPosSignal(int x, int y);
+    void moveProtagonistPathSignal(std::vector<int> path);
 public:
     WorldController();
 
-    void findPath(std::shared_ptr<Tile> startTile, std::shared_ptr<Tile> endTile);
+    std::vector<int> findPath(std::shared_ptr<Tile> startTile, std::shared_ptr<Tile> endTile);
     bool isValidPosition(int x, int y);
     void attackEnemy();
     void useHealthpack();
@@ -84,6 +86,7 @@ public slots:
     void handleKeyPressEvent(QKeyEvent *event);
     void handleMousePressEvent(int x, int y);
     void handleAllHalfDead();
+    void checkPoisonDamage();
 private:
     point start;
     point exit;
@@ -98,6 +101,8 @@ private:
     std::shared_ptr<QGraphicsRectItem*> protagonistItem = nullptr;
     double heursticFactor = 1.1f;
     double heightFactor = 1.1f;
+    QTimer* energyRegenTimer;
+    void regenerateEnergy();
 };
 
 #endif // WORLDCONTROLLER_H
