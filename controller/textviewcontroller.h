@@ -3,7 +3,7 @@
 
 #include "controller/viewcontroller.h"
 #include "controller/worldcontroller.h"
-#include <functional>
+//#include <functional>
 #include <QStringList>
 #include <QMap>
 
@@ -11,15 +11,18 @@ class TextViewController: public ViewController
 {
 public:
     TextViewController(std::shared_ptr<WorldController> worldController)
-        : ViewController(worldController){
+        : ViewController(worldController)
+    {
         // Add available commands and their corresponding handlers to the map
         commandHandlers["goto"] = std::bind(&TextViewController::handleGotoCommand, this);
         commandHandlers["attack"] = std::bind(&TextViewController::handleAttackCommand, this);
         commandHandlers["take"] = std::bind(&TextViewController::handleTakeCommand, this);
         commandHandlers["help"] = std::bind(&TextViewController::handleHelpCommand, this);
     }
+
     void visualizeWorld() override;
-    QVBoxLayout* getTextLayout(){return textLayout;}
+    QVBoxLayout* getTextLayout() {return textLayout;}
+
 public slots:
     void drawProtagonist() override;
     void handleDeath() override;
@@ -27,13 +30,13 @@ public slots:
     void handleHealthPackTaken(std::shared_ptr<Tile> pack) override;
     void handleMoveButtonClick();
     void handleTextCommand();
-    void handleNavigateButtonClick();
-    void handleActionButtonClick();
     void zoomIn() override;
     void zoomOut() override;
 private:
     // Map to associate command strings with handlers
     QMap<QString, std::function<void(const QStringList&)>> commandHandlers;
+
+    // Command handling functions
     void handleGotoCommand();
     void handleAttackCommand();
     void handleTakeCommand();

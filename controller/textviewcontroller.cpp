@@ -116,17 +116,15 @@ void TextViewController::visualizeWorld(){
 
     // Add the text box to the layout
     navigateLineEdit = new QLineEdit;
-    navigateLineEdit->setPlaceholderText("Enter your coordinate (e.g. 3,8)");
+    navigateLineEdit->setPlaceholderText("Enter your command, type help for help");
     navigateLayout->addWidget(navigateLineEdit);
 
     // Enter to navigate
-    connect(navigateLineEdit, &QLineEdit::returnPressed, this, &TextViewController::handleNavigateButtonClick);
     connect(navigateLineEdit, &QLineEdit::returnPressed, this, &TextViewController::handleTextCommand);
 
-
     // Create a button
-    navigateButton = new QPushButton("NAVIGATE");
-    connect(navigateButton, &QPushButton::clicked, this, &TextViewController::handleNavigateButtonClick);
+    navigateButton = new QPushButton("ENTER");
+    connect(navigateButton, &QPushButton::clicked, this, &TextViewController::handleTextCommand);
     navigateLayout->addWidget(navigateButton);
 
     textLayout->addLayout(moveLayout);
@@ -195,51 +193,6 @@ void TextViewController::handleMoveButtonClick(){
         // Restore the default background color
         moveLineEdit->setStyleSheet("");
         moveLineEdit->setText("");
-    });
-}
-
-void TextViewController::handleNavigateButtonClick(){
-    // Handle the button click event
-    // Retrieve text from the QLineEdit and store it in the member variable
-    navigateText = navigateLineEdit->text();
-
-    // Print the text in the TextBox for debugging
-    qCDebug(TextViewControllerCategory) << navigateText;
-
-    // Flag to indicate whether the command is correct or not
-    bool correctCommand = false;
-
-    // Split the string into a QStringList using the comma as a delimiter
-    QStringList values = navigateText.split(',');
-
-    // Check if there are exactly two values after splitting
-    if (values.size() == 2) {
-        // Convert the first and second parts to integers
-        int x = values.value(0).toInt();
-        int y = values.value(1).toInt();
-
-        // Check if the command is correct (add your specific conditions here)
-        if (worldController->isValidPosition(x, y)) {
-            correctCommand = true;
-            qCDebug(TextViewControllerCategory) << "Teleport action was triggered";
-            worldController->handleMousePressEvent(x - 1, y - 1);
-        }
-    }
-
-    // Change the background color of the button temporarily
-    if (correctCommand) {
-        // Green color for correct command
-        navigateLineEdit->setStyleSheet("background-color: lightgreen;");
-    } else {
-        // Red color for incorrect command
-        navigateLineEdit->setStyleSheet("background-color: lightcoral;");
-    }
-
-    // Set up a QTimer to revert the color after a short delay (e.g., 500 milliseconds)
-    QTimer::singleShot(250, this, [this]() {
-        // Restore the default background color
-        navigateLineEdit->setStyleSheet("");
-        navigateLineEdit->setText("");
     });
 }
 
@@ -352,8 +305,10 @@ void TextViewController::handleGotoCommand() {
         int x = values[1].toInt();
         int y = values[2].toInt();
 
+        qCDebug(TextViewControllerCategory) << x << "---> x value";
+        qCDebug(TextViewControllerCategory) << y << "---> y value";
         // Check if the command is correct (add your specific conditions here)
-        if (worldController->isValidPosition(x, y)) {
+        if (worldController->isValidPosition(x - 1, y - 1)) {
             correctCommand = true;
             qCDebug(TextViewControllerCategory) << "Teleport action was triggered";
             worldController->handleMousePressEvent(x - 1, y - 1);
@@ -379,14 +334,12 @@ void TextViewController::handleGotoCommand() {
 
 void TextViewController::handleAttackCommand() {
     qCDebug(TextViewControllerCategory) << "Attack nearest enemy command triggered";
-    // Add logic for attacking nearest enemy
-    // For example, you can call a function from worldController or perform other actions
+    // TODO
 }
 
 void TextViewController::handleTakeCommand() {
     qCDebug(TextViewControllerCategory) << "Take nearest health pack command triggered";
-    // Add logic for taking nearest health pack
-    // For example, you can call a function from worldController or perform other actions
+    // TODO
 }
 
 void TextViewController::handleHelpCommand() {
@@ -400,5 +353,5 @@ void TextViewController::handleHelpCommand() {
 }
 
 void TextViewController::handleUnknownCommand() {
-
+    // TODO
 }
