@@ -326,13 +326,55 @@ void TextViewController::handleTextCommand() {
         } else {
             // Handle unknown command
             qCDebug(TextViewControllerCategory) << "Unknown command: " << parts[0];
-            handleUnknownCommand(parts[0]);
+            handleUnknownCommand();
         }
     }
 }
 
-void TextViewController::handleGotoCommand(const QStringList &args) {
+void TextViewController::handleGotoCommand() {
     qCDebug(TextViewControllerCategory) << "Goto command triggered!";
+
+    // Retrieve text from the QLineEdit and store it in the member variable
+    navigateText = navigateLineEdit->text();
+
+    // Print the text in the TextBox for debugging
+    qCDebug(TextViewControllerCategory) << navigateText;
+
+    // Flag to indicate whether the command is correct or not
+    bool correctCommand = false;
+
+    // Split the string into a QStringList using the space as a delimiter
+    QStringList values = navigateText.split(' ');
+
+    // Check if there are exactly three parts (including "goto")
+    if (values.size() == 3 && values[0].toLower() == "goto") {
+        // Convert the second and third parts to integers
+        int x = values[1].toInt();
+        int y = values[2].toInt();
+
+        // Check if the command is correct (add your specific conditions here)
+        if (worldController->isValidPosition(x, y)) {
+            correctCommand = true;
+            qCDebug(TextViewControllerCategory) << "Teleport action was triggered";
+            worldController->handleMousePressEvent(x - 1, y - 1);
+        }
+    }
+
+    // Change the background color of the button temporarily
+    if (correctCommand) {
+        // Green color for correct command
+        navigateLineEdit->setStyleSheet("background-color: lightgreen;");
+    } else {
+        // Red color for incorrect command
+        navigateLineEdit->setStyleSheet("background-color: lightcoral;");
+    }
+
+    // Set up a QTimer to revert the color after a short delay (e.g., 500 milliseconds)
+    QTimer::singleShot(250, this, [this]() {
+        // Restore the default background color
+        navigateLineEdit->setStyleSheet("");
+        navigateLineEdit->setText("");
+    });
 }
 
 void TextViewController::handleAttackCommand() {
@@ -357,6 +399,6 @@ void TextViewController::handleHelpCommand() {
     qCDebug(TextViewControllerCategory) << "  help";
 }
 
-void TextViewController::handleUnknownCommand(const QString &command) {
+void TextViewController::handleUnknownCommand() {
 
 }
