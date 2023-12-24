@@ -86,6 +86,7 @@ public slots:
     void handleKeyPressEvent(QKeyEvent *event);
     void handleMousePressEvent(int x, int y);
     void handleAllHalfDead();
+    void checkPoisonDamage();
 private:
     point start;
     point exit;

@@ -155,4 +155,7 @@ void MainWindow::connectSignalsAndSlots() {
     //moveProtagonistPath
     connect(worldController.get(), &WorldController::moveProtagonistPathSignal,
             movementController.get(), &MovementController::moveProtagonistPath);
+    //checkPoisonDamage
+    connect(movementController.get(), &MovementController::posChanged,
+             worldController.get(), &WorldController::checkPoisonDamage);
 }

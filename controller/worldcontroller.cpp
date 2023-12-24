@@ -83,60 +83,62 @@ std::vector<int> WorldController::findPath(std::shared_ptr<Tile> startTile, std:
 }
 
 void WorldController::handleKeyPressEvent(QKeyEvent *event){
-        int newX = protagonist->getXPos();
-        int newY = protagonist->getYPos();
+      int newX = protagonist->getXPos();
+      int newY = protagonist->getYPos();
 
-        switch (event->key()) {
-            // arrow keys can act up so ZQSD also possible #Azerty koning
-            case Qt::Key_Q:
-            case Qt::Key_Left:
-                qCDebug(WorldControllerCategory) << "left key was pressed";
-                newX = protagonist->getXPos() - 1;
-                break;
-            case Qt::Key_D:
-            case Qt::Key_Right:
-                qCDebug(WorldControllerCategory) << "right key was pressed";
-                newX = protagonist->getXPos() + 1;
-                break;
-            case Qt::Key_Z:
-            case Qt::Key_Up:
-                qCDebug(WorldControllerCategory) << "up key was pressed";
-                newY = protagonist->getYPos() - 1;
-                break;
-            case Qt::Key_S:
-            case Qt::Key_Down:
-                qCDebug(WorldControllerCategory) << "down key was pressed";
-                newY = protagonist->getYPos() + 1;
-                break;
-        }
+      switch (event->key()) {
+      // arrow keys can act up so ZQSD also possible #Azerty koning
+      case Qt::Key_Q:
+      case Qt::Key_Left:
+            qCDebug(WorldControllerCategory) << "left key was pressed";
+            newX = protagonist->getXPos() - 1;
+            break;
+      case Qt::Key_D:
+      case Qt::Key_Right:
+            qCDebug(WorldControllerCategory) << "right key was pressed";
+            newX = protagonist->getXPos() + 1;
+            break;
+      case Qt::Key_Z:
+      case Qt::Key_Up:
+            qCDebug(WorldControllerCategory) << "up key was pressed";
+            newY = protagonist->getYPos() - 1;
+            break;
+      case Qt::Key_S:
+      case Qt::Key_Down:
+            qCDebug(WorldControllerCategory) << "down key was pressed";
+            newY = protagonist->getYPos() + 1;
+            break;
+      }
 
-        // Check if the new position is within the boundaries of the world
-        if (isValidPosition(newX, newY)) {
-            // Update the protagonist's position only if it's a valid position
-            emit moveProtagonistPosSignal(newX, newY);
+      emit moveProtagonistPosSignal(newX, newY);
 
-            for (auto it = poisonedTiles.begin(); it != poisonedTiles.end();) {
-                if (it->spreadXPos == newX && it->spreadYPos == newY) {
-                    float newHealth = protagonist->getHealth() - it->poisonLevel;
-                    if (newHealth > 0) {
-                        protagonist->setHealth(newHealth);
-                    } else {
-                        protagonist->setHealth(0);
-                        emit gameOver();
-                    }
-                    break;
-                } else {
-                    ++it;
-                }
-            }
+      // Redraw the protagonist and energy bar
+      emit drawProtagonist();
+      emit drawBars();
 
-            // Redraw the protagonist and energy bar
-            emit drawProtagonist();
+      // Check if we can attack an enemy or use a healthpack
+      attackEnemy();
+      useHealthpack();
+
+}
+
+void WorldController::checkPoisonDamage() {
+      int newX = protagonist->getXPos();
+      int newY = protagonist->getYPos();
+      for (auto it = poisonedTiles.begin(); it != poisonedTiles.end();) {
+            if (it->spreadXPos == newX && it->spreadYPos == newY) {
+            float newHealth = protagonist->getHealth() - it->poisonLevel;
             emit drawBars();
-
-            // Check if we can attack an enemy or use a healthpack
-            attackEnemy();
-            useHealthpack();
+            if (newHealth > 0) {
+                protagonist->setHealth(newHealth);
+            } else {
+                protagonist->setHealth(0);
+                emit gameOver();
+            }
+            break;
+            } else {
+            ++it;
+            }
       }
 }
 

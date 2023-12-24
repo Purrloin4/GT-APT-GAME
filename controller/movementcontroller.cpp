@@ -4,14 +4,20 @@ QLoggingCategory MovementControllerCategory("MovementController", QtDebugMsg);
 
 void MovementController::moveProtagonistPos(int x, int y)
 {
+    if (!isValidPosition(x, y)) {
+        qCDebug(MovementControllerCategory) << "Invalid position";
+        return;
+    }
+
     auto oldTile = worldController->getTile(protagonist->getXPos(), protagonist->getYPos());
     auto newTile = worldController->getTile(x, y);
     double energyCost = std::abs(oldTile->getValue() - newTile->getValue())*4;
-    qCDebug(MovementControllerCategory) << "Currennt energy" << protagonist->getEnergy() << ", enenrgy cost: " << energyCost;
+    qCDebug(MovementControllerCategory) << "Current energy" << protagonist->getEnergy() << ", energy cost: " << energyCost;
     if (protagonist->getEnergy() >= energyCost) {
         protagonist->setXPos(x);
         protagonist->setYPos(y);
         protagonist->setEnergy(protagonist->getEnergy() - energyCost);
+        emit posChanged();
     }
     else {
         qCDebug(MovementControllerCategory) << "Not enough energy to move to tile";
@@ -36,4 +42,8 @@ void MovementController::moveProtagonistPath(std::vector<int> path)
         }
         moveProtagonistPos(xPos,yPos);
     }
+}
+
+bool MovementController::isValidPosition(int x, int y) {
+    return x >= 0 && x < worldController->getCols() && y >= 0 && y < worldController->getRows();
 }

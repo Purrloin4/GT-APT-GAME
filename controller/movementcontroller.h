@@ -10,7 +10,8 @@
 class MovementController : public QObject {
     Q_OBJECT
 
-
+signals:
+    void posChanged();
 public:
     MovementController(std::shared_ptr<WorldController> worldController)
         :  worldController(worldController) {
@@ -23,6 +24,7 @@ public slots:
 private:
     std::shared_ptr<WorldController> worldController;
     std::shared_ptr<Protagonist> protagonist;
+    bool isValidPosition(int x, int y);
 };
 
 #endif // MOVEMENTCONTROLLER_H
