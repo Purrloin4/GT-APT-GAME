@@ -65,10 +65,14 @@ void WindowController::drawBars(){
     scene->addRect(healthBarRect, QPen(Qt::black), QBrush(healthBarColor));
 
     // Add visualization for protagonist energy bar (similar to previous implementation)
-    int energyBarWidth = worldController->getCols() * tileSize; // Full width of the map
-    int energyBarHeight = tileSize; // You can adjust the height as needed
-    QRect energyBarRect(barX, barY - energyBarHeight, energyBarWidth, energyBarHeight);
     double energyRatio = static_cast<double>(worldController->getProtagonist()->getEnergy()) / static_cast<double>(worldController->getMaxEH());
+    int energyBarWidth = worldController->getCols() * tileSize * energyRatio; // Full width of the map
+    int energyBarHeight = tileSize; // You can adjust the height as needed
+
+    QRect oldEnergyBarRect(barX, barY - energyBarHeight, worldController->getCols() * tileSize, energyBarHeight); // Full width of the map
+    scene->addRect(oldEnergyBarRect, QPen(Qt::white), QBrush(Qt::white)); // Clear the old energy bar
+
+    QRect energyBarRect(barX, barY - energyBarHeight, energyBarWidth, energyBarHeight);
     qCDebug(WindowControllerCategory) << "energyRatio" << energyRatio;
     QColor energyBarColor = QColor::fromRgbF(0.0, 0.0, 1.0 - energyRatio); // Blue to black gradient
     scene->addRect(energyBarRect, QPen(Qt::black), QBrush(energyBarColor));

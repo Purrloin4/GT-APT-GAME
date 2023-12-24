@@ -41,11 +41,11 @@ signals:
     void gameOver();
     void healthPackTaken(std::shared_ptr<Tile> pack);
     void moveProtagonistPosSignal(int x, int y);
-    void moveProtagonistPathSignal(std::vector<int> path, std::shared_ptr<Tile> startTile);
+    void moveProtagonistPathSignal(std::vector<int> path);
 public:
     WorldController();
 
-    void findPath(std::shared_ptr<Tile> startTile, std::shared_ptr<Tile> endTile);
+    std::vector<int> findPath(std::shared_ptr<Tile> startTile, std::shared_ptr<Tile> endTile);
     bool isValidPosition(int x, int y);
     void attackEnemy();
     void useHealthpack();

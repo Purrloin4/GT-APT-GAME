@@ -64,7 +64,7 @@ WorldController::WorldController()
     }
 }
 
-void WorldController::findPath(std::shared_ptr<Tile> startTile, std::shared_ptr<Tile> endTile)
+std::vector<int> WorldController::findPath(std::shared_ptr<Tile> startTile, std::shared_ptr<Tile> endTile)
 {
       std::vector<PathNode> pathNodes;
         for (const auto &tile : tiles) {
@@ -79,6 +79,7 @@ void WorldController::findPath(std::shared_ptr<Tile> startTile, std::shared_ptr<
       std::vector<int> path = A_star(pathNodes, &startNode, &endNode, comp, cols, heursticFactor, heightFactor);
 
       emit pathFound(path, std::move(startTile));
+      return path;
 }
 
 void WorldController::handleKeyPressEvent(QKeyEvent *event){
@@ -146,9 +147,10 @@ void WorldController::handleMousePressEvent(int x, int y) {
         // Call findPathAndHighlight with the clicked tile's position
         auto startTile = std::make_unique<Tile>(protagonist->getXPos(), protagonist->getYPos(), 0.0f);
         auto endTile = std::make_unique<Tile>(x, y, 0.0f);
-        findPath(std::move(startTile), std::move(endTile));
-        protagonist->setPos(x, y);
+        auto path = findPath(std::move(startTile), std::move(endTile));
+        emit moveProtagonistPathSignal(path);
         emit drawProtagonist();
+        emit drawBars();
         attackEnemy();
         useHealthpack();
     }

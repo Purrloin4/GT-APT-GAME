@@ -19,7 +19,7 @@ public:
 
 public slots:
     void moveProtagonistPos(int x, int y);
-    void moveProtagonistPath(std::vector<int> path, std::shared_ptr<Tile> startTile);
+    void moveProtagonistPath(std::vector<int> path);
 private:
     std::shared_ptr<WorldController> worldController;
     std::shared_ptr<Protagonist> protagonist;
