@@ -96,149 +96,27 @@ void TextViewController::visualizeWorld(){
     textLayout->addWidget(asciiTextEdit);
 
     // Use a QHBoxLayout to arrange the text box and button horizontally
-    moveLayout = new QHBoxLayout;
-
-    // Add the text box to the layout
-    moveLineEdit = new QLineEdit;
-    moveLineEdit->setPlaceholderText("Enter your command (e.g. left, right, up, down)");
-    moveLayout->addWidget(moveLineEdit);
-
-    // Enter to move
-    connect(moveLineEdit, &QLineEdit::returnPressed, this, &TextViewController::handleMoveButtonClick);
-
-    // Create a button
-    moveButton = new QPushButton("MOVE");
-    connect(moveButton, &QPushButton::clicked, this, &TextViewController::handleMoveButtonClick);
-    moveLayout->addWidget(moveButton);
-
-    // Use a QHBoxLayout to arrange the text box and button horizontally
     navigateLayout = new QHBoxLayout;
 
     // Add the text box to the layout
     navigateLineEdit = new QLineEdit;
-    navigateLineEdit->setPlaceholderText("Enter your coordinate (e.g. 3,8)");
+    navigateLineEdit->setPlaceholderText("Enter your command");
     navigateLayout->addWidget(navigateLineEdit);
 
     // Enter to navigate
-    connect(navigateLineEdit, &QLineEdit::returnPressed, this, &TextViewController::handleNavigateButtonClick);
+    connect(navigateLineEdit, &QLineEdit::returnPressed, this, &TextViewController::handleTextCommand);
 
     // Create a button
-    navigateButton = new QPushButton("NAVIGATE");
-    connect(navigateButton, &QPushButton::clicked, this, &TextViewController::handleNavigateButtonClick);
+    navigateButton = new QPushButton("ENTER");
+    connect(navigateButton, &QPushButton::clicked, this, &TextViewController::handleTextCommand);
     navigateLayout->addWidget(navigateButton);
 
-    textLayout->addLayout(moveLayout);
     textLayout->addLayout(navigateLayout);
-}
 
-void TextViewController::handleMoveButtonClick(){
-    // Handle the button click event
-    // Retrieve text from the QLineEdit and store it in the member variable
-    moveText = moveLineEdit->text();
-
-    // Print the text in the TextBox for debugging
-    qCDebug(TextViewControllerCategory) << moveText;
-
-    // Check the stored text and perform actions accordingly
-    int newX = protagonist->getXPos();
-    int newY = protagonist->getYPos();
-
-    // Flag to indicate whether the command is correct or not
-    bool correctCommand = false;
-
-    if (moveText.toLower() == "left") {
-        qCDebug(TextViewControllerCategory) << "left action was triggered";
-        newX = protagonist->getXPos() - 1;
-        correctCommand = true;
-    } else if (moveText.toLower() == "right") {
-        qCDebug(TextViewControllerCategory) << "right action was triggered";
-        newX = protagonist->getXPos() + 1;
-        correctCommand = true;
-    } else if (moveText.toLower() == "up") {
-        qCDebug(TextViewControllerCategory) << "up action was triggered";
-        newY = protagonist->getYPos() - 1;
-        correctCommand = true;
-    } else if (moveText.toLower() == "down") {
-        qCDebug(TextViewControllerCategory) << "down action was triggered";
-        newY = protagonist->getYPos() + 1;
-        correctCommand = true;
-    }
-
-    // Check if the new position is within the boundaries of the world
-    if(newX >= 0 && newX < worldController->getCols() && newY >= 0 && newY < worldController->getRows()) {
-        // Update the protagonist's position only if it's a valid position
-        protagonist->setXPos(newX);
-        protagonist->setYPos(newY);
-
-        // Redraw the protagonist and energy bar
-        emit worldController->drawProtagonist();
-        emit worldController->drawBars();
-
-        // Check if you can attack an enemy or use a healthpack
-        worldController->attackEnemy();
-        worldController->useHealthpack();
-    }
-
-    // Change the background color of the button temporarily
-    if (correctCommand) {
-        // Green color for correct command
-        moveLineEdit->setStyleSheet("background-color: lightgreen;");
-    } else {
-        // Red color for incorrect command
-        moveLineEdit->setStyleSheet("background-color: lightcoral;");
-    }
-
-    // Set up a QTimer to revert the color after a short delay (e.g., 500 milliseconds)
-    QTimer::singleShot(250, this, [this]() {
-        // Restore the default background color
-        moveLineEdit->setStyleSheet("");
-        moveLineEdit->setText("");
-    });
-}
-
-void TextViewController::handleNavigateButtonClick(){
-    // Handle the button click event
-    // Retrieve text from the QLineEdit and store it in the member variable
-    navigateText = navigateLineEdit->text();
-
-    // Print the text in the TextBox for debugging
-    qCDebug(TextViewControllerCategory) << navigateText;
-
-    // Flag to indicate whether the command is correct or not
-    bool correctCommand = false;
-
-    // Split the string into a QStringList using the comma as a delimiter
-    QStringList values = navigateText.split(',');
-
-    // Check if there are exactly two values after splitting
-    if (values.size() == 2) {
-        // Convert the first and second parts to integers
-        int x = values.value(0).toInt();
-        int y = values.value(1).toInt();
-
-        // Check if the command is correct (add your specific conditions here)
-        if (worldController->isValidPosition(x, y)) {
-            correctCommand = true;
-            qCDebug(TextViewControllerCategory) << "Teleport action was triggered";
-            worldController->handleMousePressEvent(x - 1, y - 1);
-        }
-    }
-
-    // Change the background color of the button temporarily
-    if (correctCommand) {
-        // Green color for correct command
-        navigateLineEdit->setStyleSheet("background-color: lightgreen;");
-    } else {
-        // Red color for incorrect command
-        navigateLineEdit->setStyleSheet("background-color: lightcoral;");
-    }
-
-    // Set up a QTimer to revert the color after a short delay (e.g., 500 milliseconds)
-    QTimer::singleShot(250, this, [this]() {
-        // Restore the default background color
-        navigateLineEdit->setStyleSheet("");
-        navigateLineEdit->setText("");
-    });
+    // Add a QLabel for additional text
+    commandMessageLabel = new QLabel;
+    commandMessageLabel->setTextFormat(Qt::RichText);
+    textLayout->addWidget(commandMessageLabel);
 }
 
 void TextViewController::drawProtagonist() {
@@ -282,18 +160,6 @@ void TextViewController::drawProtagonist() {
     }
 }
 
-void TextViewController::handleDeath(){
-    //TODO
-}
-
-void TextViewController::handleHealthPackTaken(std::shared_ptr<Tile> pack){
-    //TODO
-}
-
-void TextViewController::handlePoisonLevelUpdated(float poisonLevel) {
-
-}
-
 void TextViewController::zoomIn() {
     QFont currentFont = asciiTextEdit->font();
     currentFont.setPointSize(currentFont.pointSize() + 1);
@@ -305,4 +171,151 @@ void TextViewController::zoomOut() {
     QFont currentFont = asciiTextEdit->font();
     currentFont.setPointSize(currentFont.pointSize() - 1);
     asciiTextEdit->setFont(currentFont);
+}
+
+void TextViewController::handleTextCommand() {
+    navigateText = navigateLineEdit->text();
+
+    // Split the command into parts
+    QStringList parts = navigateText.split(" ", Qt::SkipEmptyParts);
+
+    // Check if the command has at least one part
+    if (!parts.isEmpty()) {
+        // Find the corresponding handler in the map
+        auto handler = commandHandlers.find(parts[0].toLower());
+
+        // If the handler is found, call it with the remaining parts
+        if (handler != commandHandlers.end()) {
+            commandCheckVisual(true);
+            handler.value()(parts.mid(1));
+        } else {
+            // Handle unknown command
+            commandCheckVisual(false);
+            handleUnknownCommand();
+        }
+    }
+}
+
+void TextViewController::handleMoveCommand(const QString &direction) {
+    qCDebug(TextViewControllerCategory) << direction << " action was triggered";
+
+    // Your logic for handling the move command based on the direction
+    int newX = protagonist->getXPos();
+    int newY = protagonist->getYPos();
+
+    if (direction == "left") {
+        newX = protagonist->getXPos() - 1;
+    } else if (direction == "right") {
+        newX = protagonist->getXPos() + 1;
+    } else if (direction == "up") {
+        newY = protagonist->getYPos() - 1;
+    } else if (direction == "down") {
+        newY = protagonist->getYPos() + 1;
+    }
+
+    // Check if the new position is within the boundaries of the world
+    if(newX >= 0 && newX < worldController->getCols() && newY >= 0 && newY < worldController->getRows()) {
+        // Update the protagonist's position only if it's a valid position
+        protagonist->setXPos(newX);
+        protagonist->setYPos(newY);
+
+        // Redraw the protagonist and energy bar
+        emit worldController->drawProtagonist();
+        emit worldController->drawBars();
+
+        // Check if you can attack an enemy or use a healthpack
+        worldController->attackEnemy();
+        worldController->useHealthpack();
+    }
+
+    commandMessageLabel->setText("Protagonist moved <b>" + direction + "</b>");
+}
+
+void TextViewController::handleGotoCommand() {
+    qCDebug(TextViewControllerCategory) << "Goto command triggered!";
+
+    // Retrieve text from the QLineEdit and store it in the member variable
+    navigateText = navigateLineEdit->text();
+
+    // Print the text in the TextBox for debugging
+    qCDebug(TextViewControllerCategory) << navigateText;
+
+    // Split the string into a QStringList using the space as a delimiter
+    QStringList values = navigateText.split(' ');
+
+    // Check if there are exactly three parts (including "goto")
+    if (values.size() == 3 && values[0].toLower() == "goto") {
+        // Convert the second and third parts to integers
+        int x = values[1].toInt();
+        int y = values[2].toInt();
+
+        qCDebug(TextViewControllerCategory) << x << "---> x value";
+        qCDebug(TextViewControllerCategory) << y << "---> y value";
+        // Check if the command is correct (add your specific conditions here)
+        if (worldController->isValidPosition(x - 1, y - 1)) {
+            worldController->handleMousePressEvent(x - 1, y - 1);
+
+            commandMessageLabel->setText("Protagonist moved to <b>(" + QString::number(x) + "," + QString::number(y) + ")</b>");
+        }
+        else {
+            commandMessageLabel->setText("<font color='red'>Error: Cannot go to the specified position. Coordinates <b>(" + QString::number(x) + "," + QString::number(y) + ")</b> are outside the world boundaries.<br>"
+                                                 "World boundaries: X [1, " + QString::number(worldController->getCols()) + "], Y [1, " + QString::number(worldController->getRows()) + "]</font>");
+
+        }
+    }
+    else {
+        commandMessageLabel->setText("<font color='red'>Error: Invalid coordinates after 'goto' command. Use 'goto x y'.</font>");
+    }
+}
+
+void TextViewController::handleAttackCommand() {
+    qCDebug(TextViewControllerCategory) << "Attack nearest enemy command triggered";
+
+    commandMessageLabel->setText("Nearest enemy has been attacked!");
+    // TODO
+}
+
+void TextViewController::handleTakeCommand() {
+    qCDebug(TextViewControllerCategory) << "Take nearest health pack command triggered";
+
+    commandMessageLabel->setText("Nearest healthpack has been taken!");
+    // TODO
+}
+
+void TextViewController::handleHelpCommand() {
+    qCDebug(TextViewControllerCategory) << "Help command triggered";
+
+    // Update the additional text in the QLabel
+    commandMessageLabel->setText("Available commands:");
+
+    // Append each command to the QLabel
+    for (const auto& command : commandHandlers.keys()) {
+        commandMessageLabel->setText(commandMessageLabel->text() + "\n  - " + command);
+    }
+}
+
+void TextViewController::handleUnknownCommand() {
+    qCDebug(TextViewControllerCategory) << "Unknown command";
+
+    // Retrieve text from the QLineEdit and store it in the member variable
+    navigateText = navigateLineEdit->text();
+    commandMessageLabel->setText("<font color='red'>Error: Unknown command: <b>" + navigateText + "</b><br>Enter \"help\" to see available commands!</font>");
+}
+
+void TextViewController::commandCheckVisual(bool correctCommand) {
+    // Change the background color of the button temporarily
+    if (correctCommand) {
+        // Green color for correct command
+        navigateLineEdit->setStyleSheet("background-color: lightgreen;");
+    } else {
+        // Red color for incorrect command
+        navigateLineEdit->setStyleSheet("background-color: lightcoral;");
+    }
+
+    // Set up a QTimer to revert the color after a short delay (e.g., 500 milliseconds)
+    QTimer::singleShot(250, this, [this]() {
+        // Restore the default background color
+        navigateLineEdit->setStyleSheet("");
+        navigateLineEdit->setText("");
+    });
 }
