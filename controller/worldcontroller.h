@@ -82,6 +82,9 @@ public:
     bool isHealthPack(int x, int y);
     bool isEnemy(int x, int y);
 
+    std::shared_ptr<Enemy> getNearestEnemy();
+    std::shared_ptr<Tile> getNearestHealthpack();
+
 public slots:
     void handleKeyPressEvent(QKeyEvent *event);
     void handleMousePressEvent(int x, int y);

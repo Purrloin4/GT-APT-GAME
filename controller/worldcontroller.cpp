@@ -1,7 +1,7 @@
 #include "worldcontroller.h"
 #include <iostream>
 #include "QLoggingCategory"
-#include "controller/graphicviewcontroller.h"
+#include "qtimer.h"
 
 QLoggingCategory WorldControllerCategory("worldController", QtDebugMsg);
 
@@ -375,4 +375,38 @@ bool WorldController::isEnemy(int x, int y)
 
 std::shared_ptr<World> WorldController::getWorld(){
     return world;
+}
+
+std::shared_ptr<Enemy> WorldController::getNearestEnemy()  {
+    std::shared_ptr<Enemy> nearestEnemy = nullptr;
+    int minDistance = INT_MAX;
+    int protagonistX = protagonist->getXPos();
+    int protagonistY = protagonist->getYPos();
+
+    for (const auto& enemy : enemies) {
+        int distance = abs(enemy->getXPos() - protagonistX) + abs(enemy->getYPos() - protagonistY);
+        if (distance < minDistance) {
+            minDistance = distance;
+            nearestEnemy = enemy;
+        }
+    }
+
+    return nearestEnemy;
+}
+
+std::shared_ptr<Tile> WorldController::getNearestHealthpack()  {
+    std::shared_ptr<Tile> nearestHealthpack = nullptr;
+    int minDistance = INT_MAX;
+    int protagonistX = protagonist->getXPos();
+    int protagonistY = protagonist->getYPos();
+
+    for (const auto& healthpack : healthpacks) {
+        int distance = abs(healthpack->getXPos() - protagonistX) + abs(healthpack->getYPos() - protagonistY);
+        if (distance < minDistance) {
+            minDistance = distance;
+            nearestHealthpack = healthpack;
+        }
+    }
+
+    return nearestHealthpack;
 }
