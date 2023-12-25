@@ -282,11 +282,18 @@ void TextViewController::handleAttackCommand() {
     // Check if you can attack an enemy
     worldController->attackEnemy();
 
-    commandMessageLabel->setText("Nearest enemy has been attacked!");
+    commandMessageLabel->setText("Protagonist attacks the nearest enemy at coordinates: <b>(" + QString::number(protagonist->getXPos() + 1) + ", " + QString::number(protagonist->getYPos() + 1) + ")</b>");
 }
 
 void TextViewController::handleTakeCommand() {
     qCDebug(TextViewControllerCategory) << "Take nearest health pack command triggered";
+
+    if(protagonist->getHealth() < 100.0) {
+        commandMessageLabel->setText("Protagonist takes the nearest health pack at coordinates: <b>(" + QString::number(protagonist->getXPos() + 1) + ", " + QString::number(protagonist->getYPos() + 1) + ")</b>");
+    }
+    else {
+        commandMessageLabel->setText("Protagonist is already at maximum health (100%). Coordinates: <b>(" + QString::number(protagonist->getXPos()) + ", " + QString::number(protagonist->getYPos()) + ")</b>");
+    }
 
     auto pack = worldController->getNearestHealthpack();
     protagonist->setXPos(pack->getXPos());
@@ -297,8 +304,6 @@ void TextViewController::handleTakeCommand() {
     emit worldController->drawBars();
 
     worldController->useHealthpack();
-
-    commandMessageLabel->setText("Nearest healthpack has been taken!");
 }
 
 void TextViewController::handleHelpCommand() {
