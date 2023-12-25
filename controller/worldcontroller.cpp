@@ -384,10 +384,12 @@ std::shared_ptr<Enemy> WorldController::getNearestEnemy()  {
     int protagonistY = protagonist->getYPos();
 
     for (const auto& enemy : enemies) {
-        int distance = abs(enemy->getXPos() - protagonistX) + abs(enemy->getYPos() - protagonistY);
-        if (distance < minDistance) {
-            minDistance = distance;
-            nearestEnemy = enemy;
+        if (!enemy->getDefeated()) {
+            int distance = abs(enemy->getXPos() - protagonistX) + abs(enemy->getYPos() - protagonistY);
+            if (distance < minDistance) {
+                minDistance = distance;
+                nearestEnemy = enemy;
+            }
         }
     }
 
@@ -401,10 +403,12 @@ std::shared_ptr<Tile> WorldController::getNearestHealthpack()  {
     int protagonistY = protagonist->getYPos();
 
     for (const auto& healthpack : healthpacks) {
-        int distance = abs(healthpack->getXPos() - protagonistX) + abs(healthpack->getYPos() - protagonistY);
-        if (distance < minDistance) {
-            minDistance = distance;
-            nearestHealthpack = healthpack;
+        if (healthpack->getValue() != 0) {
+            int distance = abs(healthpack->getXPos() - protagonistX) + abs(healthpack->getYPos() - protagonistY);
+            if (distance < minDistance) {
+                minDistance = distance;
+                nearestHealthpack = healthpack;
+            }
         }
     }
 

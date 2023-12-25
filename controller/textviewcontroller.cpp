@@ -271,15 +271,34 @@ void TextViewController::handleGotoCommand() {
 void TextViewController::handleAttackCommand() {
     qCDebug(TextViewControllerCategory) << "Attack nearest enemy command triggered";
 
+    auto enemy = worldController->getNearestEnemy();
+    protagonist->setXPos(enemy->getXPos());
+    protagonist->setYPos(enemy->getYPos());
+
+    // Redraw the protagonist and energy bar
+    emit worldController->drawProtagonist();
+    emit worldController->drawBars();
+
+    // Check if you can attack an enemy
+    worldController->attackEnemy();
+
     commandMessageLabel->setText("Nearest enemy has been attacked!");
-    // TODO
 }
 
 void TextViewController::handleTakeCommand() {
     qCDebug(TextViewControllerCategory) << "Take nearest health pack command triggered";
 
+    auto pack = worldController->getNearestHealthpack();
+    protagonist->setXPos(pack->getXPos());
+    protagonist->setYPos(pack->getYPos());
+
+    // Redraw the protagonist and energy bar
+    emit worldController->drawProtagonist();
+    emit worldController->drawBars();
+
+    worldController->useHealthpack();
+
     commandMessageLabel->setText("Nearest healthpack has been taken!");
-    // TODO
 }
 
 void TextViewController::handleHelpCommand() {
