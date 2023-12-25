@@ -181,20 +181,38 @@ void TextViewController::handleTextCommand() {
 
     // Check if the command has at least one part
     if (!parts.isEmpty()) {
-        // Find the corresponding handler in the map
-        auto handler = commandHandlers.find(parts[0].toLower());
+        QString commandPrefix = parts[0].toLower();
 
-        // If the handler is found, call it with the remaining parts
+        auto handler = commandHandlers.find(commandPrefix);
+
         if (handler != commandHandlers.end()) {
             commandCheckVisual(true);
             handler.value()(parts.mid(1));
         } else {
-            // Handle unknown command
-            commandCheckVisual(false);
-            handleUnknownCommand();
+            QStringList matchingCommands;
+            for (auto iter = commandHandlers.begin(); iter != commandHandlers.end(); ++iter) {
+                if (iter.key().startsWith(commandPrefix)) {
+                    matchingCommands.append(iter.key());
+                }
+            }
+            if (matchingCommands.size() == 1) {
+                // If there is only one matching command, auto-complete the command
+                QString completedCommand = matchingCommands.first();
+
+                if (completedCommand.toLower() == "goto" && parts.size() == 3) {
+                    navigateLineEdit->setText(completedCommand + " " + parts[1] + " " + parts[2]);
+                } else {
+                    navigateLineEdit->setText(completedCommand);
+                }
+            }
+        commandCheckVisual(true);
+
+        // Simulate press of the "ENTER" key to execute the auto-completed command
+        QTimer::singleShot(0, this, &TextViewController::handleTextCommand);
         }
     }
 }
+
 
 void TextViewController::handleMoveCommand(const QString &direction) {
     qCDebug(TextViewControllerCategory) << direction << " action was triggered";
