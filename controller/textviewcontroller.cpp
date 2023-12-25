@@ -288,17 +288,21 @@ void TextViewController::handleAttackCommand() {
 void TextViewController::handleTakeCommand() {
     qCDebug(TextViewControllerCategory) << "Take nearest health pack command triggered";
 
-    auto pack = worldController->getNearestHealthpack();
-    protagonist->setXPos(pack->getXPos());
-    protagonist->setYPos(pack->getYPos());
+    if (protagonist->getHealth() == worldController->getMaxEH()) {
+        commandMessageLabel->setText("Health is already full!");
+    } else {
+        auto pack = worldController->getNearestHealthpack();
+        protagonist->setXPos(pack->getXPos());
+        protagonist->setYPos(pack->getYPos());
 
-    // Redraw the protagonist and energy bar
-    emit worldController->drawProtagonist();
-    emit worldController->drawBars();
+        // Redraw the protagonist and energy bar
+        emit worldController->drawProtagonist();
+        emit worldController->drawBars();
 
-    worldController->useHealthpack();
+        worldController->useHealthpack();
 
-    commandMessageLabel->setText("Nearest healthpack has been taken!");
+        commandMessageLabel->setText("Nearest healthpack has been taken!");
+    }
 }
 
 void TextViewController::handleHelpCommand() {
