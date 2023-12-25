@@ -311,7 +311,7 @@ void TextViewController::handleAttackCommand() {
 void TextViewController::handleTakeCommand() {
     qCDebug(TextViewControllerCategory) << "Take nearest health pack command triggered";
 
-    if(protagonist->getHealth() < 100.0) {
+    if(protagonist->getHealth() < worldController->getMaxEH()) {
         commandMessageLabel->setText("Protagonist takes the nearest health pack at coordinates: <b>(" + QString::number(protagonist->getXPos() + 1) + ", " + QString::number(protagonist->getYPos() + 1) + ")</b>");
     }
     else {
