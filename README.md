@@ -31,7 +31,10 @@
 
 ### Week 13
 - Weight controls and animations implementation - Cédric
-- Energy consumption and regeneration - Cédric
-- Implement command movement TextBased - Bob
-- Implement command teleport TextBased - Bob
+- Implemented movement & teleport commands in TextBased - Bob
 - Poisoning of protagonist by PEnemy, XEnemy implementation - Tiësto
+
+### Week 14
+- Energy consumption and regeneration - Cédric
+- Fully implemented command line - Bob
+- Implemented autoplay - Tiësto
