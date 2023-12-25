@@ -384,15 +384,26 @@ std::shared_ptr<Enemy> WorldController::getNearestEnemy()  {
     int protagonistY = protagonist->getYPos();
 
     for (const auto& enemy : enemies) {
-        if (!enemy->getDefeated()) {
-            int distance = abs(enemy->getXPos() - protagonistX) + abs(enemy->getYPos() - protagonistY);
-            if (distance < minDistance) {
-                minDistance = distance;
-                nearestEnemy = enemy;
+        if (auto xEnemy = dynamic_cast<XEnemy*>(enemy.get())) {
+            if (!xEnemy->isHalfDead()) {
+                if (!xEnemy->getDefeated()) {
+                    int distance = abs(xEnemy->getXPos() - protagonistX) + abs(xEnemy->getYPos() - protagonistY);
+                    if (distance < minDistance) {
+                        minDistance = distance;
+                        nearestEnemy = enemy;
+                    }
+                }
+            }
+        } else {
+            if (!enemy->getDefeated()) {
+                int distance = abs(enemy->getXPos() - protagonistX) + abs(enemy->getYPos() - protagonistY);
+                if (distance < minDistance) {
+                    minDistance = distance;
+                    nearestEnemy = enemy;
+                }
             }
         }
     }
-
     return nearestEnemy;
 }
 
