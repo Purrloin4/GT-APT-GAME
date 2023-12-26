@@ -199,25 +199,25 @@ void TextViewController::handleTextCommand() {
                 }
             }
 
-            // If there is only one matching command, auto-complete the command
-            QString completedCommand = matchingCommands.first();
-
-            if (completedCommand.toLower() == "goto" && parts.size() == 3) {
-                // If the completed command is "goto" and there is one missing parameter, append it
-                navigateLineEdit->setText(completedCommand + " " + parts[1] + " " + parts[2]);
+            if (matchingCommands.isEmpty()) {
+                // Handle unknown command
+                commandCheckVisual(false);
+                handleUnknownCommand();
             } else {
-                navigateLineEdit->setText(completedCommand);
+                // If there is only one matching command, auto-complete the command
+                completeCommand(matchingCommands.first());
             }
-
-            commandCheckVisual(true);
-
-            // Simulate press of the "ENTER" key to execute the auto-completed command
-            QTimer::singleShot(0, this, &TextViewController::handleTextCommand);
         }
     }
 }
 
+void TextViewController::completeCommand(const QString &completedCommand) {
+    commandCheckVisual(true);
+    navigateLineEdit->setText(completedCommand);
 
+    // Simulate press of the "ENTER" key to execute the auto-completed command
+    QTimer::singleShot(0, this, &TextViewController::handleTextCommand);
+}
 
 void TextViewController::handleMoveCommand(const QString &direction) {
     qCDebug(TextViewControllerCategory) << direction << " action was triggered";
