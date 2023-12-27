@@ -26,6 +26,7 @@ public:
     ~MainWindow();
 public slots:
         void gameOverMessage();
+        void gameWonMessage();
 private:
     Ui::MainWindow *ui;
     World myWorld;

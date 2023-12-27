@@ -39,6 +39,7 @@ signals:
     void drawProtagonist();
     void drawBars();
     void gameOver();
+    void gameWon();
     void healthPackTaken(std::shared_ptr<Tile> pack);
     void moveProtagonistPosSignal(int x, int y);
     void moveProtagonistPathSignal(std::vector<int> path);
@@ -93,6 +94,7 @@ public slots:
     void handleAllHalfDead();
     void checkPoisonDamage();
     void handleAutoplay();
+    void handleDeath();
 private:
     point start;
     point exit;

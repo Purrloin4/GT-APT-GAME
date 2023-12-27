@@ -95,6 +95,11 @@ void MainWindow::gameOverMessage(){
     QCoreApplication::quit();
 }
 
+void MainWindow::gameWonMessage() {
+    QMessageBox::information(this, "Completed!", "You have defeated all enemies! Congrats!");
+    QCoreApplication::quit();
+}
+
 void MainWindow::connectSignalsAndSlots() {
     //visualize path
     connect(worldController.get(), &WorldController::pathFound,
@@ -114,6 +119,7 @@ void MainWindow::connectSignalsAndSlots() {
     //handleDeath & handlePoisonLevelUpdated
     for (const auto &enemy : worldController->getEnemies() ){
         connect(enemy.get(), &Enemy::dead, graphicViewController.get(), &GraphicViewController::handleDeath);
+        connect(enemy.get(), &Enemy::dead, worldController.get(), &WorldController::handleDeath);
         if (auto pEnemy = dynamic_cast<PEnemy*>(enemy.get())) {
             connect(pEnemy, &PEnemy::poisonLevelUpdated, graphicViewController.get(), &GraphicViewController::handlePoisonLevelUpdated);
         }
@@ -129,6 +135,9 @@ void MainWindow::connectSignalsAndSlots() {
     //gameOverMessage
     connect(worldController.get(), &WorldController::gameOver,
             this, &MainWindow::gameOverMessage);
+    //gameWonMessage
+    connect(worldController.get(), &WorldController::gameWon,
+            this, &MainWindow::gameWonMessage);
     //healthPackTaken
     connect(worldController.get(), &WorldController::healthPackTaken,
             graphicViewController.get(), &GraphicViewController::handleHealthPackTaken);

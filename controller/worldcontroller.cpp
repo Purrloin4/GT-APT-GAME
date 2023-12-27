@@ -200,8 +200,7 @@ void WorldController::attackEnemy(){
                     }
                 } else {
                     enemy->setDefeated(true);
-                    nrOfEnemies--;
-                    qCDebug(WorldControllerCategory) << "Defeated an enemy";
+                    qCDebug(WorldControllerCategory) << &"Defeated an enemy, nrOfEnemies = " [nrOfEnemies];
                 }
 
                 emit drawProtagonist();
@@ -458,15 +457,30 @@ void WorldController::handleAutoplay() {
 void WorldController::autoplayStep() {
     if (nrOfEnemies > 0) {
         auto enemy = getNearestEnemy();
-        if (protagonist->getHealth() > enemy->getValue()) {
-            protagonist->setPos(enemy->getXPos(), enemy->getYPos());
-            attackEnemy();
+        if (enemy) {
+            if (protagonist->getHealth() > enemy->getValue()) {
+                protagonist->setPos(enemy->getXPos(), enemy->getYPos());
+                attackEnemy();
+            } else {
+                auto pack = getNearestHealthpack();
+                if (pack) {
+                    protagonist->setPos(pack->getXPos(), pack->getYPos());
+                    useHealthpack();
+                } else {
+                    handleAutoplay();
+                }
+            }
         } else {
-            auto pack = getNearestHealthpack();
-            protagonist->setPos(pack->getXPos(), pack->getYPos());
-            useHealthpack();
+            handleAutoplay();
         }
     } else {
         handleAutoplay();
+    }
+}
+
+void WorldController::handleDeath() {
+    nrOfEnemies--;
+    if (nrOfEnemies == 0) {
+        emit gameWon();
     }
 }
