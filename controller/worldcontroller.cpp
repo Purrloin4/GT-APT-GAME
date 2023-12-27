@@ -24,6 +24,7 @@ WorldController::WorldController()
             this->healthpacks.push_back(sharedHealthpack);
         }
 
+        nrOfEnemies = 0;
         auto myEnemies = world->getEnemies();
         for (const auto &enemy : myEnemies){
             nrOfEnemies++;
@@ -52,6 +53,8 @@ WorldController::WorldController()
             this->enemies[i] = xEnemy;
             i++;
         }
+
+        autoplayActive = false;
 
         this->protagonist = std::make_shared<Protagonist>();
         this->protagonistItem = std::make_shared<QGraphicsRectItem*>();
@@ -182,7 +185,7 @@ void WorldController::attackEnemy(){
             if (protagonist->getHealth() > enemy->getValue()) {
                 // Protagonist has enough health to attack and defeat the enemy
                 protagonist->setHealth(protagonist->getHealth() - enemy->getValue());
-                qCDebug(WorldControllerCategory) << "Protagonist healt:" << protagonist->getHealth();
+                qCDebug(WorldControllerCategory) << "Protagonist health:" << protagonist->getHealth();
                 // Check if the defeated enemy is a PEnemy
                 if (auto pEnemy = dynamic_cast<PEnemy*>(enemy.get())) {
                     // Call the poison method for PEnemy
@@ -197,6 +200,7 @@ void WorldController::attackEnemy(){
                     }
                 } else {
                     enemy->setDefeated(true);
+                    nrOfEnemies--;
                     qCDebug(WorldControllerCategory) << "Defeated an enemy";
                 }
 
@@ -427,10 +431,42 @@ std::shared_ptr<Tile> WorldController::getNearestHealthpack()  {
     return nearestHealthpack;
 }
 
-int WorldController::getNrOfEnemies() {
-    return nrOfEnemies;
+void WorldController::handleAutoplay() {
+    static QTimer timer; // Timer for autoplay
+
+    if (!autoplayActive) {
+        autoplayActive = true;
+        qCDebug(WorldControllerCategory) << "Autoplay was activated!";
+
+        // Connect the timer to a method that performs one step of the autoplay logic
+        connect(&timer, &QTimer::timeout, this, &WorldController::autoplayStep);
+
+        // Start the timer to call autoplayStep every 500 milliseconds
+        timer.start(500);
+    } else {
+        autoplayActive = false;
+        qCDebug(WorldControllerCategory) << "Autoplay was deactivated!";
+
+        // Stop the timer
+        timer.stop();
+
+        // Disconnect the timer from autoplayStep
+        disconnect(&timer, &QTimer::timeout, this, &WorldController::autoplayStep);
+    }
 }
 
-void WorldController::handleAutoplay() {
-    qCDebug(WorldControllerCategory) << "Autoplay was pressed!";
+void WorldController::autoplayStep() {
+    if (nrOfEnemies > 0) {
+        auto enemy = getNearestEnemy();
+        if (protagonist->getHealth() > enemy->getValue()) {
+            protagonist->setPos(enemy->getXPos(), enemy->getYPos());
+            attackEnemy();
+        } else {
+            auto pack = getNearestHealthpack();
+            protagonist->setPos(pack->getXPos(), pack->getYPos());
+            useHealthpack();
+        }
+    } else {
+        handleAutoplay();
+    }
 }

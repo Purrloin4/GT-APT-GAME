@@ -85,7 +85,7 @@ public:
     std::shared_ptr<Enemy> getNearestEnemy();
     std::shared_ptr<Tile> getNearestHealthpack();
 
-    int getNrOfEnemies();
+    void autoplayStep();
 
 public slots:
     void handleKeyPressEvent(QKeyEvent *event);
@@ -110,6 +110,7 @@ private:
     QTimer* energyRegenTimer;
     void regenerateEnergy();
     int nrOfEnemies;
+    bool autoplayActive;
 };
 
 #endif // WORLDCONTROLLER_H
