@@ -154,7 +154,7 @@ void WorldController::handleMousePressEvent(int x, int y) {
 
     // Check if the clicked position is within the boundaries of the world
     if (isValidPosition(x, y)) {
-        // Call findPathAndHighlight with the clicked tile's position
+        // Call findPath with the clicked tile's position
         auto startTile = std::make_unique<Tile>(protagonist->getXPos(), protagonist->getYPos(), 0.0f);
         auto endTile = std::make_unique<Tile>(x, y, 0.0f);
         auto path = findPath(std::move(startTile), std::move(endTile));
@@ -459,12 +459,18 @@ void WorldController::autoplayStep() {
         auto enemy = getNearestEnemy();
         if (enemy) {
             if (protagonist->getHealth() > enemy->getValue()) {
-                protagonist->setPos(enemy->getXPos(), enemy->getYPos());
+                auto startTile = std::make_unique<Tile>(protagonist->getXPos(), protagonist->getYPos(), 0.0f);
+                auto endTile = std::make_unique<Tile>(enemy->getXPos(), enemy->getYPos(), 0.0f);
+                auto path = findPath(std::move(startTile), std::move(endTile));
+                emit moveProtagonistPathSignal(path);
                 attackEnemy();
             } else {
                 auto pack = getNearestHealthpack();
                 if (pack) {
-                    protagonist->setPos(pack->getXPos(), pack->getYPos());
+                    auto startTile = std::make_unique<Tile>(protagonist->getXPos(), protagonist->getYPos(), 0.0f);
+                    auto endTile = std::make_unique<Tile>(pack->getXPos(), pack->getYPos(), 0.0f);
+                    auto path = findPath(std::move(startTile), std::move(endTile));
+                    emit moveProtagonistPathSignal(path);
                     useHealthpack();
                 } else {
                     handleAutoplay();
