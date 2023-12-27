@@ -38,6 +38,8 @@ void WindowController::setupWindow(){
     autoPlayButton = new QPushButton("AutoPlay");
     controlLayout->addWidget(autoPlayButton);
 
+    connect(autoPlayButton, &QPushButton::clicked, this, &WindowController::autoplay);
+
     windowLayout->addLayout(infoLayout);
     windowLayout->addLayout(controlLayout);
     drawBars();
@@ -109,4 +111,8 @@ void WindowController::zoomIn(){
 void WindowController::zoomOut(){
     qCDebug(WindowControllerCategory) << "Zooming out";
     emit zoomOutSignal();
+}
+
+void WindowController::autoplay() {
+    emit autoplaySignal();
 }

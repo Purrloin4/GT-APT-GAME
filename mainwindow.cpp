@@ -6,7 +6,6 @@
 #include <QGraphicsRectItem>
 #include <QMessageBox>
 #include "QLoggingCategory"
-#include <iostream>
 #include <QLabel>
 #include "controller/windowcontroller.h"
 
@@ -42,10 +41,6 @@ MainWindow::MainWindow(QWidget *parent)
 
     // Create additional widget
     QWidget *additionalWidget = new QWidget;
-    QLabel *additionalLabel = new QLabel("Health and energy");
-    additionalLabel->setAlignment(Qt::AlignCenter);
-    QVBoxLayout *additionalLayout = new QVBoxLayout;
-    additionalLayout->addWidget(additionalLabel);
 
     // Add the additional widget to the main layout
     mainLayout->addWidget(additionalWidget);
@@ -143,6 +138,9 @@ void MainWindow::connectSignalsAndSlots() {
     //zoomOutGraphic
     connect(windowController.get(), &WindowController::zoomOutSignal,
             graphicViewController.get(), &GraphicViewController::zoomOut);
+    //autoplay
+    connect(windowController.get(), &WindowController::autoplaySignal,
+            worldController.get(), &WorldController::handleAutoplay);
     //zoomInText
     connect(windowController.get(), &WindowController::zoomInSignal,
             textViewController.get(), &TextViewController::zoomIn);

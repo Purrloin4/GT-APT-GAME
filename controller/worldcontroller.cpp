@@ -26,6 +26,7 @@ WorldController::WorldController()
 
         auto myEnemies = world->getEnemies();
         for (const auto &enemy : myEnemies){
+            nrOfEnemies++;
             if (auto pEnemy = dynamic_cast<PEnemy*>(enemy.get())) {
                 auto sharedPEnemy = std::make_shared<PEnemy>(pEnemy->getXPos(), pEnemy->getYPos(), enemy->getValue());
                 this->enemies.push_back(sharedPEnemy);
@@ -36,7 +37,7 @@ WorldController::WorldController()
         }
 
         // Conversion of 25% of regual enemies to XEnemies
-        int numXEnemies = static_cast<int>(0.25 * myEnemies.size());
+        int numXEnemies = static_cast<int>(0.25 * nrOfEnemies);
         int i = 0;
 
         for (const auto &enemy : enemies) {
@@ -424,4 +425,12 @@ std::shared_ptr<Tile> WorldController::getNearestHealthpack()  {
     }
 
     return nearestHealthpack;
+}
+
+int WorldController::getNrOfEnemies() {
+    return nrOfEnemies;
+}
+
+void WorldController::handleAutoplay() {
+    qCDebug(WorldControllerCategory) << "Autoplay was pressed!";
 }

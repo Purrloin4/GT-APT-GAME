@@ -85,11 +85,14 @@ public:
     std::shared_ptr<Enemy> getNearestEnemy();
     std::shared_ptr<Tile> getNearestHealthpack();
 
+    int getNrOfEnemies();
+
 public slots:
     void handleKeyPressEvent(QKeyEvent *event);
     void handleMousePressEvent(int x, int y);
     void handleAllHalfDead();
     void checkPoisonDamage();
+    void handleAutoplay();
 private:
     point start;
     point exit;
@@ -106,6 +109,7 @@ private:
     double heightFactor = 1.1f;
     QTimer* energyRegenTimer;
     void regenerateEnergy();
+    int nrOfEnemies;
 };
 
 #endif // WORLDCONTROLLER_H
