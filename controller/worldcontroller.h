@@ -39,6 +39,7 @@ signals:
     void drawProtagonist();
     void drawBars();
     void gameOver();
+    void gameWon();
     void healthPackTaken(std::shared_ptr<Tile> pack);
     void moveProtagonistPosSignal(int x, int y);
     void moveProtagonistPathSignal(std::vector<int> path);
@@ -85,11 +86,15 @@ public:
     std::shared_ptr<Enemy> getNearestEnemy();
     std::shared_ptr<Tile> getNearestHealthpack();
 
+    void autoplayStep();
+
 public slots:
     void handleKeyPressEvent(QKeyEvent *event);
     void handleMousePressEvent(int x, int y);
     void handleAllHalfDead();
     void checkPoisonDamage();
+    void handleAutoplay();
+    void handleDeath();
 private:
     point start;
     point exit;
@@ -106,6 +111,8 @@ private:
     double heightFactor = 1.1f;
     QTimer* energyRegenTimer;
     void regenerateEnergy();
+    int nrOfEnemies;
+    bool autoplayActive;
 };
 
 #endif // WORLDCONTROLLER_H

@@ -20,6 +20,7 @@ class WindowController: public QObject
 signals:
     void zoomInSignal();
     void zoomOutSignal();
+    void autoplaySignal();
 public:
     WindowController(std::shared_ptr<WorldController> worldController)
         : worldController(worldController), scene(std::make_shared<QGraphicsScene>()), rawView(new QGraphicsView(scene.get())) {}
@@ -32,6 +33,7 @@ public slots:
     void handleTextChange(const QString &text);
     void zoomIn();
     void zoomOut();
+    void autoplay();
 private:
     std::shared_ptr<WorldController> worldController;
     std::shared_ptr<QGraphicsScene> scene;

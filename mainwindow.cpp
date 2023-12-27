@@ -6,7 +6,6 @@
 #include <QGraphicsRectItem>
 #include <QMessageBox>
 #include "QLoggingCategory"
-#include <iostream>
 #include <QLabel>
 #include "controller/windowcontroller.h"
 
@@ -42,10 +41,6 @@ MainWindow::MainWindow(QWidget *parent)
 
     // Create additional widget
     QWidget *additionalWidget = new QWidget;
-    QLabel *additionalLabel = new QLabel("Health and energy");
-    additionalLabel->setAlignment(Qt::AlignCenter);
-    QVBoxLayout *additionalLayout = new QVBoxLayout;
-    additionalLayout->addWidget(additionalLabel);
 
     // Add the additional widget to the main layout
     mainLayout->addWidget(additionalWidget);
@@ -100,6 +95,11 @@ void MainWindow::gameOverMessage(){
     QCoreApplication::quit();
 }
 
+void MainWindow::gameWonMessage() {
+    QMessageBox::information(this, "Completed!", "You have defeated all enemies! Congrats!");
+    QCoreApplication::quit();
+}
+
 void MainWindow::connectSignalsAndSlots() {
     //visualize path
     connect(worldController.get(), &WorldController::pathFound,
@@ -119,6 +119,7 @@ void MainWindow::connectSignalsAndSlots() {
     //handleDeath & handlePoisonLevelUpdated
     for (const auto &enemy : worldController->getEnemies() ){
         connect(enemy.get(), &Enemy::dead, graphicViewController.get(), &GraphicViewController::handleDeath);
+        connect(enemy.get(), &Enemy::dead, worldController.get(), &WorldController::handleDeath);
         if (auto pEnemy = dynamic_cast<PEnemy*>(enemy.get())) {
             connect(pEnemy, &PEnemy::poisonLevelUpdated, graphicViewController.get(), &GraphicViewController::handlePoisonLevelUpdated);
         }
@@ -134,6 +135,9 @@ void MainWindow::connectSignalsAndSlots() {
     //gameOverMessage
     connect(worldController.get(), &WorldController::gameOver,
             this, &MainWindow::gameOverMessage);
+    //gameWonMessage
+    connect(worldController.get(), &WorldController::gameWon,
+            this, &MainWindow::gameWonMessage);
     //healthPackTaken
     connect(worldController.get(), &WorldController::healthPackTaken,
             graphicViewController.get(), &GraphicViewController::handleHealthPackTaken);
@@ -143,6 +147,9 @@ void MainWindow::connectSignalsAndSlots() {
     //zoomOutGraphic
     connect(windowController.get(), &WindowController::zoomOutSignal,
             graphicViewController.get(), &GraphicViewController::zoomOut);
+    //autoplay
+    connect(windowController.get(), &WindowController::autoplaySignal,
+            worldController.get(), &WorldController::handleAutoplay);
     //zoomInText
     connect(windowController.get(), &WindowController::zoomInSignal,
             textViewController.get(), &TextViewController::zoomIn);

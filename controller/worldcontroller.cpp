@@ -24,8 +24,10 @@ WorldController::WorldController()
             this->healthpacks.push_back(sharedHealthpack);
         }
 
+        nrOfEnemies = 0;
         auto myEnemies = world->getEnemies();
         for (const auto &enemy : myEnemies){
+            nrOfEnemies++;
             if (auto pEnemy = dynamic_cast<PEnemy*>(enemy.get())) {
                 auto sharedPEnemy = std::make_shared<PEnemy>(pEnemy->getXPos(), pEnemy->getYPos(), enemy->getValue());
                 this->enemies.push_back(sharedPEnemy);
@@ -36,7 +38,7 @@ WorldController::WorldController()
         }
 
         // Conversion of 25% of regual enemies to XEnemies
-        int numXEnemies = static_cast<int>(0.25 * myEnemies.size());
+        int numXEnemies = static_cast<int>(0.25 * nrOfEnemies);
         int i = 0;
 
         for (const auto &enemy : enemies) {
@@ -51,6 +53,8 @@ WorldController::WorldController()
             this->enemies[i] = xEnemy;
             i++;
         }
+
+        autoplayActive = false;
 
         this->protagonist = std::make_shared<Protagonist>();
         this->protagonistItem = std::make_shared<QGraphicsRectItem*>();
@@ -150,7 +154,7 @@ void WorldController::handleMousePressEvent(int x, int y) {
 
     // Check if the clicked position is within the boundaries of the world
     if (isValidPosition(x, y)) {
-        // Call findPathAndHighlight with the clicked tile's position
+        // Call findPath with the clicked tile's position
         auto startTile = std::make_unique<Tile>(protagonist->getXPos(), protagonist->getYPos(), 0.0f);
         auto endTile = std::make_unique<Tile>(x, y, 0.0f);
         auto path = findPath(std::move(startTile), std::move(endTile));
@@ -181,7 +185,7 @@ void WorldController::attackEnemy(){
             if (protagonist->getHealth() > enemy->getValue()) {
                 // Protagonist has enough health to attack and defeat the enemy
                 protagonist->setHealth(protagonist->getHealth() - enemy->getValue());
-                qCDebug(WorldControllerCategory) << "Protagonist healt:" << protagonist->getHealth();
+                qCDebug(WorldControllerCategory) << "Protagonist health:" << protagonist->getHealth();
                 // Check if the defeated enemy is a PEnemy
                 if (auto pEnemy = dynamic_cast<PEnemy*>(enemy.get())) {
                     // Call the poison method for PEnemy
@@ -196,7 +200,7 @@ void WorldController::attackEnemy(){
                     }
                 } else {
                     enemy->setDefeated(true);
-                    qCDebug(WorldControllerCategory) << "Defeated an enemy";
+                    qCDebug(WorldControllerCategory) << &"Defeated an enemy, nrOfEnemies = " [nrOfEnemies];
                 }
 
                 emit drawProtagonist();
@@ -424,4 +428,65 @@ std::shared_ptr<Tile> WorldController::getNearestHealthpack()  {
     }
 
     return nearestHealthpack;
+}
+
+void WorldController::handleAutoplay() {
+    static QTimer timer; // Timer for autoplay
+
+    if (!autoplayActive) {
+        autoplayActive = true;
+        qCDebug(WorldControllerCategory) << "Autoplay was activated!";
+
+        // Connect the timer to a method that performs one step of the autoplay logic
+        connect(&timer, &QTimer::timeout, this, &WorldController::autoplayStep);
+
+        // Start the timer to call autoplayStep every 500 milliseconds
+        timer.start(500);
+    } else {
+        autoplayActive = false;
+        qCDebug(WorldControllerCategory) << "Autoplay was deactivated!";
+
+        // Stop the timer
+        timer.stop();
+
+        // Disconnect the timer from autoplayStep
+        disconnect(&timer, &QTimer::timeout, this, &WorldController::autoplayStep);
+    }
+}
+
+void WorldController::autoplayStep() {
+    if (nrOfEnemies > 0) {
+        auto enemy = getNearestEnemy();
+        if (enemy) {
+            if (protagonist->getHealth() > enemy->getValue()) {
+                auto startTile = std::make_unique<Tile>(protagonist->getXPos(), protagonist->getYPos(), 0.0f);
+                auto endTile = std::make_unique<Tile>(enemy->getXPos(), enemy->getYPos(), 0.0f);
+                auto path = findPath(std::move(startTile), std::move(endTile));
+                emit moveProtagonistPathSignal(path);
+                attackEnemy();
+            } else {
+                auto pack = getNearestHealthpack();
+                if (pack) {
+                    auto startTile = std::make_unique<Tile>(protagonist->getXPos(), protagonist->getYPos(), 0.0f);
+                    auto endTile = std::make_unique<Tile>(pack->getXPos(), pack->getYPos(), 0.0f);
+                    auto path = findPath(std::move(startTile), std::move(endTile));
+                    emit moveProtagonistPathSignal(path);
+                    useHealthpack();
+                } else {
+                    handleAutoplay();
+                }
+            }
+        } else {
+            handleAutoplay();
+        }
+    } else {
+        handleAutoplay();
+    }
+}
+
+void WorldController::handleDeath() {
+    nrOfEnemies--;
+    if (nrOfEnemies == 0) {
+        emit gameWon();
+    }
 }
