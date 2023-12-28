@@ -7,6 +7,7 @@
 #include <QMessageBox>
 #include "QLoggingCategory"
 #include <QLabel>
+#include <QScreen>
 #include "controller/windowcontroller.h"
 
 QLoggingCategory mainwindowCategory("mainwindow");
@@ -22,6 +23,10 @@ MainWindow::MainWindow(QWidget *parent)
     movementController(std::make_shared<MovementController>(worldController))
 {
     ui->setupUi(this);
+
+    // Show the main window maximized
+    this->showMaximized();
+
     graphicViewController->visualizeWorld();
     textViewController->visualizeWorld();
     windowController->setupWindow();
@@ -29,7 +34,7 @@ MainWindow::MainWindow(QWidget *parent)
     setFocus();
 
     // Create a vertical layout for the main window
-    QVBoxLayout *mainLayout = new QVBoxLayout;
+    QVBoxLayout *mainLayout = new QVBoxLayout(this);
 
     // Create tabs
     QTabWidget *tabWidget = new QTabWidget(this);
@@ -40,7 +45,7 @@ MainWindow::MainWindow(QWidget *parent)
     mainLayout->addWidget(tabWidget);
 
     // Create additional widget
-    QWidget *additionalWidget = new QWidget;
+    QWidget *additionalWidget = new QWidget(this);
 
     // Add the additional widget to the main layout
     mainLayout->addWidget(additionalWidget);
@@ -60,6 +65,21 @@ MainWindow::MainWindow(QWidget *parent)
     additionalWidget->setLayout(windowController->getWindowLayout());
 
     connectSignalsAndSlots();
+}
+
+MainWindow::MainWindow(int width, int height, QWidget *parent)
+    : MainWindow(parent)  // Call the default constructor with default values
+{
+    // Get the primary screen
+    QScreen *screen = QGuiApplication::primaryScreen();
+    // Get the available geometry of the screen
+    QRect screenGeometry = screen->availableGeometry();
+    // Calculate the center position
+    int x = (screenGeometry.width() - width) / 2;
+    int y = (screenGeometry.height() - height) / 2;
+
+    // Set the geometry of the main window
+    setGeometry(x, y, width, height);
 }
 
 
