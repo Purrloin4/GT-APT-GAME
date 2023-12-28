@@ -46,5 +46,7 @@ void XEnemy::setHalfDead(bool value) {
 void XEnemy::setDefeated(bool value) {
     defeated = value;
     timer->stop();
-    emit dead();
+    if (value) {
+        emit dead();
+    }
 }

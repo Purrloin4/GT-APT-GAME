@@ -24,10 +24,9 @@ WorldController::WorldController()
             this->healthpacks.push_back(sharedHealthpack);
         }
 
-        nrOfEnemies = 0;
         auto myEnemies = world->getEnemies();
+        nrOfEnemies = myEnemies.size();
         for (const auto &enemy : myEnemies){
-            nrOfEnemies++;
             if (auto pEnemy = dynamic_cast<PEnemy*>(enemy.get())) {
                 auto sharedPEnemy = std::make_shared<PEnemy>(pEnemy->getXPos(), pEnemy->getYPos(), enemy->getValue());
                 this->enemies.push_back(sharedPEnemy);
@@ -455,7 +454,7 @@ void WorldController::handleAutoplay() {
 }
 
 void WorldController::autoplayStep() {
-    if (nrOfEnemies > 0) {
+    if (nrOfEnemies != 0) {
         auto enemy = getNearestEnemy();
         if (enemy) {
             if (protagonist->getHealth() > enemy->getValue()) {
