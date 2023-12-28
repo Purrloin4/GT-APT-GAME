@@ -203,17 +203,23 @@ void TextViewController::handleTextCommand() {
                 // Handle unknown command
                 commandCheckVisual(false);
                 handleUnknownCommand();
-            } else {
+            } else if (matchingCommands.size() == 1) {
                 // If there is only one matching command, auto-complete the command
-                completeCommand(matchingCommands.first());
+                completeCommand(matchingCommands.first(), parts);
             }
         }
     }
 }
 
-void TextViewController::completeCommand(const QString &completedCommand) {
+void TextViewController::completeCommand(const QString &completedCommand, const QStringList &parts) {
     commandCheckVisual(true);
-    navigateLineEdit->setText(completedCommand);
+
+    if (completedCommand.toLower() == "goto" && parts.size() == 3) {
+        // If the completed command is "goto" and there is one missing parameter, append it
+        navigateLineEdit->setText(completedCommand + " " + parts[1] + " " + parts[2]);
+    } else {
+        navigateLineEdit->setText(completedCommand);
+    }
 
     // Simulate press of the "ENTER" key to execute the auto-completed command
     QTimer::singleShot(0, this, &TextViewController::handleTextCommand);
