@@ -76,7 +76,6 @@ void TextViewController::visualizeWorld(){
 
     // Set ascii to other representations
     updatedAsciiRepresentation = initialAsciiRepresentation;
-    oldAsciiRepresentation = initialAsciiRepresentation;
 
     // Create a widget to contain the text view
     textViewWidget = new QWidget;
@@ -152,7 +151,6 @@ void TextViewController::drawProtagonist() {
 
     // Update old with new
     oldProtagonistIndex = newProtagonistIndex;
-    oldAsciiRepresentation = updatedAsciiRepresentation;
 
     // Do not update health when you enter H-tile
     if (initialAsciiRepresentation.at(newProtagonistIndex) != 'H') {

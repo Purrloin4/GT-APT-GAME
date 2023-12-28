@@ -53,7 +53,6 @@ private:
     int oldProtagonistIndex = worldController->getCols()*4 + 4;
     int newProtagonistIndex;
     QString initialAsciiRepresentation;
-    QString oldAsciiRepresentation;
     QString updatedAsciiRepresentation;
     QTextEdit* asciiTextEdit;
     QWidget* textViewWidget;
