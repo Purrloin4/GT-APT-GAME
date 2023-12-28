@@ -22,7 +22,8 @@ signals:
     void keyPressed(QKeyEvent *event);
     void mousePressed(int x, int y);
 public:
-    MainWindow(QWidget *parent = nullptr);
+    MainWindow(QWidget *parent = nullptr); // ctor - default width and height
+    MainWindow(int width, int height, QWidget *parent = nullptr); // ctor - specified width and height
     ~MainWindow();
 public slots:
         void gameOverMessage();
