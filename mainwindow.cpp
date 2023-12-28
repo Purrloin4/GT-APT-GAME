@@ -34,7 +34,7 @@ MainWindow::MainWindow(QWidget *parent)
     setFocus();
 
     // Create a vertical layout for the main window
-    QVBoxLayout *mainLayout = new QVBoxLayout;
+    QVBoxLayout *mainLayout = new QVBoxLayout(this);
 
     // Create tabs
     QTabWidget *tabWidget = new QTabWidget(this);
@@ -45,7 +45,7 @@ MainWindow::MainWindow(QWidget *parent)
     mainLayout->addWidget(tabWidget);
 
     // Create additional widget
-    QWidget *additionalWidget = new QWidget;
+    QWidget *additionalWidget = new QWidget(this);
 
     // Add the additional widget to the main layout
     mainLayout->addWidget(additionalWidget);
