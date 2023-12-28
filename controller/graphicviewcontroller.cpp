@@ -49,7 +49,7 @@ void GraphicViewController::visualizeWorld()
             enemyItem->setPos(pEnemy->getXPos() * tileSize, pEnemy->getYPos() * tileSize);
             scene->addItem(enemyItem);
         } else if (auto xEnemy = dynamic_cast<XEnemy*>(enemy.get())) {
-            enemyItem = new QGraphicsPixmapItem(XEnemyTexture.scaled(tileSize, tileSize, Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation));
+            enemyItem = new QGraphicsPixmapItem(XEnemyTexture.scaled(tileSize*0.9, tileSize*0.9, Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation));
             enemyItem->setPos(xEnemy->getXPos() * tileSize, xEnemy->getYPos() * tileSize);
             scene->addItem(enemyItem);
         } else {
@@ -78,7 +78,7 @@ void GraphicViewController::visualizeWorld()
 
     // Add visualization for health packs
     for (const auto &healthPack : healthPacks) {
-        QGraphicsPixmapItem *healthPackItem = new QGraphicsPixmapItem(healthPackTexture.scaled(tileSize, tileSize, Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation));
+        QGraphicsPixmapItem *healthPackItem = new QGraphicsPixmapItem(healthPackTexture.scaled(tileSize*0.95, tileSize*0.95, Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation));
         healthPackItem->setPos(healthPack->getXPos() * tileSize, healthPack->getYPos() * tileSize);
         scene->addItem(healthPackItem);
 
@@ -177,8 +177,8 @@ void GraphicViewController::visualizePath(std::vector<int> path, std::shared_ptr
 
 void GraphicViewController::handleAlive() {
     Enemy* enemy = qobject_cast<Enemy*>(sender());
-    QPixmap tombStoneTexture(":/texture_images/XEnemy.png");
-    QGraphicsPixmapItem *xEnemyItem = new QGraphicsPixmapItem(tombStoneTexture.scaled(tileSize, tileSize, Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation));
+    QPixmap xEnemyTexture(":/texture_images/XEnemy.png");
+    QGraphicsPixmapItem *xEnemyItem = new QGraphicsPixmapItem(xEnemyTexture.scaled(tileSize*0.9, tileSize*0.9, Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation));
     xEnemyItem->setPos(enemy->getXPos() * tileSize, enemy->getYPos() * tileSize);
     scene->addItem(xEnemyItem);
     for (auto it = tileVisualisations.begin(); it != tileVisualisations.end();) {
@@ -195,8 +195,8 @@ void GraphicViewController::handleAlive() {
 
 void GraphicViewController::handleHalfDead() {
     Enemy* enemy = qobject_cast<Enemy*>(sender());
-    QPixmap tombStoneTexture(":/texture_images/XEnemy_half.png");
-    QGraphicsPixmapItem *halfXEnemyItem = new QGraphicsPixmapItem(tombStoneTexture.scaled(tileSize, tileSize, Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation));
+    QPixmap XEnemyHalfTexture(":/texture_images/XEnemy_half.png");
+    QGraphicsPixmapItem *halfXEnemyItem = new QGraphicsPixmapItem(XEnemyHalfTexture.scaled(tileSize*0.8, tileSize*0.8, Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation));
     halfXEnemyItem->setPos(enemy->getXPos() * tileSize, enemy->getYPos() * tileSize);
     scene->addItem(halfXEnemyItem);
     for (auto it = tileVisualisations.begin(); it != tileVisualisations.end();) {

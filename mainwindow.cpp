@@ -101,7 +101,7 @@ void MainWindow::mousePressEvent(QMouseEvent *event) {
     if (!views.isEmpty()) {
         QPointF clickedPoint = views.first()->mapToScene(event->pos());
 
-        double adjustedX = (clickedPoint.x() - 20* graphicViewController->getRelativeTileSize());
+        double adjustedX = (clickedPoint.x() - 20* graphicViewController->getRelativeTileSize()); // magic numbers are to compensate border and tab
         double adjustedY = (clickedPoint.y() - 45* graphicViewController->getRelativeTileSize());
 
         // Convert the scene coordinates to tile coordinates
