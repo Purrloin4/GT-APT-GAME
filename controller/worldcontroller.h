@@ -64,8 +64,6 @@ public:
 
     std::shared_ptr<Protagonist> getProtagonist() const;
 
-    std::shared_ptr<QGraphicsRectItem*> getProtagonistItem() const;
-
     std::vector<TileVisualisation> poisonedTiles;
 
     int getHeursticFactor() const;
@@ -76,7 +74,6 @@ public:
 
     int getRows() const;
     int getCols() const;
-
 
     float getMaxEH() const;
 
@@ -106,7 +103,6 @@ private:
     int rows;
     int cols;
     const float maxEH = 100.0f;
-    std::shared_ptr<QGraphicsRectItem*> protagonistItem = nullptr;
     double heursticFactor = 1.1f;
     double heightFactor = 1.1f;
     QTimer* energyRegenTimer;

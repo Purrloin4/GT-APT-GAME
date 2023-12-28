@@ -81,9 +81,12 @@ void MainWindow::mousePressEvent(QMouseEvent *event) {
     if (!views.isEmpty()) {
         QPointF clickedPoint = views.first()->mapToScene(event->pos());
 
+        double adjustedX = (clickedPoint.x() - 20* graphicViewController->getRelativeTileSize());
+        double adjustedY = (clickedPoint.y() - 45* graphicViewController->getRelativeTileSize());
+
         // Convert the scene coordinates to tile coordinates
-        int x = static_cast<int>(clickedPoint.x()) / 10 - 2;
-        int y = static_cast<int>(clickedPoint.y()) / 10 - 4;
+        int x = static_cast<int>(adjustedX) / graphicViewController->getTileSize();
+        int y = static_cast<int>(adjustedY) / graphicViewController->getTileSize();
 
         emit mousePressed(x, y);
     }

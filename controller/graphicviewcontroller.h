@@ -17,6 +17,8 @@ public:
     QVBoxLayout* getGraphLayout(){return graphLayout;}
     void drawPoisonSpread(PEnemy* pEnemy, float poisonLevel);
     void removePoisonedTiles(Enemy* enemy);
+    int getTileSize() const;
+    double getRelativeTileSize();
 public slots:
     void visualizePath(std::vector<int> path, std::shared_ptr<Tile> startTile);
     void drawProtagonist() override;
@@ -31,12 +33,14 @@ signals:
     void pathVisualizationRequested(std::vector<int> path, std::shared_ptr<Tile> startTile);
 private:
     QTimer *pathDeletionTimer = nullptr;
-    int tileSize = 10;
+    const int tileSize = 50;
     QVBoxLayout* graphLayout;
     QWidget* graphViewWidget;
     std::vector<TileVisualisation> tileVisualisations;
     std::vector<TileVisualisation> previousPath;
     QGraphicsPixmapItem* healthPackTextureItem;
+    QGraphicsPixmapItem* protagonistPixmapItem = nullptr;
+    double relativeTileSize = 1.0;
 };
 
 

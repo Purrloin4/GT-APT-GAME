@@ -59,8 +59,11 @@ void GraphicViewController::visualizeWorld()
         }
         QGraphicsTextItem *healthText = new QGraphicsTextItem(QString::number(enemy->getValue()));
         healthText->setDefaultTextColor(Qt::blue);
-        healthText->adjustSize();
-        healthText->setPos((enemy->getXPos()-0.5) * tileSize, (enemy->getYPos() + 0.2) * tileSize);
+        healthText->setTextWidth(100);
+        QFont font;
+        font.setPointSize(20);
+        healthText->setFont(font);
+        healthText->setPos((enemy->getXPos()) * tileSize, (enemy->getYPos() + 1) * tileSize);
         scene->addItem(healthText);
 
         //To store the health text with the correct enemy
@@ -81,8 +84,11 @@ void GraphicViewController::visualizeWorld()
 
         QGraphicsTextItem *healthPackText = new QGraphicsTextItem(QString::number(healthPack->getValue()));
         healthPackText->setDefaultTextColor(Qt::blue);
-        healthPackText->adjustSize();
-        healthPackText->setPos((healthPack->getXPos()-0.5) * tileSize, (healthPack->getYPos() + 0.2) * tileSize);
+        healthPackText->setTextWidth(100);
+        QFont font;
+        font.setPointSize(20);
+        healthPackText->setFont(font);
+        healthPackText->setPos((healthPack->getXPos()) * tileSize, (healthPack->getYPos() + 1) * tileSize);
         scene->addItem(healthPackText);
 
 
@@ -102,15 +108,16 @@ void GraphicViewController::visualizeWorld()
 }
 
 void GraphicViewController::drawProtagonist() {
-    auto protagonistItem = worldController->getProtagonistItem();
     auto protagonist = worldController->getProtagonist();
 
-    if (protagonistItem) {
-        scene->removeItem(*protagonistItem);
+    if (protagonistPixmapItem == nullptr){
+        QPixmap protagonistTexture(":/texture_images/protagonist.png");
+        protagonistPixmapItem = new QGraphicsPixmapItem(protagonistTexture.scaled(tileSize, tileSize, Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation));
+        protagonistPixmapItem->setZValue(1);
+        scene->addItem(protagonistPixmapItem);
     }
+    protagonistPixmapItem->setPos(protagonist->getXPos() * tileSize, protagonist->getYPos() * tileSize);
 
-    // Add visualization for protagonist
-    *protagonistItem = scene->addRect(protagonist->getXPos() * tileSize, protagonist->getYPos() * tileSize, tileSize, tileSize, QPen(Qt::black), QBrush(Qt::blue));
 }
 
 void GraphicViewController::visualizePath(std::vector<int> path, std::shared_ptr<Tile> startTile){
@@ -305,8 +312,21 @@ void GraphicViewController::drawPoisonSpread(PEnemy* pEnemy, float poisonLevel) 
 
 void GraphicViewController::zoomIn() {
     rawView->scale(1.1, 1.1);
+    relativeTileSize = relativeTileSize / 1.1;
+    qCDebug(GraphicViewControllerCategory) << "relativeTilesize:" << relativeTileSize;
 }
 
 void GraphicViewController::zoomOut() {
     rawView->scale(0.9, 0.9);
+    relativeTileSize = relativeTileSize / 0.9;
+    qCDebug(GraphicViewControllerCategory) << "relativeTilesize:" << relativeTileSize;
 }
+
+int GraphicViewController::getTileSize() const{
+    return tileSize;
+}
+
+double GraphicViewController::getRelativeTileSize(){
+    return relativeTileSize;
+}
+

@@ -57,7 +57,6 @@ WorldController::WorldController()
         autoplayActive = false;
 
         this->protagonist = std::make_shared<Protagonist>();
-        this->protagonistItem = std::make_shared<QGraphicsRectItem*>();
 
         this->cols = world->getCols();
         this->rows = world->getRows();
@@ -117,17 +116,17 @@ void WorldController::handleKeyPressEvent(QKeyEvent *event){
             newY = protagonist->getYPos() + 1;
             break;
       }
+      if (newX != protagonist->getXPos() || newY != protagonist->getYPos()){
+          emit moveProtagonistPosSignal(newX, newY);
 
-      emit moveProtagonistPosSignal(newX, newY);
+          // Redraw the protagonist and energy bar
+          emit drawProtagonist();
+          emit drawBars();
 
-      // Redraw the protagonist and energy bar
-      emit drawProtagonist();
-      emit drawBars();
-
-      // Check if we can attack an enemy or use a healthpack
-      attackEnemy();
-      useHealthpack();
-
+          // Check if we can attack an enemy or use a healthpack
+          attackEnemy();
+          useHealthpack();
+      }
 }
 
 void WorldController::checkPoisonDamage() {
@@ -336,10 +335,6 @@ std::vector<std::shared_ptr<Enemy> > WorldController::getEnemies() const
 std::shared_ptr<Protagonist> WorldController::getProtagonist() const
 {
     return protagonist;
-}
-
-std::shared_ptr<QGraphicsRectItem*> WorldController::getProtagonistItem() const{
-    return protagonistItem;
 }
 
 int WorldController::getRows() const
