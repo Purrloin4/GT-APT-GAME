@@ -480,6 +480,11 @@ void WorldController::autoplayStep() {
 
 void WorldController::handleDeath() {
     nrOfEnemies--;
+    Enemy* enemy = qobject_cast<Enemy*>(sender());
+    if (enemy) {
+        disconnect(enemy, &Enemy::dead, this, &WorldController::handleDeath);
+    }
+    qCDebug(WorldControllerCategory) << "nrOfEnemies changed:" << nrOfEnemies;
     if (nrOfEnemies == 0) {
         emit gameWon();
     }
