@@ -44,8 +44,9 @@ signals:
     void healthPackTaken(std::shared_ptr<Tile> pack);
     void moveProtagonistPosSignal(int x, int y);
     void moveProtagonistPathSignal(std::vector<int> path);
+    void portalUsed();
 public:
-    WorldController();
+    WorldController(QString map1, QString map2);
 
     std::vector<int> findPath(std::shared_ptr<Tile> startTile, std::shared_ptr<Tile> endTile);
     bool isValidPosition(int x, int y);
@@ -116,6 +117,8 @@ private:
     void regenerateEnergy();
     int nrOfEnemies;
     bool autoplayActive;
+    QString mainMap;
+    QString portalMap;
 };
 
 #endif // WORLDCONTROLLER_H

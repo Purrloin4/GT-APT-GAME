@@ -16,7 +16,7 @@ QLoggingCategory mainwindowCategory("mainwindow");
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow),
-    worldController(std::make_shared<WorldController>()),
+    worldController(std::make_shared<WorldController>("world_images/worldmap.png", "world_images/grobu.png")),
     graphicViewController(std::make_shared<GraphicViewController>(worldController)),
     textViewController(std::make_shared<TextViewController>(worldController)),
     windowController(std::make_shared<WindowController>(worldController)),
@@ -123,6 +123,12 @@ void MainWindow::gameWonMessage() {
     QCoreApplication::quit();
 }
 
+void MainWindow::handlePortalUsed() {
+    graphicViewController->visualizeWorld();
+    textViewController->visualizeWorld();
+    //windowController->setupWindow();
+}
+
 void MainWindow::connectSignalsAndSlots() {
     //visualize path
     connect(worldController.get(), &WorldController::pathFound,
@@ -152,6 +158,9 @@ void MainWindow::connectSignalsAndSlots() {
             connect(xEnemy, &XEnemy::allHalfDead, worldController.get(), &WorldController::handleAllHalfDead);
         }
     }
+    // Portal Tile
+    connect(worldController.get(), &WorldController::portalUsed,
+            this, &MainWindow::handlePortalUsed);
     //drawBars
     connect(worldController.get(), &WorldController::drawBars,
             windowController.get(), &WindowController::drawBars);

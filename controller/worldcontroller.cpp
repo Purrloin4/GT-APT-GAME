@@ -6,12 +6,13 @@
 
 QLoggingCategory WorldControllerCategory("worldController", QtDebugMsg);
 
-WorldController::WorldController()
+WorldController::WorldController(QString map1, QString map2)
 {
     // Create the world
     try {
         world = std::make_shared<World>();
-        world->createWorld(":/world_images/worldmap.png", 8, 8, 0.25f);
+        world->createWorld(map1, 8, 8, 0.25f);
+        this->mainMap = map1;
 
         auto myTiles = world->getTiles();
         for (const auto &tile : myTiles){
@@ -45,7 +46,8 @@ WorldController::WorldController()
 
         int index = rand() % emptyTiles.size();
         Tile* randomTile = emptyTiles[index].get();
-        this->portalTile = std::make_shared<PortalTile>(randomTile->getXPos(),randomTile->getYPos(),":/world_images/worldmap.png");
+        this->portalTile = std::make_shared<PortalTile>(randomTile->getXPos(),randomTile->getYPos(), map2);
+        this->portalMap = map2;
 
         // Conversion of 25% of regual enemies to XEnemies
         int numXEnemies = static_cast<int>(0.25 * nrOfEnemies);
@@ -136,6 +138,7 @@ void WorldController::handleKeyPressEvent(QKeyEvent *event){
           // Check if we can attack an enemy or use a healthpack
           attackEnemy();
           useHealthpack();
+          isPortal();
       }
 }
 
@@ -172,6 +175,7 @@ void WorldController::handleMousePressEvent(int x, int y) {
         emit drawBars();
         attackEnemy();
         useHealthpack();
+        isPortal();
     }
 }
 
@@ -513,6 +517,11 @@ void WorldController::isPortal() {
     int y = protagonist->getYPos();
 
     if (portalTile->getXPos() == x && portalTile->getYPos() == y) {
-        // TODO handle portaltile
+        if (portalTile->getMainMapActive()) {
+            WorldController(portalMap, mainMap);
+        } else {
+            WorldController(mainMap, portalMap);
+        }
+        emit portalUsed();
     }
 }
