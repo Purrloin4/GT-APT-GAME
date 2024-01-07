@@ -39,12 +39,15 @@ void GraphicViewController::visualizeWorld()
 
     }
 
-    // visualisation for portaltile
-    scene->addRect(portalTile->getXPos() * tileSize, portalTile->getYPos() * tileSize, tileSize, tileSize, QPen(Qt::black), QBrush(Qt::blue));
-
     QPixmap enemyTexture(":/texture_images/enemy.png");
     QPixmap PEnemyTexture(":/texture_images/PEnemy.png");
     QPixmap XEnemyTexture(":/texture_images/XEnemy.png");
+    QPixmap portalTexture(":/texture_images/portal.png");
+
+    QGraphicsPixmapItem *portalItem;
+    portalItem = new QGraphicsPixmapItem(portalTexture.scaled(tileSize, tileSize, Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation));
+    portalItem->setPos(portalTile->getXPos() * tileSize, portalTile->getYPos() * tileSize);
+    scene->addItem(portalItem);
 
     // Add visualization for enemies
     for (const auto &enemy : enemies) {

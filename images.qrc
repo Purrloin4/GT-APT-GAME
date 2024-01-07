@@ -15,5 +15,6 @@
         <file>texture_images/tombstone.png</file>
         <file>world_images/worldmap4_downscaled.png</file>
         <file>texture_images/protagonist.png</file>
+        <file>texture_images/portal.png</file>
     </qresource>
 </RCC>
