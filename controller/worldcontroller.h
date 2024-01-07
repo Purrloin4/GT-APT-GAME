@@ -91,6 +91,8 @@ public:
 
     void isPortal();
 
+    void generateNewWorld(QString map);
+
 public slots:
     void handleKeyPressEvent(QKeyEvent *event);
     void handleMousePressEvent(int x, int y);

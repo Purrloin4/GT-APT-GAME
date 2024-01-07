@@ -517,10 +517,11 @@ void WorldController::isPortal() {
     int y = protagonist->getYPos();
 
     if (portalTile->getXPos() == x && portalTile->getYPos() == y) {
-        if (portalTile->getMainMapActive()) {
-            WorldController(portalMap, mainMap);
+        qCDebug(WorldControllerCategory) << "Entered a portal tile!";
+        if (!portalTile->getMainMapActive()) {
+            portalTile->setMainMapActive(false);
         } else {
-            WorldController(mainMap, portalMap);
+            // handle going back to main map
         }
         emit portalUsed();
     }
