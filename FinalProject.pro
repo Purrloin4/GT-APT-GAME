@@ -28,7 +28,8 @@ HEADERS += \
     controller/worldcontroller.h \
     controller/windowcontroller.h\
     mainwindow.h \
-    pathNode.h
+    pathNode.h \
+    portaltile.h
 
 FORMS += \
     mainwindow.ui

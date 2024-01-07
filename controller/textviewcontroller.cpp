@@ -7,6 +7,7 @@ void TextViewController::visualizeWorld(){
     auto myTiles = worldController->getTiles();
     auto myEnemies = worldController->getEnemies();
     auto myHealthpacks = worldController->getHealthpacks();
+    auto portalTile = worldController->getPortalTile();
 
     // Determine the ASCII representation of different entities
     const QString horizontalBorder = "+---";
@@ -16,6 +17,7 @@ void TextViewController::visualizeWorld(){
     const QString verticalProtagonistTile = "| P ";
     const QString verticalPEnemyTile = "| ¶ ";
     const QString verticalXEnemyTile = "| X ";
+    const QString verticalPortalTile = "| O ";
 
     // Loop through each row
     for (int y = 0; y < worldController->getRows(); ++y) {
@@ -48,6 +50,7 @@ void TextViewController::visualizeWorld(){
             auto isEnemy = std::find_if(myEnemies.begin(), myEnemies.end(),
                                         [x, y](const auto &enemy) { return enemy->getXPos() == x && enemy->getYPos() == y; });
             auto isProtagonist = (protagonist->getXPos() == x && protagonist->getYPos() == y);
+            auto isPortalTile = (portalTile->getXPos() == x && portalTile->getYPos() == y);
 
             // Append the corresponding ASCII representation to the overall representation string
             if (isHealthPack != myHealthpacks.end()) {
@@ -58,6 +61,8 @@ void TextViewController::visualizeWorld(){
                 initialAsciiRepresentation += verticalXEnemyTile;
             } else if (isEnemy != myEnemies.end()) {
                 initialAsciiRepresentation += verticalEnemyTile;
+            } else if (isPortalTile){
+                initialAsciiRepresentation += verticalPortalTile;
             } else if (isProtagonist) {
                 initialAsciiRepresentation += verticalProtagonistTile;
             } else {
@@ -254,6 +259,7 @@ void TextViewController::handleMoveCommand(const QString &direction) {
         // Check if you can attack an enemy or use a healthpack
         worldController->attackEnemy();
         worldController->useHealthpack();
+        worldController->isPortal();
     }
 
     commandMessageLabel->setText("Protagonist moved <b>" + direction + "</b>");

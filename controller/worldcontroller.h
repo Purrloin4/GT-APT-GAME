@@ -1,6 +1,7 @@
 #ifndef WORLDCONTROLLER_H
 #define WORLDCONTROLLER_H
 
+#include "portaltile.h"
 #include "world.h"
 #include <memory>
 #include <vector>
@@ -43,8 +44,9 @@ signals:
     void healthPackTaken(std::shared_ptr<Tile> pack);
     void moveProtagonistPosSignal(int x, int y);
     void moveProtagonistPathSignal(std::vector<int> path);
+    void portalUsed();
 public:
-    WorldController();
+    WorldController(QString map1, QString map2);
 
     std::vector<int> findPath(std::shared_ptr<Tile> startTile, std::shared_ptr<Tile> endTile);
     bool isValidPosition(int x, int y);
@@ -63,6 +65,8 @@ public:
     std::vector<std::shared_ptr<Enemy> > getEnemies() const;
 
     std::shared_ptr<Protagonist> getProtagonist() const;
+
+    std::shared_ptr<PortalTile> getPortalTile() const;
 
     std::vector<TileVisualisation> poisonedTiles;
 
@@ -85,6 +89,10 @@ public:
 
     void autoplayStep();
 
+    void isPortal();
+
+    void generateNewWorld(QString map);
+
 public slots:
     void handleKeyPressEvent(QKeyEvent *event);
     void handleMousePressEvent(int x, int y);
@@ -100,6 +108,8 @@ private:
     std::vector<std::shared_ptr<Tile>> healthpacks;
     std::vector<std::shared_ptr<Enemy>> enemies;
     std::shared_ptr<Protagonist> protagonist;
+    std::vector<std::shared_ptr<Tile>> emptyTiles;
+    std::shared_ptr<PortalTile> portalTile;
     int rows;
     int cols;
     const float maxEH = 100.0f;
@@ -109,6 +119,8 @@ private:
     void regenerateEnergy();
     int nrOfEnemies;
     bool autoplayActive;
+    QString mainMap;
+    QString portalMap;
 };
 
 #endif // WORLDCONTROLLER_H

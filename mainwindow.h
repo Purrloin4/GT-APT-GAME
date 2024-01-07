@@ -28,6 +28,7 @@ public:
 public slots:
         void gameOverMessage();
         void gameWonMessage();
+        void handlePortalUsed();
 private:
     Ui::MainWindow *ui;
     World myWorld;
