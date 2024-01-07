@@ -1,6 +1,7 @@
 #include "worldcontroller.h"
 #include <iostream>
 #include "QLoggingCategory"
+#include "portaltile.h"
 #include "qtimer.h"
 
 QLoggingCategory WorldControllerCategory("worldController", QtDebugMsg);
@@ -35,6 +36,16 @@ WorldController::WorldController()
                 this->enemies.push_back(sharedEnemy);
             }
         }
+
+        for (const auto &tile : tiles) {
+            if (!isEnemy(tile->getXPos(), tile->getYPos()) && !isHealthPack(tile->getXPos(), tile->getYPos())) {
+                emptyTiles.push_back(tile);
+            }
+        }
+
+        int index = rand() % emptyTiles.size();
+        Tile* randomTile = emptyTiles[index].get();
+        this->portalTile = std::make_shared<PortalTile>(randomTile->getXPos(),randomTile->getYPos(),":/world_images/worldmap.png");
 
         // Conversion of 25% of regual enemies to XEnemies
         int numXEnemies = static_cast<int>(0.25 * nrOfEnemies);
@@ -326,7 +337,7 @@ std::shared_ptr<Enemy> WorldController::getEnemy(int x, int y) const
 }
 
 
-std::vector<std::shared_ptr<Enemy> > WorldController::getEnemies() const
+std::vector<std::shared_ptr<Enemy>> WorldController::getEnemies() const
 {
     return enemies;
 }
@@ -334,6 +345,11 @@ std::vector<std::shared_ptr<Enemy> > WorldController::getEnemies() const
 std::shared_ptr<Protagonist> WorldController::getProtagonist() const
 {
     return protagonist;
+}
+
+std::shared_ptr<PortalTile> WorldController::getPortalTile() const
+{
+    return portalTile;
 }
 
 int WorldController::getRows() const
@@ -487,5 +503,16 @@ void WorldController::handleDeath() {
     qCDebug(WorldControllerCategory) << "nrOfEnemies changed:" << nrOfEnemies;
     if (nrOfEnemies == 0) {
         emit gameWon();
+    }
+}
+
+void WorldController::isPortal() {
+
+    // Get the current position of the protagonist
+    int x = protagonist->getXPos();
+    int y = protagonist->getYPos();
+
+    if (portalTile->getXPos() == x && portalTile->getYPos() == y) {
+        // TODO handle portaltile
     }
 }

@@ -1,6 +1,7 @@
 #ifndef WORLDCONTROLLER_H
 #define WORLDCONTROLLER_H
 
+#include "portaltile.h"
 #include "world.h"
 #include <memory>
 #include <vector>
@@ -64,6 +65,8 @@ public:
 
     std::shared_ptr<Protagonist> getProtagonist() const;
 
+    std::shared_ptr<PortalTile> getPortalTile() const;
+
     std::vector<TileVisualisation> poisonedTiles;
 
     int getHeursticFactor() const;
@@ -85,6 +88,8 @@ public:
 
     void autoplayStep();
 
+    void isPortal();
+
 public slots:
     void handleKeyPressEvent(QKeyEvent *event);
     void handleMousePressEvent(int x, int y);
@@ -100,6 +105,8 @@ private:
     std::vector<std::shared_ptr<Tile>> healthpacks;
     std::vector<std::shared_ptr<Enemy>> enemies;
     std::shared_ptr<Protagonist> protagonist;
+    std::vector<std::shared_ptr<Tile>> emptyTiles;
+    std::shared_ptr<PortalTile> portalTile;
     int rows;
     int cols;
     const float maxEH = 100.0f;

@@ -14,6 +14,8 @@ void GraphicViewController::visualizeWorld()
 
     auto protagonist = worldController->getProtagonist();
 
+    auto portalTile = worldController->getPortalTile();
+
     QPixmap brickTexture(":/texture_images/brickwall.jpg");
 
     // Loop through each tile and set its color based on its value
@@ -36,6 +38,9 @@ void GraphicViewController::visualizeWorld()
         }
 
     }
+
+    // visualisation for portaltile
+    scene->addRect(portalTile->getXPos() * tileSize, portalTile->getYPos() * tileSize, tileSize, tileSize, QPen(Qt::black), QBrush(Qt::blue));
 
     QPixmap enemyTexture(":/texture_images/enemy.png");
     QPixmap PEnemyTexture(":/texture_images/PEnemy.png");
