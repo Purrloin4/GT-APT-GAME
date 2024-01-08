@@ -37,6 +37,8 @@ private:
     // Map to associate command strings with handlers
     QMap<QString, std::function<void(const QStringList&)>> commandHandlers;
 
+    void centerViewAroundProtagonist();
+
     // Command handling functions
     void handleGotoCommand();
     void handleMoveCommand(const QString& direction);
