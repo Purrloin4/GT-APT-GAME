@@ -142,6 +142,8 @@ void TextViewController::drawProtagonist() {
         } else {
             updatedAsciiRepresentation.replace(oldProtagonistIndex, 1, "H");
         }
+    } else if (initialAsciiRepresentation.at(oldProtagonistIndex) == 'O') {
+        updatedAsciiRepresentation.replace(oldProtagonistIndex, 1, "O");
     } else {
         qCDebug(TextViewControllerCategory) << "Previous position was empty";
     }
