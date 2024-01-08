@@ -168,39 +168,51 @@ void TextViewController::drawProtagonist() {
 }
 
 void TextViewController::centerViewAroundProtagonist() {
-    // >>>>>>>>>>>>>>>>>>>> Character dimensions debug >>>>>>>>>>>>>>>>>>>>
-    // Assuming you have a QTextEdit named "asciiTextEdit"
+//    // >>>>>>>>>>>>>>>>>>>> Character dimensions debug >>>>>>>>>>>>>>>>>>>>
+//    // Assuming you have a QTextEdit named "asciiTextEdit"
+//    QFont currentFont = asciiTextEdit->currentFont();
+
+//    // Get font family and size
+//    QString fontFamily = currentFont.family();
+//    int fontSize = currentFont.pointSize();
+
+//    // Print or use the font information as needed
+//    qDebug() << "Font Family: " << fontFamily;
+//    qDebug() << "Font Size: " << fontSize;
+
+//    QFontMetrics fontMetrics(currentFont);
+//    int charWidth = fontMetrics.horizontalAdvance('+');
+//    int charHeight = fontMetrics.height();
+//    qDebug() << "Width of character: " << charWidth;
+//    qDebug() << "Height of characters: " << charHeight;
+//    // <<<<<<<<<<<<<<<<<<<< Character dimensions debug <<<<<<<<<<<<<<<<<<<<
+
+    // Get the dimensions of the visible area within the QTextEdit
+    int textviewWidth = asciiTextEdit->viewport()->width();
+    int textviewHeight = asciiTextEdit->viewport()->height();
+
+    // Calculate the center position in the QTextEdit representation
+    int centerPosX = (textviewWidth - 1) / 2;
+    qCDebug(TextViewControllerCategory) << "--------> centerPosX : " << centerPosX;
+    int centerPosY = (textviewHeight - 1) / 2;
+    qCDebug(TextViewControllerCategory) << "--------> centerPosY : " << centerPosY;
+
+    // Calculate dimensions of character
     QFont currentFont = asciiTextEdit->currentFont();
-
-    // Get font family and size
-    QString fontFamily = currentFont.family();
-    int fontSize = currentFont.pointSize();
-
-    // Print or use the font information as needed
-    qDebug() << "Font Family: " << fontFamily;
-    qDebug() << "Font Size: " << fontSize;
-
     QFontMetrics fontMetrics(currentFont);
     int charWidth = fontMetrics.horizontalAdvance('+');
     int charHeight = fontMetrics.height();
     qDebug() << "Width of character: " << charWidth;
     qDebug() << "Height of characters: " << charHeight;
-    // <<<<<<<<<<<<<<<<<<<< Character dimensions debug <<<<<<<<<<<<<<<<<<<<
 
-    // Get the dimensions of the visible area within the QTextEdit
-    int viewportWidth = asciiTextEdit->viewport()->width();
-    int viewportHeight = asciiTextEdit->viewport()->height();
-
-    // Calculate the center position in the QTextEdit representation
-    int centerPosX = (viewportWidth - 1) / 2;
-    qCDebug(TextViewControllerCategory) << "--------> centerPosX : " << centerPosX;
-    int centerPosY = (viewportHeight - 1) / 2;
-    qCDebug(TextViewControllerCategory) << "--------> centerPosY : " << centerPosY;
+    // Set dimensions of tile
+    int tileWidth = charWidth*4;
+    int tileHeight = charHeight*2;
 
     // Calculate the desired scroll positions
-    int protagonistX = protagonist->getXPos() * 30;
+    int protagonistX = protagonist->getXPos()*tileWidth;
     qCDebug(TextViewControllerCategory) << "--------> protPosX : " << protagonistX;
-    int protagonistY = protagonist->getYPos() * 30;
+    int protagonistY = protagonist->getYPos()*tileHeight;
     qCDebug(TextViewControllerCategory) << "--------> protPosY : " << protagonistY;
 
     // Calculate the scroll positions to center the view around the protagonist
@@ -208,9 +220,9 @@ void TextViewController::centerViewAroundProtagonist() {
     int scrollY = protagonistY - centerPosY;
 
     // Ensure the scroll positions are within bounds
-    scrollX = qMax(0, qMin(scrollX, worldController->getCols() * 30 - viewportWidth));
+    scrollX = qMax(0, qMin(scrollX, worldController->getCols()*tileWidth - textviewWidth));
     qCDebug(TextViewControllerCategory) << "--------> scrollX : " << scrollX;
-    scrollY = qMax(0, qMin(scrollY, worldController->getRows() * 30 - viewportHeight));
+    scrollY = qMax(0, qMin(scrollY, worldController->getRows()*tileHeight - textviewHeight));
     qCDebug(TextViewControllerCategory) << "--------> scrollY : " << scrollY;
 
     // Set the scroll positions
