@@ -1,6 +1,5 @@
 #include "textviewcontroller.h"
 #include <QTimer>
-#include <QScrollBar>
 
 QLoggingCategory TextViewControllerCategory("textviewcontroller", QtDebugMsg);
 
@@ -94,7 +93,7 @@ void TextViewController::visualizeWorld(){
     asciiTextEdit->setReadOnly(true);
 
     // Set line wrap mode to NoWrap
-    asciiTextEdit->setLineWrapMode(QTextEdit::NoWrap); // Deze lijn zorgt voor delay wanneer movement
+    //asciiTextEdit->setLineWrapMode(QTextEdit::NoWrap); // Deze lijn zorgt voor delay wanneer movement
 
     asciiTextEdit->setPlainText(initialAsciiRepresentation);
 

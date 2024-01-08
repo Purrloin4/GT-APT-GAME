@@ -12,6 +12,7 @@
 #include <QTextEdit>
 #include <QLineEdit>
 #include <QPushButton>
+#include <QScrollBar>
 
 class ViewController: public QObject
 {
