@@ -181,14 +181,10 @@ void TextViewController::centerViewAroundProtagonist() {
     qDebug() << "Font Size: " << fontSize;
 
     QFontMetrics fontMetrics(currentFont);
-    int charWidth1 = fontMetrics.horizontalAdvance('+');
-    int charWidth2 = fontMetrics.horizontalAdvance('-');
-    int charWidth3 = fontMetrics.horizontalAdvance('|');
-    int charWidth4 = fontMetrics.horizontalAdvance(' ');
-    qDebug() << "Width of character: " << charWidth1;
-    qDebug() << "Width of character: " << charWidth2;
-    qDebug() << "Width of character: " << charWidth3;
-    qDebug() << "Width of character: " << charWidth4;
+    int charWidth = fontMetrics.horizontalAdvance('+');
+    int charHeight = fontMetrics.height();
+    qDebug() << "Width of character: " << charWidth;
+    qDebug() << "Height of characters: " << charHeight;
     // <<<<<<<<<<<<<<<<<<<< Character dimensions debug <<<<<<<<<<<<<<<<<<<<
 
     // Get the dimensions of the visible area within the QTextEdit
