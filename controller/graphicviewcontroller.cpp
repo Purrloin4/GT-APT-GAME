@@ -133,8 +133,8 @@ void GraphicViewController::drawProtagonist() {
     int scrollY = protagonistY - centerPosY;
 
     // Set the scroll positions
-    rawView->horizontalScrollBar()->setValue(scrollX);
-    rawView->verticalScrollBar()->setValue(scrollY);
+    rawView->horizontalScrollBar()->setValue(scrollX / getRelativeTileSize());
+    rawView->verticalScrollBar()->setValue(scrollY / getRelativeTileSize());
 
     protagonistPixmapItem->setPos(protagonistX, protagonistY);
 }
