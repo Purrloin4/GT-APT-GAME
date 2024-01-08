@@ -9,11 +9,8 @@ void GraphicViewController::visualizeWorld()
 {
     auto myTiles = worldController->getTiles();
     auto enemies = worldController->getEnemies();
-
     auto healthPacks = worldController->getHealthpacks();
-
     auto protagonist = worldController->getProtagonist();
-
     auto portalTile = worldController->getPortalTile();
 
     QPixmap brickTexture(":/texture_images/brickwall.jpg");
@@ -124,8 +121,22 @@ void GraphicViewController::drawProtagonist() {
         protagonistPixmapItem->setZValue(1);
         scene->addItem(protagonistPixmapItem);
     }
-    protagonistPixmapItem->setPos(protagonist->getXPos() * tileSize, protagonist->getYPos() * tileSize);
 
+    // Calculate the desired scroll positions
+    int centerPosX = (rawView->viewport()->width() - 1) / 2;
+    int centerPosY = (rawView->viewport()->height() - 1) / 2;
+
+    int protagonistX = protagonist->getXPos() * tileSize;
+    int protagonistY = protagonist->getYPos() * tileSize;
+
+    int scrollX = protagonistX - centerPosX;
+    int scrollY = protagonistY - centerPosY;
+
+    // Set the scroll positions
+    rawView->horizontalScrollBar()->setValue(scrollX);
+    rawView->verticalScrollBar()->setValue(scrollY);
+
+    protagonistPixmapItem->setPos(protagonistX, protagonistY);
 }
 
 void GraphicViewController::visualizePath(std::vector<int> path, std::shared_ptr<Tile> startTile){
