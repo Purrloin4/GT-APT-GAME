@@ -220,10 +220,8 @@ void TextViewController::centerViewAroundProtagonist() {
     int scrollY = protagonistY - centerPosY;
 
     // Ensure the scroll positions are within bounds
-    scrollX = qMax(0, qMin(scrollX, worldController->getCols()*tileWidth - textviewWidth));
-    qCDebug(TextViewControllerCategory) << "--------> scrollX : " << scrollX;
-    scrollY = qMax(0, qMin(scrollY, worldController->getRows()*tileHeight - textviewHeight));
-    qCDebug(TextViewControllerCategory) << "--------> scrollY : " << scrollY;
+    scrollX = qMax(0, scrollX);
+    scrollY = qMax(0, scrollY);
 
     // Set the scroll positions
     asciiTextEdit->horizontalScrollBar()->setValue(scrollX);
