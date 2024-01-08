@@ -164,16 +164,32 @@ void TextViewController::drawProtagonist() {
         currentHealth = protagonist->getHealth();
     }
 
-//    // Calculate the center position in the QTextEdit representation
-//    int centerPosX = (asciiTextEdit->viewport()->width() - 1) / 2;
-//    qCDebug(TextViewControllerCategory) << "--------> centerPosX : " << centerPosX;
-//    int centerPosY = (asciiTextEdit->viewport()->height() - 1) / 2;
-//    qCDebug(TextViewControllerCategory) << "--------> centerPosY : " << centerPosY;
+    centerViewAroundProtagonist();
+}
 
-//    // Set the scroll positions
-//    qCDebug(TextViewControllerCategory) << "--------> getXPos()*30 : " << protagonist->getXPos()*30;
-//    asciiTextEdit->horizontalScrollBar()->setValue(protagonist->getXPos()*30-25);
-//    //asciiTextEdit->verticalScrollBar()->setValue(centerPosY);
+void TextViewController::centerViewAroundProtagonist() {
+    // >>>>>>>>>>>>>>>>>>>> Character dimensions debug >>>>>>>>>>>>>>>>>>>>
+    // Assuming you have a QTextEdit named "asciiTextEdit"
+    QFont currentFont = asciiTextEdit->currentFont();
+
+    // Get font family and size
+    QString fontFamily = currentFont.family();
+    int fontSize = currentFont.pointSize();
+
+    // Print or use the font information as needed
+    qDebug() << "Font Family: " << fontFamily;
+    qDebug() << "Font Size: " << fontSize;
+
+    QFontMetrics fontMetrics(currentFont);
+    int charWidth1 = fontMetrics.horizontalAdvance('+');
+    int charWidth2 = fontMetrics.horizontalAdvance('-');
+    int charWidth3 = fontMetrics.horizontalAdvance('|');
+    int charWidth4 = fontMetrics.horizontalAdvance(' ');
+    qDebug() << "Width of character: " << charWidth1;
+    qDebug() << "Width of character: " << charWidth2;
+    qDebug() << "Width of character: " << charWidth3;
+    qDebug() << "Width of character: " << charWidth4;
+    // <<<<<<<<<<<<<<<<<<<< Character dimensions debug <<<<<<<<<<<<<<<<<<<<
 
     // Get the dimensions of the visible area within the QTextEdit
     int viewportWidth = asciiTextEdit->viewport()->width();
