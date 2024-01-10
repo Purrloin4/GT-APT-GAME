@@ -34,7 +34,9 @@
 - Implemented movement & teleport commands in TextBased - Bob
 - Poisoning of protagonist by PEnemy, XEnemy implementation - Tiësto
 
-### Week 14
+### Week 14, 15, ...
 - Energy consumption and regeneration - Cédric
 - Fully implemented command line - Bob
 - Implemented autoplay - Tiësto
+- View centering arround protagonist - Bob
+- Portals to new world - Tiësto & ...
