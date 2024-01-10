@@ -13,7 +13,6 @@ SOURCES += \
     controller/graphicviewcontroller.cpp \
     controller/movementcontroller.cpp \
     controller/textviewcontroller.cpp \
-    controller/viewcontroller.cpp \
     controller/worldcontroller.cpp \
     controller/windowcontroller.cpp\
     main.cpp \
