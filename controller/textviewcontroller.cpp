@@ -387,23 +387,26 @@ void TextViewController::handleAttackCommand() {
 void TextViewController::handleTakeCommand() {
     qCDebug(TextViewControllerCategory) << "Take nearest health pack command triggered";
 
-    if(protagonist->getHealth() < worldController->getMaxEH()) {
-        commandMessageLabel->setText("Protagonist takes the nearest health pack at coordinates: <b>(" + QString::number(protagonist->getXPos() + 1) + ", " + QString::number(protagonist->getYPos() + 1) + ")</b>");
-    }
-    else {
-        commandMessageLabel->setText("Protagonist is already at maximum health (100%). Coordinates: <b>(" + QString::number(protagonist->getXPos()) + ", " + QString::number(protagonist->getYPos()) + ")</b>");
+    if (protagonist->getHealth() >= worldController->getMaxEH()) {
+        commandMessageLabel->setText("<font color='red'>Protagonist is already at maximum health (100%).</font>");
         return;
     }
 
-    auto pack = worldController->getNearestHealthpack();
-    protagonist->setXPos(pack->getXPos());
-    protagonist->setYPos(pack->getYPos());
+    auto nearestHealthPack = worldController->getNearestHealthpack();
+    if (nearestHealthPack) {
+        commandMessageLabel->setText("Protagonist takes the nearest health pack at coordinates: <b>(" + QString::number(nearestHealthPack->getXPos() + 1) + ", " + QString::number(nearestHealthPack->getYPos() + 1) + ")</b>");
 
-    // Redraw the protagonist and energy bar
-    emit worldController->drawProtagonist();
-    emit worldController->drawBars();
+        protagonist->setXPos(nearestHealthPack->getXPos());
+        protagonist->setYPos(nearestHealthPack->getYPos());
 
-    worldController->useHealthpack();
+        // Redraw the protagonist and energy bar
+        emit worldController->drawProtagonist();
+        emit worldController->drawBars();
+
+        worldController->useHealthpack();
+    } else {
+        commandMessageLabel->setText("<font color='red'>Uh-oh! The world has run out of health packs. The protagonist is in trouble!</font>");
+    }
 }
 
 void TextViewController::handleHelpCommand() {
