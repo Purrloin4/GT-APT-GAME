@@ -274,6 +274,7 @@ void GraphicViewController::handleHealthPackTaken(std::shared_ptr<Tile> pack){
     for (auto it = tileVisualisations.begin(); it != tileVisualisations.end();) {
         //if (it->tile->getXPos() == xPos && it->tile->getYPos() == yPos){
         if(it->tile == pack.get()){
+            animateHealing(it->tile->getXPos(), it->tile->getYPos());
             qCDebug(GraphicViewControllerCategory) << "found healthPackTile";
             scene->removeItem(it->healthPackText);
             scene->removeItem(it->texturePixmapItem);
@@ -365,6 +366,33 @@ void GraphicViewController::animateSplatter(int xPos,int yPos){
             if (scene) {
                 scene->removeItem(splatterProxy);
                 splatterProxy->deleteLater();
+            }
+        }
+    });
+
+    timer->start(1000);
+}
+
+void GraphicViewController::animateHealing(int xPos,int yPos){
+    QLabel *healingAnimationLabel = new QLabel();
+    healingAnimationLabel->setAttribute( Qt::WA_TranslucentBackground, true );
+    healingAnimationLabel->setMovie(healingAnimation);
+    healingAnimation->start();
+
+    QGraphicsProxyWidget* healingProxy = scene->addWidget(healingAnimationLabel);
+
+    healingProxy->setPos((xPos-0.5) * tileSize, (yPos- 0.5) * tileSize );
+    healingProxy->setZValue(2);
+
+    QTimer* timer = new QTimer(this);
+    timer->setSingleShot(true);
+
+    connect(timer, &QTimer::timeout, this, [healingProxy]() {
+        if (healingProxy) {
+            QGraphicsScene* scene = healingProxy->scene();
+            if (scene) {
+                scene->removeItem(healingProxy);
+                healingProxy->deleteLater();
             }
         }
     });
