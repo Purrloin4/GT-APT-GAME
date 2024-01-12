@@ -162,8 +162,6 @@ void TextViewController::drawProtagonist() {
         asciiTextEdit->setTextColor(Qt::green);
     } else if (currentChar == 'O') {
         asciiTextEdit->setTextColor(Qt::magenta);
-    } else {
-        asciiTextEdit->setTextColor(isDarkTheme ? Qt::black : Qt::white);
     }
 
     // Place the 'P' character at the new position
