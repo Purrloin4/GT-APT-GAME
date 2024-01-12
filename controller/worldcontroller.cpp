@@ -100,8 +100,6 @@ void WorldController::loadWorldState(WorldState newState){
     nrOfEnemies = currentState.nrOfEnemies;
     cols = currentState.cols;
     rows = currentState.rows;
-
-    //emit 
 }
 
 std::vector<int> WorldController::findPath(std::shared_ptr<Tile> startTile, std::shared_ptr<Tile> endTile) {
@@ -438,5 +436,12 @@ void WorldController::isPortal() {
         otherStates.push(currentState);
         loadWorldState(newState);
         emit portalUsed();
+        updateProtagonistPositionToPortal();
     }
+}
+
+void WorldController::updateProtagonistPositionToPortal(){
+    protagonist->setXPos(portalTile->getXPos());
+    protagonist->setYPos(portalTile->getYPos());
+    emit drawProtagonist();
 }

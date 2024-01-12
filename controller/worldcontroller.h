@@ -135,6 +135,7 @@ private:
     std::stack<WorldState> otherStates;
     WorldState createWorldState(QString mapName);
     void loadWorldState(WorldState state);
+    void updateProtagonistPositionToPortal();
 };
 
 #endif // WORLDCONTROLLER_H
