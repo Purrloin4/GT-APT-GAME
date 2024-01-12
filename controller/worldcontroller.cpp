@@ -365,6 +365,8 @@ void WorldController::autoplayStep() {
                 auto endTile = std::make_unique<Tile>(enemy->getXPos(), enemy->getYPos(), 0.0f);
                 auto path = findPath(std::move(startTile), std::move(endTile));
                 emit moveProtagonistPathSignal(path);
+                emit drawProtagonist();
+                emit drawBars();
                 attackEnemy();
             } else {
                 auto pack = getNearestHealthpack();
