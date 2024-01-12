@@ -17,5 +17,9 @@
         <file>texture_images/protagonist.png</file>
         <file>texture_images/portal.png</file>
         <file>animations/splatter.gif</file>
+        <file>animations/explosion.gif</file>
+        <file>animations/fireworks1.gif</file>
+        <file>animations/fireworks2.gif</file>
+        <file>animations/fireworks3.gif</file>
     </qresource>
 </RCC>

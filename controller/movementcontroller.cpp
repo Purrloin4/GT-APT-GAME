@@ -14,7 +14,7 @@ void MovementController::moveProtagonistPos(int x, int y)
     float energyCost = std::abs(oldTile->getValue() - newTile->getValue());
     float fixedCost= 20.0/worldController->getRows();
     energyCost = energyCost+fixedCost;
-    qCDebug(MovementControllerCategory) << "Current energy" << protagonist->getEnergy() << ", energy cost: " << energyCost << fixedCost;
+    //qCDebug(MovementControllerCategory) << "Current energy" << protagonist->getEnergy() << ", energy cost: " << energyCost << fixedCost;
     if (protagonist->getEnergy() >= energyCost) {
         protagonist->setXPos(x);
         protagonist->setYPos(y);

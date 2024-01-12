@@ -8,6 +8,7 @@
 #include "QLoggingCategory"
 #include <QLabel>
 #include <QScreen>
+#include <QThread>
 #include "controller/windowcontroller.h"
 
 QLoggingCategory mainwindowCategory("mainwindow");
@@ -114,6 +115,7 @@ void MainWindow::mousePressEvent(QMouseEvent *event) {
 }
 
 void MainWindow::gameOverMessage(){
+    //QThread::sleep(3);
     QMessageBox::information(this, "Game Over", "You were defeated by the enemy!");
     QCoreApplication::quit();
 }
@@ -164,6 +166,12 @@ void MainWindow::connectSignalsAndSlots() {
     //drawBars
     connect(worldController.get(), &WorldController::drawBars,
             windowController.get(), &WindowController::drawBars);
+    //gameOverAnimaton
+    connect(worldController.get(), &WorldController::gameOver,
+            graphicViewController.get(), &GraphicViewController::animateExplosions);
+    //gameWonAnimaton
+    connect(worldController.get(), &WorldController::gameWon,
+            graphicViewController.get(), &GraphicViewController::animateFireworks);
     //gameOverMessage
     connect(worldController.get(), &WorldController::gameOver,
             this, &MainWindow::gameOverMessage);

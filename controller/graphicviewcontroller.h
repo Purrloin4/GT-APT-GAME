@@ -6,6 +6,7 @@
 #include <QTimer>
 #include <QMovie>
 #include <QGraphicsProxyWidget>
+#include <QThread>
 
 class GraphicViewController : public ViewController
 {
@@ -15,6 +16,15 @@ public:
         splatterAnimation = new QMovie(":/animations/splatter.gif");
         splatterAnimation->setScaledSize(QSize(tileSize*4, tileSize*4));
         splatterAnimation->setSpeed(50);
+        explosionAnimation = new QMovie(":/animations/explosion.gif");
+        explosionAnimation->setScaledSize(QSize(tileSize*8, tileSize*8));
+        explosionAnimation->setSpeed(30);
+        fireworksAnimation1 = new QMovie(":/animations/fireworks1.gif");
+        fireworksAnimation1->setScaledSize(QSize(tileSize*8, tileSize*8));
+        fireworksAnimation2 = new QMovie(":/animations/fireworks2.gif");
+        fireworksAnimation2->setScaledSize(QSize(tileSize*8, tileSize*8));
+        fireworksAnimation3 = new QMovie(":/animations/fireworks3.gif");
+        fireworksAnimation3->setScaledSize(QSize(tileSize*8, tileSize*8));
     }
     std::shared_ptr<QGraphicsScene> scene;
     QGraphicsView* rawView;
@@ -35,6 +45,8 @@ public slots:
     void zoomOut() override;
     void handleAlive();
     void handleHalfDead();
+    void animateExplosions();
+    void animateFireworks();
 signals:
     void pathVisualizationRequested(std::vector<int> path, std::shared_ptr<Tile> startTile);
 private:
@@ -48,6 +60,10 @@ private:
     QGraphicsPixmapItem* protagonistPixmapItem = nullptr;
     double relativeTileSize = 1.0;
     QMovie *splatterAnimation;
+    QMovie *explosionAnimation;
+    QMovie *fireworksAnimation1;
+    QMovie *fireworksAnimation2;
+    QMovie *fireworksAnimation3;
     void animateSplatter(int xPos,int yPos);
 };
 
