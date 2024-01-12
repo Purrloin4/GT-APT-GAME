@@ -30,7 +30,7 @@
 - Protagonist movement in text-based view implementation in new file system - Bob
 
 ### Week 13
-- Weight controls and animations implementation - Cédric
+- Weight controls and textures implementation - Cédric
 - Implemented movement & teleport commands in TextBased - Bob
 - Poisoning of protagonist by PEnemy, XEnemy implementation - Tiësto
 
@@ -39,4 +39,6 @@
 - Fully implemented command line - Bob
 - Implemented autoplay - Tiësto
 - View centering arround protagonist - Bob
-- Portals to new world - Tiësto & ...
+- Portals to new world - Tiësto & Cédric
+- Attack, heal, gameWon and gameOver animations - Cédric
+- Sound effects - Cédric
