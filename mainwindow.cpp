@@ -167,12 +167,18 @@ void MainWindow::connectSignalsAndSlots() {
     //drawBars
     connect(worldController.get(), &WorldController::drawBars,
             windowController.get(), &WindowController::drawBars);
-    //gameOverAnimaton
+    //gameOverAnimaton - graph
     connect(worldController.get(), &WorldController::gameOver,
             graphicViewController.get(), &GraphicViewController::animateExplosions);
-    //gameWonAnimaton
+    //gameWonAnimaton - graph
     connect(worldController.get(), &WorldController::gameWon,
             graphicViewController.get(), &GraphicViewController::animateFireworks);
+    //gameOverAnimaton - text
+    connect(worldController.get(), &WorldController::gameOver,
+            textViewController.get(), &TextViewController::animateLoser);
+    //gameWonAnimaton - text
+    connect(worldController.get(), &WorldController::gameWon,
+            textViewController.get(), &TextViewController::animateWinner);
     //gameOverMessage
     connect(worldController.get(), &WorldController::gameOver,
             this, &MainWindow::gameOverMessage);
@@ -205,5 +211,5 @@ void MainWindow::connectSignalsAndSlots() {
             movementController.get(), &MovementController::moveProtagonistPath);
     //checkPoisonDamage
     connect(movementController.get(), &MovementController::posChanged,
-             worldController.get(), &WorldController::checkPoisonDamage);
+            worldController.get(), &WorldController::checkPoisonDamage);
 }

@@ -34,6 +34,8 @@ public slots:
     void handleTextCommand();
     void zoomIn() override;
     void zoomOut() override;
+    void animateWinner();
+    void animateLoser();
 private:
     // Map to associate command strings with handlers
     QMap<QString, std::function<void(const QStringList&)>> commandHandlers;

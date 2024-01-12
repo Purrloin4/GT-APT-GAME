@@ -21,5 +21,6 @@
         <file>animations/fireworks1.gif</file>
         <file>animations/fireworks2.gif</file>
         <file>animations/fireworks3.gif</file>
+        <file>animations/healing.gif</file>
     </qresource>
 </RCC>
