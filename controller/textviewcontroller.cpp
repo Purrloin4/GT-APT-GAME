@@ -162,6 +162,8 @@ void TextViewController::drawProtagonist() {
         asciiTextEdit->setTextColor(Qt::green);
     } else if (currentChar == 'O') {
         asciiTextEdit->setTextColor(Qt::magenta);
+    } else {
+        asciiTextEdit->setTextColor(isDarkTheme ? Qt::black : Qt::white);
     }
 
     // Place the 'P' character at the new position
@@ -433,6 +435,8 @@ void TextViewController::handleThemeCommand() {
         asciiTextEdit->setStyleSheet("background-color: white; color: black;");
         commandMessageLabel->setText("Theme is set to <b>Light</b>");
     }
+
+    drawProtagonist();
 }
 
 void TextViewController::handleHelpCommand() {
