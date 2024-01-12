@@ -256,11 +256,143 @@ void TextViewController::zoomOut() {
 }
 
 void TextViewController::animateWinner() {
-    qCDebug(TextViewControllerCategory) << "WINNERRRRRRRRRRRRRRRRRRRRRRRRRRR";
+    qCDebug(TextViewControllerCategory) << "WINNER";
+    asciiTextEdit->setStyleSheet("background-color: green; color: green;");
+
+    //    QString smiley = "                   __ooooooooo__";
+    //    smiley += QChar(0x2029);
+    //    smiley += "              oOOOOOOOOOOOOOOOOOOOOOo";
+    //    smiley += QChar(0x2029);
+    //    smiley += "          oOOOOOOOOOOOOOOOOOOOOOOOOOOOOOo";
+    //    smiley += QChar(0x2029);
+    //    smiley += "       oOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOo";
+    //    smiley += QChar(0x2029);
+    //    smiley += "     oOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOo";
+    //    smiley += QChar(0x2029);
+    //    smiley += "   oOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOo";
+    //    smiley += QChar(0x2029);
+    //    smiley += "  oOOOOOOOOOOO*  *OOOOOOOOOOOOOO*  *OOOOOOOOOOOOo";
+    //    smiley += QChar(0x2029);
+    //    smiley += " oOOOOOOOOOOO      OOOOOOOOOOOO      OOOOOOOOOOOOo";
+    //    smiley += QChar(0x2029);
+    //    smiley += " oOOOOOOOOOOOOo  oOOOOOOOOOOOOOOo  oOOOOOOOOOOOOOo";
+    //    smiley += QChar(0x2029);
+    //    smiley += "oOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOo";
+    //    smiley += QChar(0x2029);
+    //    smiley += "oOOOO     OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO     OOOOo";
+    //    smiley += QChar(0x2029);
+    //    smiley += "oOOOOOO OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO OOOOOOo";
+    //    smiley += QChar(0x2029);
+    //    smiley += " *OOOOO  OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO  OOOOO*";
+    //    smiley += QChar(0x2029);
+    //    smiley += " *OOOOOO  *OOOOOOOOOOOOOOOOOOOOOOOOOOOOO*  OOOOOO*";
+    //    smiley += QChar(0x2029);
+    //    smiley += "  *OOOOOO  *OOOOOOOOOOOOOOOOOOOOOOOOOOO*  OOOOOO*";
+    //    smiley += QChar(0x2029);
+    //    smiley += "   *OOOOOOo  *OOOOOOOOOOOOOOOOOOOOOOO*  oOOOOOO*";
+    //    smiley += QChar(0x2029);
+    //    smiley += "     *OOOOOOOo  *OOOOOOOOOOOOOOOOO*  oOOOOOOO*";
+    //    smiley += QChar(0x2029);
+    //    smiley += "       *OOOOOOOOo  *OOOOOOOOOOO*  oOOOOOOOO*";
+    //    smiley += QChar(0x2029);
+    //    smiley += "          *OOOOOOOOo           oOOOOOOOO*";
+    //    smiley += QChar(0x2029);
+    //    smiley += "              *OOOOOOOOOOOOOOOOOOOOO*";
+    //    smiley += QChar(0x2029);
+    //    smiley += "                  *ooooooooooooo*";
+    //    asciiTextEdit->setPlainText(smiley);
+
+    //                   __ooooooooo__
+    //              oOOOOOOOOOOOOOOOOOOOOOo
+    //          oOOOOOOOOOOOOOOOOOOOOOOOOOOOOOo
+    //       oOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOo
+    //     oOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOo
+    //   oOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOo
+    //  oOOOOOOOOOOO*  *OOOOOOOOOOOOOO*  *OOOOOOOOOOOOo
+    // oOOOOOOOOOOO      OOOOOOOOOOOO      OOOOOOOOOOOOo
+    // oOOOOOOOOOOOOo  oOOOOOOOOOOOOOOo  oOOOOOOOOOOOOOo
+    //oOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOo
+    //oOOOO     OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO     OOOOo
+    //oOOOOOO OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO OOOOOOo
+    // *OOOOO  OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO  OOOOO*
+    // *OOOOOO  *OOOOOOOOOOOOOOOOOOOOOOOOOOOOO*  OOOOOO*
+    //  *OOOOOO  *OOOOOOOOOOOOOOOOOOOOOOOOOOO*  OOOOOO*
+    //   *OOOOOOo  *OOOOOOOOOOOOOOOOOOOOOOO*  oOOOOOO*
+    //     *OOOOOOOo  *OOOOOOOOOOOOOOOOO*  oOOOOOOO*
+    //       *OOOOOOOOo  *OOOOOOOOOOO*  oOOOOOOOO*
+    //          *OOOOOOOOo           oOOOOOOOO*
+    //              *OOOOOOOOOOOOOOOOOOOOO*
+    //                   *ooooooooooo*");
 }
 
 void TextViewController::animateLoser() {
-    qCDebug(TextViewControllerCategory) << "DOODDDDDDDDDDDDDDDDDDDDDDDDDDDDD";
+    qCDebug(TextViewControllerCategory) << "DOOD";
+    asciiTextEdit->setStyleSheet("background-color: red; color: red;");
+
+//    QString smiley = "                   __ooooooooo__";
+//    smiley += QChar(0x2029);
+//    smiley += "              oOOOOOOOOOOOOOOOOOOOOOo";
+//    smiley += QChar(0x2029);
+//    smiley += "          oOOOOOOOOOOOOOOOOOOOOOOOOOOOOOo";
+//    smiley += QChar(0x2029);
+//    smiley += "       oOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOo";
+//    smiley += QChar(0x2029);
+//    smiley += "     oOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOo";
+//    smiley += QChar(0x2029);
+//    smiley += "   oOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOo";
+//    smiley += QChar(0x2029);
+//    smiley += "  oOOOOOOOOOOO*  *OOOOOOOOOOOOOO*  *OOOOOOOOOOOOo";
+//    smiley += QChar(0x2029);
+//    smiley += " oOOOOOOOOOOO      OOOOOOOOOOOO      OOOOOOOOOOOOo";
+//    smiley += QChar(0x2029);
+//    smiley += " oOOOOOOOOOOOOo  oOOOOOOOOOOOOOOo  oOOOOOOOOOOOOOo";
+//    smiley += QChar(0x2029);
+//    smiley += "oOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOo";
+//    smiley += QChar(0x2029);
+//    smiley += "oOOOO     OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO     OOOOo";
+//    smiley += QChar(0x2029);
+//    smiley += "oOOOOOO OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO OOOOOOo";
+//    smiley += QChar(0x2029);
+//    smiley += " *OOOOO  OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO  OOOOO*";
+//    smiley += QChar(0x2029);
+//    smiley += " *OOOOOO  *OOOOOOOOOOOOOOOOOOOOOOOOOOOOO*  OOOOOO*";
+//    smiley += QChar(0x2029);
+//    smiley += "  *OOOOOO  *OOOOOOOOOOOOOOOOOOOOOOOOOOO*  OOOOOO*";
+//    smiley += QChar(0x2029);
+//    smiley += "   *OOOOOOo  *OOOOOOOOOOOOOOOOOOOOOOO*  oOOOOOO*";
+//    smiley += QChar(0x2029);
+//    smiley += "     *OOOOOOOo  *OOOOOOOOOOOOOOOOO*  oOOOOOOO*";
+//    smiley += QChar(0x2029);
+//    smiley += "       *OOOOOOOOo  *OOOOOOOOOOO*  oOOOOOOOO*";
+//    smiley += QChar(0x2029);
+//    smiley += "          *OOOOOOOOo           oOOOOOOOO*";
+//    smiley += QChar(0x2029);
+//    smiley += "              *OOOOOOOOOOOOOOOOOOOOO*";
+//    smiley += QChar(0x2029);
+//    smiley += "                  *ooooooooooooo*";
+//    asciiTextEdit->setPlainText(smiley);
+
+    //                   __ooooooooo__
+    //              oOOOOOOOOOOOOOOOOOOOOOo
+    //          oOOOOOOOOOOOOOOOOOOOOOOOOOOOOOo
+    //       oOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOo
+    //     oOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOo
+    //   oOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOo
+    //  oOOOOOOOOOOO*  *OOOOOOOOOOOOOO*  *OOOOOOOOOOOOo
+    // oOOOOOOOOOOO      OOOOOOOOOOOO      OOOOOOOOOOOOo
+    // oOOOOOOOOOOOOo  oOOOOOOOOOOOOOOo  oOOOOOOOOOOOOOo
+    //oOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOo
+    //oOOOO     OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO     OOOOo
+    //oOOOOOO OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO OOOOOOo
+    // *OOOOO  OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO  OOOOO*
+    // *OOOOOO  *OOOOOOOOOOOOOOOOOOOOOOOOOOOOO*  OOOOOO*
+    //  *OOOOOO  *OOOOOOOOOOOOOOOOOOOOOOOOOOO*  OOOOOO*
+    //   *OOOOOOo  *OOOOOOOOOOOOOOOOOOOOOOO*  oOOOOOO*
+    //     *OOOOOOOo  *OOOOOOOOOOOOOOOOO*  oOOOOOOO*
+    //       *OOOOOOOOo  *OOOOOOOOOOO*  oOOOOOOOO*
+    //          *OOOOOOOOo           oOOOOOOOO*
+    //              *OOOOOOOOOOOOOOOOOOOOO*
+    //                   *ooooooooooo*");
 }
 
 void TextViewController::handleTextCommand() {

@@ -174,10 +174,10 @@ void MainWindow::connectSignalsAndSlots() {
             graphicViewController.get(), &GraphicViewController::animateFireworks);
     //gameOverAnimaton - text
     connect(worldController.get(), &WorldController::gameOver,
-            textViewController.get(), &TextViewController::animateWinner);
+            textViewController.get(), &TextViewController::animateLoser);
     //gameWonAnimaton - text
     connect(worldController.get(), &WorldController::gameWon,
-            textViewController.get(), &TextViewController::animateLoser);
+            textViewController.get(), &TextViewController::animateWinner);
     //gameOverMessage
     connect(worldController.get(), &WorldController::gameOver,
             this, &MainWindow::gameOverMessage);
