@@ -1,6 +1,7 @@
 #include "graphicviewcontroller.h"
 #include <iostream>
 #include "QLoggingCategory"
+#include "qlabel.h"
 #include "qtimer.h"
 
 QLoggingCategory GraphicViewControllerCategory("graphicViewController", QtDebugMsg);
@@ -156,7 +157,7 @@ void GraphicViewController::visualizePath(std::vector<int> path, std::shared_ptr
 
     pathDeletionTimer = new QTimer(this);
 
-    connect(pathDeletionTimer, &QTimer::timeout, [this]() {
+    connect(pathDeletionTimer, &QTimer::timeout, this, [this]() {
         for (const auto &tileVis : previousPath) {
             if (tileVis.graphicsItem) {
                 scene->removeItem(tileVis.graphicsItem);
@@ -214,6 +215,7 @@ void GraphicViewController::handleAlive() {
 
 void GraphicViewController::handleHalfDead() {
     Enemy* enemy = qobject_cast<Enemy*>(sender());
+    animateSplatter(enemy->getXPos(), enemy->getYPos());
     QPixmap XEnemyHalfTexture(":/texture_images/XEnemy_half.png");
     QGraphicsPixmapItem *halfXEnemyItem = new QGraphicsPixmapItem(XEnemyHalfTexture.scaled(tileSize*0.8, tileSize*0.8, Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation));
     halfXEnemyItem->setPos(enemy->getXPos() * tileSize, enemy->getYPos() * tileSize);
@@ -232,6 +234,7 @@ void GraphicViewController::handleHalfDead() {
 
 void GraphicViewController::handleDeath() {
     Enemy* enemy = qobject_cast<Enemy*>(sender());
+    animateSplatter(enemy->getXPos(), enemy->getYPos());
     QPixmap tombStoneTexture(":/texture_images/tombstone.png");
     QGraphicsPixmapItem *tombStoneItem = new QGraphicsPixmapItem(tombStoneTexture.scaled(tileSize, tileSize, Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation));
     tombStoneItem->setPos(enemy->getXPos() * tileSize, enemy->getYPos() * tileSize);
@@ -284,6 +287,7 @@ void GraphicViewController::handleHealthPackTaken(std::shared_ptr<Tile> pack){
 
 void GraphicViewController::handlePoisonLevelUpdated(float poisonLevel) {
     PEnemy* pEnemy = qobject_cast<PEnemy*>(sender());
+    animateSplatter(pEnemy->getXPos(), pEnemy->getYPos());
     qDebug() << "Poison level updated:" << poisonLevel << "Sender position:" << pEnemy->getXPos() << pEnemy->getYPos();
 
     // If the PEnemy is not in the map, initialize its spread radius to 1
@@ -339,6 +343,33 @@ void GraphicViewController::zoomOut() {
     rawView->scale(0.9, 0.9);
     relativeTileSize = relativeTileSize / 0.9;
     qCDebug(GraphicViewControllerCategory) << "relativeTilesize:" << relativeTileSize;
+}
+
+void GraphicViewController::animateSplatter(int xPos,int yPos){
+    QLabel *splatterAnimationLabel = new QLabel();
+    splatterAnimationLabel->setAttribute( Qt::WA_TranslucentBackground, true );
+    splatterAnimationLabel->setMovie(splatterAnimation);
+    splatterAnimation->start();
+
+    QGraphicsProxyWidget* splatterProxy = scene->addWidget(splatterAnimationLabel);
+
+    splatterProxy->setPos((xPos-1.5) * tileSize, (yPos- 1.5) * tileSize );
+    splatterProxy->setZValue(2);
+
+    QTimer* timer = new QTimer(this);
+    timer->setSingleShot(true);
+
+    connect(timer, &QTimer::timeout, this, [splatterProxy]() {
+        if (splatterProxy) {
+            QGraphicsScene* scene = splatterProxy->scene();
+            if (scene) {
+                scene->removeItem(splatterProxy);
+                splatterProxy->deleteLater();
+            }
+        }
+    });
+
+    timer->start(1000);
 }
 
 int GraphicViewController::getTileSize() const{

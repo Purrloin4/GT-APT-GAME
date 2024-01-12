@@ -16,5 +16,6 @@
         <file>world_images/worldmap4_downscaled.png</file>
         <file>texture_images/protagonist.png</file>
         <file>texture_images/portal.png</file>
+        <file>animations/splatter.gif</file>
     </qresource>
 </RCC>

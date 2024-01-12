@@ -4,12 +4,18 @@
 #include "controller/viewcontroller.h"
 #include "controller/worldcontroller.h"
 #include <QTimer>
+#include <QMovie>
+#include <QGraphicsProxyWidget>
 
 class GraphicViewController : public ViewController
 {
 public:
     GraphicViewController(std::shared_ptr<WorldController> worldController)
-        :ViewController(worldController), scene(std::make_shared<QGraphicsScene>()), rawView(new QGraphicsView(scene.get())){}
+        :ViewController(worldController), scene(std::make_shared<QGraphicsScene>()), rawView(new QGraphicsView(scene.get())){
+        splatterAnimation = new QMovie(":/animations/splatter.gif");
+        splatterAnimation->setScaledSize(QSize(tileSize*4, tileSize*4));
+        splatterAnimation->setSpeed(50);
+    }
     std::shared_ptr<QGraphicsScene> scene;
     QGraphicsView* rawView;
     void visualizeWorld() override;
@@ -41,6 +47,8 @@ private:
     QGraphicsPixmapItem* healthPackTextureItem;
     QGraphicsPixmapItem* protagonistPixmapItem = nullptr;
     double relativeTileSize = 1.0;
+    QMovie *splatterAnimation;
+    void animateSplatter(int xPos,int yPos);
 };
 
 
