@@ -6,9 +6,7 @@
 
 QLoggingCategory WorldControllerCategory("worldController", QtDebugMsg);
 
-WorldController::WorldController(QString map1, QString map2)
-{
-    // Create the world
+WorldController::WorldController(QString map1, QString map2) {
     try {
         world = std::make_shared<World>();
         world->createWorld(map1, 8, 8, 0.25f);
@@ -57,11 +55,8 @@ WorldController::WorldController(QString map1, QString map2)
             if (i == numXEnemies) {
                 break;
             }
-
-            // Create XEnemy from Enemy
-            auto xEnemy = std::make_shared<XEnemy>(enemy->getXPos(), enemy->getYPos(), enemy->getValue());
-
             // Replace the original enemy with the XEnemy
+            auto xEnemy = std::make_shared<XEnemy>(enemy->getXPos(), enemy->getYPos(), enemy->getValue());
             this->enemies[i] = xEnemy;
             i++;
         }
@@ -83,30 +78,24 @@ WorldController::WorldController(QString map1, QString map2)
     }
 }
 
-std::vector<int> WorldController::findPath(std::shared_ptr<Tile> startTile, std::shared_ptr<Tile> endTile)
-{
-      std::vector<PathNode> pathNodes;
-        for (const auto &tile : tiles) {
-            pathNodes.push_back(PathNode(*tile));
-        }
-
-        Comparator<PathNode> comp = PathNode::Comparator();
-
-      PathNode startNode(*startTile);
-      PathNode endNode(*endTile);
-
-      std::vector<int> path = A_star(pathNodes, &startNode, &endNode, comp, cols, heursticFactor, heightFactor);
-
-      emit pathFound(path, std::move(startTile));
-      return path;
+std::vector<int> WorldController::findPath(std::shared_ptr<Tile> startTile, std::shared_ptr<Tile> endTile) {
+    std::vector<PathNode> pathNodes;
+    for (const auto &tile : tiles) {
+        pathNodes.push_back(PathNode(*tile));
+    }
+    Comparator<PathNode> comp = PathNode::Comparator();
+    PathNode startNode(*startTile);
+    PathNode endNode(*endTile);
+    std::vector<int> path = A_star(pathNodes, &startNode, &endNode, comp, cols, heursticFactor, heightFactor);
+    emit pathFound(path, std::move(startTile));
+    return path;
 }
 
-void WorldController::handleKeyPressEvent(QKeyEvent *event){
+void WorldController::handleKeyPressEvent(QKeyEvent *event) {
       int newX = protagonist->getXPos();
       int newY = protagonist->getYPos();
 
       switch (event->key()) {
-      // arrow keys can act up so ZQSD also possible #Azerty koning
       case Qt::Key_Q:
       case Qt::Key_Left:
             qCDebug(WorldControllerCategory) << "left key was pressed";
@@ -130,12 +119,8 @@ void WorldController::handleKeyPressEvent(QKeyEvent *event){
       }
       if (newX != protagonist->getXPos() || newY != protagonist->getYPos()){
           emit moveProtagonistPosSignal(newX, newY);
-
-          // Redraw the protagonist and energy bar
           emit drawProtagonist();
           emit drawBars();
-
-          // Check if we can attack an enemy or use a healthpack
           attackEnemy();
           useHealthpack();
           isPortal();
@@ -143,10 +128,10 @@ void WorldController::handleKeyPressEvent(QKeyEvent *event){
 }
 
 void WorldController::checkPoisonDamage() {
-      int newX = protagonist->getXPos();
-      int newY = protagonist->getYPos();
-      for (auto it = poisonedTiles.begin(); it != poisonedTiles.end();) {
-            if (it->spreadXPos == newX && it->spreadYPos == newY) {
+    int newX = protagonist->getXPos();
+    int newY = protagonist->getYPos();
+    for (auto it = poisonedTiles.begin(); it != poisonedTiles.end();) {
+        if (it->spreadXPos == newX && it->spreadYPos == newY) {
             float newHealth = protagonist->getHealth() - it->poisonLevel;
             emit drawBars();
             if (newHealth > 0) {
@@ -156,17 +141,14 @@ void WorldController::checkPoisonDamage() {
                 emit gameOver();
             }
             break;
-            } else {
+        } else {
             ++it;
-            }
-      }
+        }
+    }
 }
 
 void WorldController::handleMousePressEvent(int x, int y) {
-
-    // Check if the clicked position is within the boundaries of the world
     if (isValidPosition(x, y)) {
-        // Call findPath with the clicked tile's position
         auto startTile = std::make_unique<Tile>(protagonist->getXPos(), protagonist->getYPos(), 0.0f);
         auto endTile = std::make_unique<Tile>(x, y, 0.0f);
         auto path = findPath(std::move(startTile), std::move(endTile));
@@ -179,75 +161,51 @@ void WorldController::handleMousePressEvent(int x, int y) {
     }
 }
 
-bool WorldController::isValidPosition(int x, int y) {
-      return x >= 0 && x < cols && y >= 0 && y < rows;
-}
+void WorldController::attackEnemy() {
+    int x = protagonist->getXPos();
+    int y = protagonist->getYPos();
 
-void WorldController::attackEnemy(){
-      // Get the current position of the protagonist
-      int x = protagonist->getXPos();
-      int y = protagonist->getYPos();
-
-      // Check if there is an enemy at the current position
-      for (auto& enemy : enemies) {
-            if (enemy->getXPos() == x && enemy->getYPos() == y) {
-            if (enemy->getDefeated()) {
-                break;
-            }
-            // Perform the attack logic here
-            if (protagonist->getHealth() > enemy->getValue()) {
-                // Protagonist has enough health to attack and defeat the enemy
-                protagonist->setHealth(protagonist->getHealth() - enemy->getValue());
-                qCDebug(WorldControllerCategory) << "Protagonist health:" << protagonist->getHealth();
-                // Check if the defeated enemy is a PEnemy
-                if (auto pEnemy = dynamic_cast<PEnemy*>(enemy.get())) {
-                    // Call the poison method for PEnemy
-                    pEnemy->poison();
-                    qCDebug(WorldControllerCategory) << "Attacked a poison enemy";
-                // Check if enemy is an XEnemy
-                } else if (auto xEnemy = dynamic_cast<XEnemy*>(enemy.get())) {
-                    if (!xEnemy->isHalfDead()) {
-                        xEnemy->setHalfDead(true);
-                    } else {
-                        xEnemy->setHalfDead(false);
-                    }
+    for (auto& enemy : enemies) {
+        if (enemy->getXPos() == x && enemy->getYPos() == y) {
+        if (enemy->getDefeated()) {
+            break;
+        }
+        if (protagonist->getHealth() > enemy->getValue()) { // Protagonist has enough health to attack and defeat the enemy
+            protagonist->setHealth(protagonist->getHealth() - enemy->getValue());
+            qCDebug(WorldControllerCategory) << "Protagonist health:" << protagonist->getHealth();
+            if (auto pEnemy = dynamic_cast<PEnemy*>(enemy.get())) { // Check if the defeated enemy is a PEnemy
+                pEnemy->poison();
+                qCDebug(WorldControllerCategory) << "Attacked a poison enemy";
+            } else if (auto xEnemy = dynamic_cast<XEnemy*>(enemy.get())) { // Check if enemy is an XEnemy
+                if (!xEnemy->isHalfDead()) {
+                    xEnemy->setHalfDead(true);
                 } else {
-                    enemy->setDefeated(true);
-                    qCDebug(WorldControllerCategory) << &"Defeated an enemy, nrOfEnemies = " [nrOfEnemies];
+                    xEnemy->setHalfDead(false);
                 }
-
-                //emit drawProtagonist();
-                emit drawBars();
             } else {
-                // Protagonist doesn't have enough health to defeat the enemy
-                protagonist->setHealth(0.0f);
-                emit drawBars();
-                qCDebug(WorldControllerCategory) << "Protagonist dead";
-                emit gameOver();
+                enemy->setDefeated(true);
+                qCDebug(WorldControllerCategory) << &"Defeated an enemy, nrOfEnemies = " [nrOfEnemies];
             }
-
-            // Exit the function since the attack has been resolved
-            return;
-            }
-      }
-
+            //emit drawProtagonist(); // 2x emit
+            emit drawBars();
+        } else { // Protagonist doesn't have enough health to defeat the enemy
+            protagonist->setHealth(0.0f);
+            emit drawBars();
+            qCDebug(WorldControllerCategory) << "Protagonist dead";
+            emit gameOver();
+        }
+        return;
+        }
+    }
 }
 
-void WorldController::useHealthpack()
-{
-      // Get the current position of the protagonist
-      int x = protagonist->getXPos();
-      int y = protagonist->getYPos();
+void WorldController::useHealthpack() {
+    int x = protagonist->getXPos();
+    int y = protagonist->getYPos();
 
-      // Check if there is an enemy at the current position
-      for (auto& pack : healthpacks)
-      {
-            if (pack->getXPos() == x && pack->getYPos() == y)
-            {
-            // Perform the attack logic here
-            if (protagonist->getHealth() < maxEH)
-            {
-                // Protagonist has enough health to attack and defeat the enemy
+    for (auto& pack : healthpacks) {
+        if (pack->getXPos() == x && pack->getYPos() == y) {
+            if (protagonist->getHealth() < maxEH) {
                 float newHealth = protagonist->getHealth() + pack->getValue();
                 if (newHealth > maxEH) {
                     protagonist->setHealth(maxEH);
@@ -256,13 +214,12 @@ void WorldController::useHealthpack()
                 }
                 emit healthPackTaken(pack);
                 pack->setValue(0.0f);
-                //emit drawProtagonist();
+                //emit drawProtagonist(); // 2x emit
                 emit drawBars();
             }
-            // Exit the function since the attack has been resolved
             return;
-            }
-      }
+        }
+    }
 }
 
 void WorldController::handleAllHalfDead() {
@@ -290,18 +247,7 @@ void WorldController::regenerateEnergy() {
     lastY = protagonist->getYPos();
 }
 
-int WorldController::getHeursticFactor() const
-{
-    return heursticFactor;
-}
-
-int WorldController::getHeightFactor() const
-{
-    return heightFactor;
-}
-
-std::shared_ptr<Tile> WorldController::getTile(int x, int y) const
-{
+std::shared_ptr<Tile> WorldController::getTile(int x, int y) const {
     for (const auto& tile : tiles) {
         if (tile->getXPos() == x && tile->getYPos() == y) {
             return tile;
@@ -310,13 +256,7 @@ std::shared_ptr<Tile> WorldController::getTile(int x, int y) const
     return nullptr;
 }
 
-std::vector<std::shared_ptr<Tile> > WorldController::getTiles() const
-{
-    return tiles;
-}
-
-std::shared_ptr<Tile> WorldController::getHealthpack(int x, int y) const
-{
+std::shared_ptr<Tile> WorldController::getHealthpack(int x, int y) const {
     for (const auto& healthpack : healthpacks) {
         if (healthpack->getXPos() == x && healthpack->getYPos() == y) {
             return healthpack;
@@ -325,13 +265,7 @@ std::shared_ptr<Tile> WorldController::getHealthpack(int x, int y) const
     return nullptr;
 }
 
-std::vector<std::shared_ptr<Tile> > WorldController::getHealthpacks() const
-{
-    return healthpacks;
-}
-
-std::shared_ptr<Enemy> WorldController::getEnemy(int x, int y) const
-{
+std::shared_ptr<Enemy> WorldController::getEnemy(int x, int y) const {
     for (const auto& enemy : enemies) {
         if (enemy->getXPos() == x && enemy->getYPos() == y) {
             return enemy;
@@ -341,38 +275,7 @@ std::shared_ptr<Enemy> WorldController::getEnemy(int x, int y) const
 }
 
 
-std::vector<std::shared_ptr<Enemy>> WorldController::getEnemies() const
-{
-    return enemies;
-}
-
-std::shared_ptr<Protagonist> WorldController::getProtagonist() const
-{
-    return protagonist;
-}
-
-std::shared_ptr<PortalTile> WorldController::getPortalTile() const
-{
-    return portalTile;
-}
-
-int WorldController::getRows() const
-{
-    return rows;
-}
-
-int WorldController::getCols() const
-{
-    return cols;
-}
-
-float WorldController::getMaxEH() const
-{
-    return maxEH;
-}
-
-bool WorldController::isHealthPack(int x, int y)
-{
+bool WorldController::isHealthPack(int x, int y) {
     for (const auto& healthpack : healthpacks) {
         if (healthpack->getXPos() == x && healthpack->getYPos() == y) {
             return true;
@@ -381,8 +284,7 @@ bool WorldController::isHealthPack(int x, int y)
     return false;
 }
 
-bool WorldController::isEnemy(int x, int y)
-{
+bool WorldController::isEnemy(int x, int y) {
     for (const auto& enemy : enemies) {
         if (enemy->getXPos() == x && enemy->getYPos() == y) {
             return true;
@@ -391,11 +293,7 @@ bool WorldController::isEnemy(int x, int y)
     return false;
 }
 
-std::shared_ptr<World> WorldController::getWorld(){
-    return world;
-}
-
-std::shared_ptr<Enemy> WorldController::getNearestEnemy()  {
+std::shared_ptr<Enemy> WorldController::getNearestEnemy() {
     std::shared_ptr<Enemy> nearestEnemy = nullptr;
     int minDistance = INT_MAX;
     int protagonistX = protagonist->getXPos();
@@ -425,7 +323,7 @@ std::shared_ptr<Enemy> WorldController::getNearestEnemy()  {
     return nearestEnemy;
 }
 
-std::shared_ptr<Tile> WorldController::getNearestHealthpack()  {
+std::shared_ptr<Tile> WorldController::getNearestHealthpack() {
     std::shared_ptr<Tile> nearestHealthpack = nullptr;
     int minDistance = INT_MAX;
     int protagonistX = protagonist->getXPos();
@@ -440,30 +338,20 @@ std::shared_ptr<Tile> WorldController::getNearestHealthpack()  {
             }
         }
     }
-
     return nearestHealthpack;
 }
 
 void WorldController::handleAutoplay() {
-    static QTimer timer; // Timer for autoplay
-
+    static QTimer timer;
     if (!autoplayActive) {
         autoplayActive = true;
         qCDebug(WorldControllerCategory) << "Autoplay was activated!";
-
-        // Connect the timer to a method that performs one step of the autoplay logic
         connect(&timer, &QTimer::timeout, this, &WorldController::autoplayStep);
-
-        // Start the timer to call autoplayStep every 500 milliseconds
         timer.start(500);
     } else {
         autoplayActive = false;
         qCDebug(WorldControllerCategory) << "Autoplay was deactivated!";
-
-        // Stop the timer
         timer.stop();
-
-        // Disconnect the timer from autoplayStep
         disconnect(&timer, &QTimer::timeout, this, &WorldController::autoplayStep);
     }
 }
@@ -511,8 +399,6 @@ void WorldController::handleDeath() {
 }
 
 void WorldController::isPortal() {
-
-    // Get the current position of the protagonist
     int x = protagonist->getXPos();
     int y = protagonist->getYPos();
 
