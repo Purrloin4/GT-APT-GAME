@@ -16,7 +16,7 @@ void TextViewController::visualizeWorld(){
     const QString verticalEnemyTile = "| E ";
     const QString verticalProtagonistTile = "| P ";
     const QString verticalPEnemyTile = "| ¶ ";
-    const QString verticalXEnemyTile = "| X ";
+        const QString verticalXEnemyTile = "| X ";
     const QString verticalPortalTile = "| O ";
 
     // Loop through each row
@@ -131,8 +131,8 @@ void TextViewController::drawProtagonist() {
 
     // Check what was under old position
     if (updatedAsciiRepresentationNoProt.at(oldProtagonistIndex) == 'E'
-     || updatedAsciiRepresentationNoProt.at(oldProtagonistIndex) == QChar(0x00B6)
-     || updatedAsciiRepresentationNoProt.at(oldProtagonistIndex) == 'X') {
+        || updatedAsciiRepresentationNoProt.at(oldProtagonistIndex) == QChar(0x00B6)
+        || updatedAsciiRepresentationNoProt.at(oldProtagonistIndex) == 'X') {
         qCDebug(TextViewControllerCategory) << "Previous position was one of the enemies";
         updatedAsciiRepresentationNoProt.replace(oldProtagonistIndex, 1, "\u00A0");
     } else if (updatedAsciiRepresentationNoProt.at(oldProtagonistIndex) == 'H') {
@@ -182,24 +182,24 @@ void TextViewController::drawProtagonist() {
 }
 
 void TextViewController::centerViewAroundProtagonist() {
-//    // >>>>>>>>>>>>>>>>>>>> Character dimensions debug >>>>>>>>>>>>>>>>>>>>
-//    // Assuming you have a QTextEdit named "asciiTextEdit"
-//    QFont currentFont = asciiTextEdit->currentFont();
+    //    // >>>>>>>>>>>>>>>>>>>> Character dimensions debug >>>>>>>>>>>>>>>>>>>>
+    //    // Assuming you have a QTextEdit named "asciiTextEdit"
+    //    QFont currentFont = asciiTextEdit->currentFont();
 
-//    // Get font family and size
-//    QString fontFamily = currentFont.family();
-//    int fontSize = currentFont.pointSize();
+    //    // Get font family and size
+    //    QString fontFamily = currentFont.family();
+    //    int fontSize = currentFont.pointSize();
 
-//    // Print or use the font information as needed
-//    qDebug() << "Font Family: " << fontFamily;
-//    qDebug() << "Font Size: " << fontSize;
+    //    // Print or use the font information as needed
+    //    qDebug() << "Font Family: " << fontFamily;
+    //    qDebug() << "Font Size: " << fontSize;
 
-//    QFontMetrics fontMetrics(currentFont);
-//    int charWidth = fontMetrics.horizontalAdvance('+');
-//    int charHeight = fontMetrics.height();
-//    qDebug() << "Width of character: " << charWidth;
-//    qDebug() << "Height of characters: " << charHeight;
-//    // <<<<<<<<<<<<<<<<<<<< Character dimensions debug <<<<<<<<<<<<<<<<<<<<
+    //    QFontMetrics fontMetrics(currentFont);
+    //    int charWidth = fontMetrics.horizontalAdvance('+');
+    //    int charHeight = fontMetrics.height();
+    //    qDebug() << "Width of character: " << charWidth;
+    //    qDebug() << "Height of characters: " << charHeight;
+    //    // <<<<<<<<<<<<<<<<<<<< Character dimensions debug <<<<<<<<<<<<<<<<<<<<
 
     // Get the dimensions of the visible area within the QTextEdit
     int textviewWidth = asciiTextEdit->viewport()->width();
@@ -253,6 +253,14 @@ void TextViewController::zoomOut() {
     QFont currentFont = asciiTextEdit->font();
     currentFont.setPointSize(currentFont.pointSize() - 1);
     asciiTextEdit->setFont(currentFont);
+}
+
+void TextViewController::animateWinner() {
+    qCDebug(TextViewControllerCategory) << "WINNERRRRRRRRRRRRRRRRRRRRRRRRRRR";
+}
+
+void TextViewController::animateLoser() {
+    qCDebug(TextViewControllerCategory) << "DOODDDDDDDDDDDDDDDDDDDDDDDDDDDDD";
 }
 
 void TextViewController::handleTextCommand() {
@@ -371,7 +379,7 @@ void TextViewController::handleGotoCommand() {
         }
         else {
             commandMessageLabel->setText("<font color='red'>Error: Cannot go to the specified position. Coordinates <b>(" + QString::number(x) + "," + QString::number(y) + ")</b> are outside the world boundaries.<br>"
-                                                 "World boundaries: X [1, " + QString::number(worldController->getCols()) + "], Y [1, " + QString::number(worldController->getRows()) + "]</font>");
+                                                                                                                                                                            "World boundaries: X [1, " + QString::number(worldController->getCols()) + "], Y [1, " + QString::number(worldController->getRows()) + "]</font>");
 
         }
     }
