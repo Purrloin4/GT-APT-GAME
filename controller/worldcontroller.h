@@ -9,7 +9,6 @@
 #include <QGraphicsRectItem>
 #include <QKeyEvent>
 #include "pathNode.h"
-//#include "pathfinder.h"
 #include "pathfinder function.h"
 #include "XEnemy.h"
 
@@ -49,37 +48,37 @@ public:
     WorldController(QString map1, QString map2);
 
     std::vector<int> findPath(std::shared_ptr<Tile> startTile, std::shared_ptr<Tile> endTile);
-    bool isValidPosition(int x, int y);
+    bool isValidPosition(int x, int y) {return x >= 0 && x < cols && y >= 0 && y < rows;};
     void attackEnemy();
     void useHealthpack();
 
-    std::shared_ptr<World> getWorld();
+    std::shared_ptr<World> getWorld() {return world;};
 
     std::shared_ptr<Tile> getTile(int x, int y) const;
-    std::vector<std::shared_ptr<Tile> > getTiles() const;
+    std::vector<std::shared_ptr<Tile> > getTiles() const {return tiles;};
 
     std::shared_ptr<Tile> getHealthpack(int x, int y) const;
-    std::vector<std::shared_ptr<Tile> > getHealthpacks() const;
+    std::vector<std::shared_ptr<Tile> > getHealthpacks() const {return healthpacks;};
 
     std::shared_ptr<Enemy> getEnemy(int x, int y) const;
-    std::vector<std::shared_ptr<Enemy> > getEnemies() const;
+    std::vector<std::shared_ptr<Enemy> > getEnemies() const {return enemies;};
 
-    std::shared_ptr<Protagonist> getProtagonist() const;
+    std::shared_ptr<Protagonist> getProtagonist() const {return protagonist;};
 
-    std::shared_ptr<PortalTile> getPortalTile() const;
+    std::shared_ptr<PortalTile> getPortalTile() const {return portalTile;};
 
     std::vector<TileVisualisation> poisonedTiles;
 
-    int getHeursticFactor() const;
-    int getHeightFactor() const;
+    int getHeursticFactor() const {return heursticFactor;};
+    int getHeightFactor() const {return heightFactor;};
 
     void setHeuristicFactor(int factor){heursticFactor = factor;};
     void setHeightFactor(int factor){heightFactor = factor;};
 
-    int getRows() const;
-    int getCols() const;
+    int getRows() const {return rows;};
+    int getCols() const {return cols;};
 
-    float getMaxEH() const;
+    float getMaxEH() const {return maxEH;};
 
     bool isHealthPack(int x, int y);
     bool isEnemy(int x, int y);
