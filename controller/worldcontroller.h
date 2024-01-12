@@ -4,6 +4,7 @@
 #include "portaltile.h"
 #include "world.h"
 #include <memory>
+#include <stack>
 #include <vector>
 #include <QImage>
 #include <QGraphicsRectItem>
@@ -28,6 +29,18 @@ struct TileVisualisation{
     QGraphicsTextItem* healthPackText;
     QGraphicsRectItem* graphicsItem;
     QGraphicsPixmapItem* texturePixmapItem;
+};
+
+struct WorldState{
+    std::shared_ptr<World> world;
+    std::vector<std::shared_ptr<Tile>> tiles;
+    std::vector<std::shared_ptr<Tile>> emptyTiles;
+    std::vector<std::shared_ptr<Tile>> healthpacks;
+    std::vector<std::shared_ptr<Enemy>> enemies;
+    std::shared_ptr<PortalTile> portalTile;
+    int rows;
+    int cols;
+    int nrOfEnemies;
 };
 
 
@@ -120,6 +133,10 @@ private:
     bool autoplayActive;
     QString mainMap;
     QString portalMap;
+    WorldState currentState;
+    std::stack<WorldState> previousStates;
+    WorldState createWorldState(QString mapName);
+    void loadWorldState(WorldState state);
 };
 
 #endif // WORLDCONTROLLER_H
