@@ -22,6 +22,7 @@ public:
         commandHandlers["goto"] = std::bind(&TextViewController::handleGotoCommand, this);
         commandHandlers["attack"] = std::bind(&TextViewController::handleAttackCommand, this);
         commandHandlers["take"] = std::bind(&TextViewController::handleTakeCommand, this);
+        commandHandlers["theme"] = std::bind(&TextViewController::handleThemeCommand, this);
         commandHandlers["help"] = std::bind(&TextViewController::handleHelpCommand, this);
     }
 
@@ -36,6 +37,7 @@ public slots:
 private:
     // Map to associate command strings with handlers
     QMap<QString, std::function<void(const QStringList&)>> commandHandlers;
+    bool isDarkTheme = true;
 
     void centerViewAroundProtagonist();
 
@@ -44,6 +46,7 @@ private:
     void handleMoveCommand(const QString& direction);
     void handleAttackCommand();
     void handleTakeCommand();
+    void handleThemeCommand();
     void handleHelpCommand();
     void handleUnknownCommand();
     void commandCheckVisual(bool correctCommand);

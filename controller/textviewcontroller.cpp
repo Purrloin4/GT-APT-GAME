@@ -90,8 +90,7 @@ void TextViewController::visualizeWorld(){
     // Display the ASCII representation in a QTextEdit
     asciiTextEdit = new QTextEdit(initialAsciiRepresentation);
     asciiTextEdit->setFont(QFont("Courier")); // Set a monospaced font for better alignment
-    asciiTextEdit->setStyleSheet("background-color: black; color: white;");
-    //asciiTextEdit->setTextBackgroundColor(Qt::black);
+    asciiTextEdit->setStyleSheet("background-color: white; color: black;");
     asciiTextEdit->setReadOnly(true);
 
     // Set line wrap mode to NoWrap
@@ -164,7 +163,7 @@ void TextViewController::drawProtagonist() {
     } else if (currentChar == 'O') {
         asciiTextEdit->setTextColor(Qt::magenta);
     } else {
-        asciiTextEdit->setTextColor(Qt::white);
+        asciiTextEdit->setTextColor(isDarkTheme ? Qt::black : Qt::white);
     }
 
     // Place the 'P' character at the new position
@@ -423,6 +422,21 @@ void TextViewController::handleTakeCommand() {
     } else {
         commandMessageLabel->setText("<font color='red'>Uh-oh! The world has run out of health packs. The protagonist is in trouble!</font>");
     }
+}
+
+void TextViewController::handleThemeCommand() {
+    // Toggle between light and dark themes
+    isDarkTheme = !isDarkTheme;
+
+    if (!isDarkTheme) {
+        asciiTextEdit->setStyleSheet("background-color: black; color: white;");
+        commandMessageLabel->setText("Theme is set to <b>Dark</b>");
+    } else {
+        asciiTextEdit->setStyleSheet("background-color: white; color: black;");
+        commandMessageLabel->setText("Theme is set to <b>Light</b>");
+    }
+
+    drawProtagonist();
 }
 
 void TextViewController::handleHelpCommand() {
