@@ -16,7 +16,7 @@ void TextViewController::visualizeWorld(){
     const QString verticalEnemyTile = "| E ";
     const QString verticalProtagonistTile = "| P ";
     const QString verticalPEnemyTile = "| ¶ ";
-    const QString verticalXEnemyTile = "| X ";
+        const QString verticalXEnemyTile = "| X ";
     const QString verticalPortalTile = "| O ";
 
     // Loop through each row
@@ -131,8 +131,8 @@ void TextViewController::drawProtagonist() {
 
     // Check what was under old position
     if (updatedAsciiRepresentationNoProt.at(oldProtagonistIndex) == 'E'
-     || updatedAsciiRepresentationNoProt.at(oldProtagonistIndex) == QChar(0x00B6)
-     || updatedAsciiRepresentationNoProt.at(oldProtagonistIndex) == 'X') {
+        || updatedAsciiRepresentationNoProt.at(oldProtagonistIndex) == QChar(0x00B6)
+        || updatedAsciiRepresentationNoProt.at(oldProtagonistIndex) == 'X') {
         qCDebug(TextViewControllerCategory) << "Previous position was one of the enemies";
         updatedAsciiRepresentationNoProt.replace(oldProtagonistIndex, 1, "\u00A0");
     } else if (updatedAsciiRepresentationNoProt.at(oldProtagonistIndex) == 'H') {
@@ -184,24 +184,24 @@ void TextViewController::drawProtagonist() {
 }
 
 void TextViewController::centerViewAroundProtagonist() {
-//    // >>>>>>>>>>>>>>>>>>>> Character dimensions debug >>>>>>>>>>>>>>>>>>>>
-//    // Assuming you have a QTextEdit named "asciiTextEdit"
-//    QFont currentFont = asciiTextEdit->currentFont();
+    //    // >>>>>>>>>>>>>>>>>>>> Character dimensions debug >>>>>>>>>>>>>>>>>>>>
+    //    // Assuming you have a QTextEdit named "asciiTextEdit"
+    //    QFont currentFont = asciiTextEdit->currentFont();
 
-//    // Get font family and size
-//    QString fontFamily = currentFont.family();
-//    int fontSize = currentFont.pointSize();
+    //    // Get font family and size
+    //    QString fontFamily = currentFont.family();
+    //    int fontSize = currentFont.pointSize();
 
-//    // Print or use the font information as needed
-//    qDebug() << "Font Family: " << fontFamily;
-//    qDebug() << "Font Size: " << fontSize;
+    //    // Print or use the font information as needed
+    //    qDebug() << "Font Family: " << fontFamily;
+    //    qDebug() << "Font Size: " << fontSize;
 
-//    QFontMetrics fontMetrics(currentFont);
-//    int charWidth = fontMetrics.horizontalAdvance('+');
-//    int charHeight = fontMetrics.height();
-//    qDebug() << "Width of character: " << charWidth;
-//    qDebug() << "Height of characters: " << charHeight;
-//    // <<<<<<<<<<<<<<<<<<<< Character dimensions debug <<<<<<<<<<<<<<<<<<<<
+    //    QFontMetrics fontMetrics(currentFont);
+    //    int charWidth = fontMetrics.horizontalAdvance('+');
+    //    int charHeight = fontMetrics.height();
+    //    qDebug() << "Width of character: " << charWidth;
+    //    qDebug() << "Height of characters: " << charHeight;
+    //    // <<<<<<<<<<<<<<<<<<<< Character dimensions debug <<<<<<<<<<<<<<<<<<<<
 
     // Get the dimensions of the visible area within the QTextEdit
     int textviewWidth = asciiTextEdit->viewport()->width();
@@ -255,6 +255,107 @@ void TextViewController::zoomOut() {
     QFont currentFont = asciiTextEdit->font();
     currentFont.setPointSize(currentFont.pointSize() - 1);
     asciiTextEdit->setFont(currentFont);
+}
+
+void TextViewController::animateWinner() {
+    qCDebug(TextViewControllerCategory) << "WINNER";
+    asciiTextEdit->setStyleSheet("background-color: black; color: green;");
+    asciiTextEdit->setTextColor(Qt::green);
+
+    QString happySmiley = "                   __ooooooooo__";
+    happySmiley += QChar(0x2029);
+    happySmiley += "              oOOOOOOOOOOOOOOOOOOOOOo";
+    happySmiley += QChar(0x2029);
+    happySmiley += "          oOOOOOOOOOOOOOOOOOOOOOOOOOOOOOo";
+    happySmiley += QChar(0x2029);
+    happySmiley += "       oOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOo";
+    happySmiley += QChar(0x2029);
+    happySmiley += "     oOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOo";
+    happySmiley += QChar(0x2029);
+    happySmiley += "   oOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOo";
+    happySmiley += QChar(0x2029);
+    happySmiley += "  oOOOOOOOOOOO*  *OOOOOOOOOOOOOO*  *OOOOOOOOOOOOo";
+    happySmiley += QChar(0x2029);
+    happySmiley += " oOOOOOOOOOOO      OOOOOOOOOOOO      OOOOOOOOOOOOo";
+    happySmiley += QChar(0x2029);
+    happySmiley += " oOOOOOOOOOOOOo  oOOOOOOOOOOOOOOo  oOOOOOOOOOOOOOo";
+    happySmiley += QChar(0x2029);
+    happySmiley += "oOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOo";
+    happySmiley += QChar(0x2029);
+    happySmiley += "oOOOO     OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO     OOOOo";
+    happySmiley += QChar(0x2029);
+    happySmiley += "oOOOOOO OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO OOOOOOo";
+    happySmiley += QChar(0x2029);
+    happySmiley += " *OOOOO  OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO  OOOOO*";
+    happySmiley += QChar(0x2029);
+    happySmiley += " *OOOOOO  *OOOOOOOOOOOOOOOOOOOOOOOOOOOOO*  OOOOOO*";
+    happySmiley += QChar(0x2029);
+    happySmiley += "  *OOOOOO  *OOOOOOOOOOOOOOOOOOOOOOOOOOO*  OOOOOO*";
+    happySmiley += QChar(0x2029);
+    happySmiley += "   *OOOOOOo  *OOOOOOOOOOOOOOOOOOOOOOO*  oOOOOOO*";
+    happySmiley += QChar(0x2029);
+    happySmiley += "     *OOOOOOOo  *OOOOOOOOOOOOOOOOO*  oOOOOOOO*";
+    happySmiley += QChar(0x2029);
+    happySmiley += "       *OOOOOOOOo  *OOOOOOOOOOO*  oOOOOOOOO*";
+    happySmiley += QChar(0x2029);
+    happySmiley += "          *OOOOOOOOo           oOOOOOOOO*";
+    happySmiley += QChar(0x2029);
+    happySmiley += "              *OOOOOOOOOOOOOOOOOOOOO*";
+    happySmiley += QChar(0x2029);
+    happySmiley += "                  *ooooooooooooo*";
+    asciiTextEdit->setPlainText(happySmiley);
+
+    //                   __ooooooooo__
+    //              oOOOOOOOOOOOOOOOOOOOOOo
+    //          oOOOOOOOOOOOOOOOOOOOOOOOOOOOOOo
+    //       oOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOo
+    //     oOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOo
+    //   oOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOo
+    //  oOOOOOOOOOOO*  *OOOOOOOOOOOOOO*  *OOOOOOOOOOOOo
+    // oOOOOOOOOOOO      OOOOOOOOOOOO      OOOOOOOOOOOOo
+    // oOOOOOOOOOOOOo  oOOOOOOOOOOOOOOo  oOOOOOOOOOOOOOo
+    //oOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOo
+    //oOOOO     OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO     OOOOo
+    //oOOOOOO OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO OOOOOOo
+    // *OOOOO  OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO  OOOOO*
+    // *OOOOOO  *OOOOOOOOOOOOOOOOOOOOOOOOOOOOO*  OOOOOO*
+    //  *OOOOOO  *OOOOOOOOOOOOOOOOOOOOOOOOOOO*  OOOOOO*
+    //   *OOOOOOo  *OOOOOOOOOOOOOOOOOOOOOOO*  oOOOOOO*
+    //     *OOOOOOOo  *OOOOOOOOOOOOOOOOO*  oOOOOOOO*
+    //       *OOOOOOOOo  *OOOOOOOOOOO*  oOOOOOOOO*
+    //          *OOOOOOOOo           oOOOOOOOO*
+    //              *OOOOOOOOOOOOOOOOOOOOO*
+    //                  *oooooooooooo*"
+}
+
+void TextViewController::animateLoser() {
+    qCDebug(TextViewControllerCategory) << "DOOD";
+    asciiTextEdit->setStyleSheet("background-color: black; color: red;");
+    asciiTextEdit->setTextColor(Qt::red);
+
+    QString sadSmiley = "    ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣀⣀⣤⣤⣤⣤⣤⣤⣤⣴⣿⡇\n"
+                        "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣤⣶⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⣿\n"
+                        "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⣴⣿⣿⣿⣿⠿⠿⠟⠿⠿⠿⠛⠿⠿⢿⣿⣿⣿⣷⣽\n"
+                        "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⣾⣿⠿⠛⠉⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢹⣿\n"
+                        "⠀⠀⠀⠀⠀⠀⠀⠀⠀⣼⠿⠋⠁⠀⠀⠀⣷⣄⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠸⣿⡆\n"
+                        "⠀⠀⠀⠀⠀⠀⠀⠀⠘⠁⠀⠀⠀⠀⠀⠀⣿⣿⣿⣾⣿⣷⣶⣶⣤⣄⠀⠀⠀⠀⠀⠀⣿⡇\n"
+                        "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⡤⠀⠀⠀⠀⣿⡇\n"
+                        "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⠀⠀⠀⠀⣿⡇\n"
+                        "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢠⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⠀⠀⠀⠀⢹⡇\n"
+                        "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡆⠀⠀⣀⣿⡇\n"
+                        "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⠀⣀⣿⣿⢷⡄\n"
+                        "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢙⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣶⣾⣿⣿⣭⣽⡇\n"
+                        "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣰⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⢽⣶⣿⡇\n"
+                        "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣾⣿⣿⣿⡏⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇\n"
+                        "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠻⣿⣿⣿⣿⣶⣿⣿⣿⣿⣿⣿⣿⡆⠈⠙⠛⢿⡿⠟\n"
+                        "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢙⣿⣿⣿⣯⣉⣉⣹⢿⢿⣯⣼⣧⠀⠻⣿⣾⡇\n"
+                        "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⣾⣿⣿⣿⣿⣿⣿⡿⣸⡎⢿⣿⣿⣆⠀⠀⣿⡇\n"
+                        "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⣾⣿⣿⣿⣿⣿⣿⣿⣿⡇⣿⡡⢴⣿⣿⣿⡆⠀⣿⠁\n"
+                        "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣏⣉⣿⣿⣿⣿⣿⣿⣿⣴⣿\n"
+                        "⠀⠀⠀⠀⠀⠀⠀⣀⣴⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣾⣿⣿⣿⣿⣿⣿⣿⣿⡏\n"
+                        "⣤⣤⣤⣤⣶⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣇\n"
+                        "⠈⠙⠛⠛⠻⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠛⠿⠿⣿⣿⣿⣿⣿⣿⣿⠿⠟⠛⠛⠋⠁\n";
+    asciiTextEdit->setPlainText(sadSmiley);
 }
 
 void TextViewController::handleTextCommand() {
@@ -373,7 +474,7 @@ void TextViewController::handleGotoCommand() {
         }
         else {
             commandMessageLabel->setText("<font color='red'>Error: Cannot go to the specified position. Coordinates <b>(" + QString::number(x) + "," + QString::number(y) + ")</b> are outside the world boundaries.<br>"
-                                                 "World boundaries: X [1, " + QString::number(worldController->getCols()) + "], Y [1, " + QString::number(worldController->getRows()) + "]</font>");
+                                                                                                                                                                            "World boundaries: X [1, " + QString::number(worldController->getCols()) + "], Y [1, " + QString::number(worldController->getRows()) + "]</font>");
 
         }
     }
