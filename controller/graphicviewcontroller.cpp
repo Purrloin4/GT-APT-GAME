@@ -107,10 +107,6 @@ void GraphicViewController::visualizeWorld()
     }
 
     this->drawProtagonist();
-
-    graphViewWidget = new QWidget;
-    graphLayout = new QVBoxLayout(graphViewWidget);
-    graphLayout->addWidget(rawView);
 }
 
 void GraphicViewController::drawProtagonist() {
@@ -450,6 +446,15 @@ void GraphicViewController::animateFireworks(){
     }
 }
 
+void GraphicViewController::clearScene() {
+    if (scene){
+        scene->clear();
+    }
+    if (protagonistPixmapItem) {
+      protagonistPixmapItem = nullptr;
+    }
+}
+
 int GraphicViewController::getTileSize() const{
     return tileSize;
 }
@@ -457,4 +462,3 @@ int GraphicViewController::getTileSize() const{
 double GraphicViewController::getRelativeTileSize(){
     return relativeTileSize;
 }
-

@@ -121,14 +121,15 @@ void MainWindow::gameOverMessage(){
 }
 
 void MainWindow::gameWonMessage() {
+    //QThread::sleep(3);
     QMessageBox::information(this, "Completed!", "You have defeated all enemies! Congrats!");
     QCoreApplication::quit();
 }
 
 void MainWindow::handlePortalUsed() {
+    //graphicViewController->clearScene();
     graphicViewController->visualizeWorld();
     textViewController->visualizeWorld();
-    //windowController->setupWindow();
 }
 
 void MainWindow::connectSignalsAndSlots() {
