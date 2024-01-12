@@ -80,6 +80,7 @@ void TextViewController::visualizeWorld(){
     initialAsciiRepresentation += "+"; // Add last '+' of map
 
     // Set ascii to other representations
+    updatedNoProtAsciiRepresentation = initialAsciiRepresentation;
     updatedAsciiRepresentation = initialAsciiRepresentation;
 
     // Create a widget to contain the text view
@@ -132,24 +133,43 @@ void TextViewController::drawProtagonist() {
     if (initialAsciiRepresentation.at(oldProtagonistIndex) == 'E') {
         qCDebug(TextViewControllerCategory) << "Previous position was E";
         updatedAsciiRepresentation.replace(oldProtagonistIndex, 1, "\u00A0");
+        updatedNoProtAsciiRepresentation.replace(oldProtagonistIndex, 1, "\u00A0");
         //updatedAsciiRepresentation.replace(oldProtagonistIndex, 1, "\u0332E"); // Underlined 'E'
-    } else if (initialAsciiRepresentation.at(oldProtagonistIndex) == 'H') {
+    } else if (updatedNoProtAsciiRepresentation.at(oldProtagonistIndex) == 'H') {
         qCDebug(TextViewControllerCategory) << "Previous position was H";
         qCDebug(TextViewControllerCategory) << "Health before HP =" << currentHealth;
         if (currentHealth < 100.0) {
             updatedAsciiRepresentation.replace(oldProtagonistIndex, 1, "\u00A0");
+            updatedNoProtAsciiRepresentation.replace(oldProtagonistIndex, 1, "\u00A0");
             //updatedAsciiRepresentation.replace(oldProtagonistIndex, 1, "\u0332H");  // Underlined 'H'
         } else {
             updatedAsciiRepresentation.replace(oldProtagonistIndex, 1, "H");
+            //updatedNoProtAsciiRepresentation.replace(oldProtagonistIndex, 1, "H");
         }
     } else if (initialAsciiRepresentation.at(oldProtagonistIndex) == 'O') {
         updatedAsciiRepresentation.replace(oldProtagonistIndex, 1, "O");
+        updatedNoProtAsciiRepresentation.replace(oldProtagonistIndex, 1, "\u00A0");
     } else {
         qCDebug(TextViewControllerCategory) << "Previous position was empty";
     }
 
     // Find the index corresponding to the new protagonist's position in the ASCII representation
     newProtagonistIndex = worldController->getCols()*4 + 4*worldController->getProtagonist()->getXPos() + 2*worldController->getCols()*4*worldController->getProtagonist()->getYPos() + 4*worldController->getProtagonist()->getYPos()+4;
+
+    // Check the character at the current position
+    QChar currentChar = updatedNoProtAsciiRepresentation.at(newProtagonistIndex);
+
+    // Change the color based on the character at the current position
+//    if (currentChar == 'E' || currentChar == '¶' || currentChar == 'X') {
+    if (currentChar == 'E' || currentChar == 'X') {
+        // Change the color to red
+        asciiTextEdit->setTextColor(Qt::red);
+    } else if (currentChar == 'H') {
+        // Change the color to green
+        asciiTextEdit->setTextColor(Qt::green);
+    } else {
+        asciiTextEdit->setTextColor(Qt::black);
+    }
 
     // Place the 'P' character at the new position
     updatedAsciiRepresentation.replace(newProtagonistIndex, 1, "P");
