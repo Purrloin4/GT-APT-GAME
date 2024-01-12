@@ -90,7 +90,8 @@ void TextViewController::visualizeWorld(){
     // Display the ASCII representation in a QTextEdit
     asciiTextEdit = new QTextEdit(initialAsciiRepresentation);
     asciiTextEdit->setFont(QFont("Courier")); // Set a monospaced font for better alignment
-    //asciiTextEdit->setFontPointSize(20);
+    asciiTextEdit->setStyleSheet("background-color: black; color: white;");
+    //asciiTextEdit->setTextBackgroundColor(Qt::black);
     asciiTextEdit->setReadOnly(true);
 
     // Set line wrap mode to NoWrap
@@ -163,7 +164,7 @@ void TextViewController::drawProtagonist() {
     } else if (currentChar == 'O') {
         asciiTextEdit->setTextColor(Qt::magenta);
     } else {
-        asciiTextEdit->setTextColor(Qt::black);
+        asciiTextEdit->setTextColor(Qt::white);
     }
 
     // Place the 'P' character at the new position
