@@ -186,7 +186,6 @@ void WorldController::attackEnemy() {
                 enemy->setDefeated(true);
                 qCDebug(WorldControllerCategory) << &"Defeated an enemy, nrOfEnemies = " [nrOfEnemies];
             }
-            //emit drawProtagonist(); // 2x emit
             emit drawBars();
         } else { // Protagonist doesn't have enough health to defeat the enemy
             protagonist->setHealth(0.0f);
@@ -214,7 +213,6 @@ void WorldController::useHealthpack() {
                 }
                 emit healthPackTaken(pack);
                 pack->setValue(0.0f);
-                //emit drawProtagonist(); // 2x emit
                 emit drawBars();
             }
             return;
@@ -366,6 +364,7 @@ void WorldController::autoplayStep() {
                 auto path = findPath(std::move(startTile), std::move(endTile));
                 emit moveProtagonistPathSignal(path);
                 attackEnemy();
+                emit drawProtagonist();
             } else {
                 auto pack = getNearestHealthpack();
                 if (pack) {
@@ -374,6 +373,7 @@ void WorldController::autoplayStep() {
                     auto path = findPath(std::move(startTile), std::move(endTile));
                     emit moveProtagonistPathSignal(path);
                     useHealthpack();
+                    emit drawProtagonist();
                 } else {
                     handleAutoplay();
                 }
