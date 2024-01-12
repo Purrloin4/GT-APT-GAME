@@ -186,7 +186,7 @@ void WorldController::attackEnemy() {
                 enemy->setDefeated(true);
                 qCDebug(WorldControllerCategory) << &"Defeated an enemy, nrOfEnemies = " [nrOfEnemies];
             }
-            emit drawProtagonist();
+            //emit drawProtagonist(); // 2x emit
             emit drawBars();
         } else { // Protagonist doesn't have enough health to defeat the enemy
             protagonist->setHealth(0.0f);
@@ -214,7 +214,7 @@ void WorldController::useHealthpack() {
                 }
                 emit healthPackTaken(pack);
                 pack->setValue(0.0f);
-                emit drawProtagonist();
+                //emit drawProtagonist(); // 2x emit
                 emit drawBars();
             }
             return;

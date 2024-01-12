@@ -7,6 +7,7 @@ void TextViewController::visualizeWorld(){
     auto myTiles = worldController->getTiles();
     auto myEnemies = worldController->getEnemies();
     auto myHealthpacks = worldController->getHealthpacks();
+    auto portalTile = worldController->getPortalTile();
 
     // Determine the ASCII representation of different entities
     const QString horizontalBorder = "+---";
@@ -16,6 +17,7 @@ void TextViewController::visualizeWorld(){
     const QString verticalProtagonistTile = "| P ";
     const QString verticalPEnemyTile = "| ¶ ";
     const QString verticalXEnemyTile = "| X ";
+    const QString verticalPortalTile = "| O ";
 
     // Loop through each row
     for (int y = 0; y < worldController->getRows(); ++y) {
@@ -48,6 +50,7 @@ void TextViewController::visualizeWorld(){
             auto isEnemy = std::find_if(myEnemies.begin(), myEnemies.end(),
                                         [x, y](const auto &enemy) { return enemy->getXPos() == x && enemy->getYPos() == y; });
             auto isProtagonist = (protagonist->getXPos() == x && protagonist->getYPos() == y);
+            auto isPortalTile = (portalTile->getXPos() == x && portalTile->getYPos() == y);
 
             // Append the corresponding ASCII representation to the overall representation string
             if (isHealthPack != myHealthpacks.end()) {
@@ -58,6 +61,8 @@ void TextViewController::visualizeWorld(){
                 initialAsciiRepresentation += verticalXEnemyTile;
             } else if (isEnemy != myEnemies.end()) {
                 initialAsciiRepresentation += verticalEnemyTile;
+            } else if (isPortalTile){
+                initialAsciiRepresentation += verticalPortalTile;
             } else if (isProtagonist) {
                 initialAsciiRepresentation += verticalProtagonistTile;
             } else {
@@ -75,8 +80,8 @@ void TextViewController::visualizeWorld(){
     initialAsciiRepresentation += "+"; // Add last '+' of map
 
     // Set ascii to other representations
+    updatedAsciiRepresentationNoProt = initialAsciiRepresentation;
     updatedAsciiRepresentation = initialAsciiRepresentation;
-    oldAsciiRepresentation = initialAsciiRepresentation;
 
     // Create a widget to contain the text view
     textViewWidget = new QWidget;
@@ -85,6 +90,7 @@ void TextViewController::visualizeWorld(){
     // Display the ASCII representation in a QTextEdit
     asciiTextEdit = new QTextEdit(initialAsciiRepresentation);
     asciiTextEdit->setFont(QFont("Courier")); // Set a monospaced font for better alignment
+    //asciiTextEdit->setFontPointSize(20);
     asciiTextEdit->setReadOnly(true);
 
     // Set line wrap mode to NoWrap
@@ -124,25 +130,41 @@ void TextViewController::drawProtagonist() {
     updatedAsciiRepresentation.replace(oldProtagonistIndex, 1, "\u00A0");
 
     // Check what was under old position
-    if (initialAsciiRepresentation.at(oldProtagonistIndex) == 'E') {
-        qCDebug(TextViewControllerCategory) << "Previous position was E";
-        updatedAsciiRepresentation.replace(oldProtagonistIndex, 1, "\u00A0");
-        //updatedAsciiRepresentation.replace(oldProtagonistIndex, 1, "\u0332E"); // Underlined 'E'
-    } else if (initialAsciiRepresentation.at(oldProtagonistIndex) == 'H') {
+    if (updatedAsciiRepresentationNoProt.at(oldProtagonistIndex) == 'E'
+     || updatedAsciiRepresentationNoProt.at(oldProtagonistIndex) == QChar(0x00B6)
+     || updatedAsciiRepresentationNoProt.at(oldProtagonistIndex) == 'X') {
+        qCDebug(TextViewControllerCategory) << "Previous position was one of the enemies";
+        updatedAsciiRepresentationNoProt.replace(oldProtagonistIndex, 1, "\u00A0");
+    } else if (updatedAsciiRepresentationNoProt.at(oldProtagonistIndex) == 'H') {
         qCDebug(TextViewControllerCategory) << "Previous position was H";
         qCDebug(TextViewControllerCategory) << "Health before HP =" << currentHealth;
         if (currentHealth < 100.0) {
-            updatedAsciiRepresentation.replace(oldProtagonistIndex, 1, "\u00A0");
-            //updatedAsciiRepresentation.replace(oldProtagonistIndex, 1, "\u0332H");  // Underlined 'H'
+            updatedAsciiRepresentationNoProt.replace(oldProtagonistIndex, 1, "\u00A0");
         } else {
             updatedAsciiRepresentation.replace(oldProtagonistIndex, 1, "H");
         }
+    } else if (initialAsciiRepresentation.at(oldProtagonistIndex) == 'O') {
+        updatedAsciiRepresentation.replace(oldProtagonistIndex, 1, "O");
     } else {
         qCDebug(TextViewControllerCategory) << "Previous position was empty";
     }
 
     // Find the index corresponding to the new protagonist's position in the ASCII representation
     newProtagonistIndex = worldController->getCols()*4 + 4*worldController->getProtagonist()->getXPos() + 2*worldController->getCols()*4*worldController->getProtagonist()->getYPos() + 4*worldController->getProtagonist()->getYPos()+4;
+
+    // Check the character at the current position
+    QChar currentChar = updatedAsciiRepresentationNoProt.at(newProtagonistIndex);
+
+    // Change the color based on the character at the current position
+    if (currentChar == 'E' || currentChar == QChar(0x00B6) || currentChar == 'X') {
+        asciiTextEdit->setTextColor(Qt::red);
+    } else if (currentChar == 'H') {
+        asciiTextEdit->setTextColor(Qt::green);
+    } else if (currentChar == 'O') {
+        asciiTextEdit->setTextColor(Qt::magenta);
+    } else {
+        asciiTextEdit->setTextColor(Qt::black);
+    }
 
     // Place the 'P' character at the new position
     updatedAsciiRepresentation.replace(newProtagonistIndex, 1, "P");
@@ -152,12 +174,74 @@ void TextViewController::drawProtagonist() {
 
     // Update old with new
     oldProtagonistIndex = newProtagonistIndex;
-    oldAsciiRepresentation = updatedAsciiRepresentation;
 
     // Do not update health when you enter H-tile
     if (initialAsciiRepresentation.at(newProtagonistIndex) != 'H') {
         currentHealth = protagonist->getHealth();
     }
+
+    centerViewAroundProtagonist();
+}
+
+void TextViewController::centerViewAroundProtagonist() {
+//    // >>>>>>>>>>>>>>>>>>>> Character dimensions debug >>>>>>>>>>>>>>>>>>>>
+//    // Assuming you have a QTextEdit named "asciiTextEdit"
+//    QFont currentFont = asciiTextEdit->currentFont();
+
+//    // Get font family and size
+//    QString fontFamily = currentFont.family();
+//    int fontSize = currentFont.pointSize();
+
+//    // Print or use the font information as needed
+//    qDebug() << "Font Family: " << fontFamily;
+//    qDebug() << "Font Size: " << fontSize;
+
+//    QFontMetrics fontMetrics(currentFont);
+//    int charWidth = fontMetrics.horizontalAdvance('+');
+//    int charHeight = fontMetrics.height();
+//    qDebug() << "Width of character: " << charWidth;
+//    qDebug() << "Height of characters: " << charHeight;
+//    // <<<<<<<<<<<<<<<<<<<< Character dimensions debug <<<<<<<<<<<<<<<<<<<<
+
+    // Get the dimensions of the visible area within the QTextEdit
+    int textviewWidth = asciiTextEdit->viewport()->width();
+    int textviewHeight = asciiTextEdit->viewport()->height();
+
+    // Calculate the center position in the QTextEdit representation
+    int centerPosX = (textviewWidth - 1) / 2;
+//    qCDebug(TextViewControllerCategory) << "--------> centerPosX : " << centerPosX;
+    int centerPosY = (textviewHeight - 1) / 2;
+//    qCDebug(TextViewControllerCategory) << "--------> centerPosY : " << centerPosY;
+
+    // Calculate dimensions of character
+    QFont currentFont = asciiTextEdit->currentFont();
+    QFontMetrics fontMetrics(currentFont);
+    int charWidth = fontMetrics.horizontalAdvance('+');
+    int charHeight = fontMetrics.height();
+//    qDebug() << "Width of character: " << charWidth;
+//    qDebug() << "Height of characters: " << charHeight;
+
+    // Set dimensions of tile
+    int tileWidth = charWidth*4;
+    int tileHeight = charHeight*2;
+
+    // Calculate the desired scroll positions
+    int protagonistX = protagonist->getXPos()*tileWidth;
+    qCDebug(TextViewControllerCategory) << "--------> protPosX : " << protagonistX;
+    int protagonistY = protagonist->getYPos()*tileHeight;
+    qCDebug(TextViewControllerCategory) << "--------> protPosY : " << protagonistY;
+
+    // Calculate the scroll positions to center the view around the protagonist
+    int scrollX = protagonistX - centerPosX;
+    int scrollY = protagonistY - centerPosY;
+
+    // Ensure the scroll positions are within bounds
+    scrollX = qMax(0, scrollX);
+    scrollY = qMax(0, scrollY);
+
+    // Set the scroll positions
+    asciiTextEdit->horizontalScrollBar()->setValue(scrollX);
+    asciiTextEdit->verticalScrollBar()->setValue(scrollY);
 }
 
 void TextViewController::zoomIn() {
@@ -181,19 +265,48 @@ void TextViewController::handleTextCommand() {
 
     // Check if the command has at least one part
     if (!parts.isEmpty()) {
+        QString commandPrefix = parts[0].toLower();
+
         // Find the corresponding handler in the map
-        auto handler = commandHandlers.find(parts[0].toLower());
+        auto handler = commandHandlers.find(commandPrefix);
 
         // If the handler is found, call it with the remaining parts
         if (handler != commandHandlers.end()) {
             commandCheckVisual(true);
             handler.value()(parts.mid(1));
         } else {
-            // Handle unknown command
-            commandCheckVisual(false);
-            handleUnknownCommand();
+            // Handle unknown command or implement tab completion
+            QStringList matchingCommands;
+            for (auto iter = commandHandlers.begin(); iter != commandHandlers.end(); ++iter) {
+                if (iter.key().startsWith(commandPrefix)) {
+                    matchingCommands.append(iter.key());
+                }
+            }
+
+            if (matchingCommands.isEmpty()) {
+                // Handle unknown command
+                commandCheckVisual(false);
+                handleUnknownCommand();
+            } else if (matchingCommands.size() == 1) {
+                // If there is only one matching command, auto-complete the command
+                completeCommand(matchingCommands.first(), parts);
+            }
         }
     }
+}
+
+void TextViewController::completeCommand(const QString &completedCommand, const QStringList &parts) {
+    commandCheckVisual(true);
+
+    if (completedCommand.toLower() == "goto" && parts.size() == 3) {
+        // If the completed command is "goto" and there is one missing parameter, append it
+        navigateLineEdit->setText(completedCommand + " " + parts[1] + " " + parts[2]);
+    } else {
+        navigateLineEdit->setText(completedCommand);
+    }
+
+    // Simulate press of the "ENTER" key to execute the auto-completed command
+    QTimer::singleShot(0, this, &TextViewController::handleTextCommand);
 }
 
 void TextViewController::handleMoveCommand(const QString &direction) {
@@ -226,6 +339,7 @@ void TextViewController::handleMoveCommand(const QString &direction) {
         // Check if you can attack an enemy or use a healthpack
         worldController->attackEnemy();
         worldController->useHealthpack();
+        worldController->isPortal();
     }
 
     commandMessageLabel->setText("Protagonist moved <b>" + direction + "</b>");
@@ -288,20 +402,25 @@ void TextViewController::handleAttackCommand() {
 void TextViewController::handleTakeCommand() {
     qCDebug(TextViewControllerCategory) << "Take nearest health pack command triggered";
 
-    if (protagonist->getHealth() == worldController->getMaxEH()) {
-        commandMessageLabel->setText("Protagonist is already at maximum health (100%). Coordinates: <b>(" + QString::number(protagonist->getXPos()) + ", " + QString::number(protagonist->getYPos()) + ")</b>");
-    } else {
-        auto pack = worldController->getNearestHealthpack();
-        protagonist->setXPos(pack->getXPos());
-        protagonist->setYPos(pack->getYPos());
+    if (protagonist->getHealth() >= worldController->getMaxEH()) {
+        commandMessageLabel->setText("<font color='red'>Protagonist is already at maximum health (100%).</font>");
+        return;
+    }
+
+    auto nearestHealthPack = worldController->getNearestHealthpack();
+    if (nearestHealthPack) {
+        commandMessageLabel->setText("Protagonist takes the nearest health pack at coordinates: <b>(" + QString::number(nearestHealthPack->getXPos() + 1) + ", " + QString::number(nearestHealthPack->getYPos() + 1) + ")</b>");
+
+        protagonist->setXPos(nearestHealthPack->getXPos());
+        protagonist->setYPos(nearestHealthPack->getYPos());
 
         // Redraw the protagonist and energy bar
         emit worldController->drawProtagonist();
         emit worldController->drawBars();
 
         worldController->useHealthpack();
-
-        commandMessageLabel->setText("Protagonist takes the nearest health pack at coordinates: <b>(" + QString::number(protagonist->getXPos() + 1) + ", " + QString::number(protagonist->getYPos() + 1) + ")</b>");
+    } else {
+        commandMessageLabel->setText("<font color='red'>Uh-oh! The world has run out of health packs. The protagonist is in trouble!</font>");
     }
 }
 

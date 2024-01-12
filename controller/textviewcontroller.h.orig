@@ -55,7 +55,6 @@ private:
     int oldProtagonistIndex = worldController->getCols()*4 + 4;
     int newProtagonistIndex;
     QString initialAsciiRepresentation;
-    QString updatedAsciiRepresentationNoProt;
     QString updatedAsciiRepresentation;
     QTextEdit* asciiTextEdit;
     QWidget* textViewWidget;
@@ -65,6 +64,8 @@ private:
     QPushButton* navigateButton;
     QString navigateText;
     QLabel* commandMessageLabel;
+    QColor originalColor;
+    QTimer* colorTimer;
 };
 
 #endif // TEXTVIEWCONTROLLER_H
