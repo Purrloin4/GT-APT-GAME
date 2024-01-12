@@ -372,6 +372,84 @@ void GraphicViewController::animateSplatter(int xPos,int yPos){
     timer->start(1000);
 }
 
+void GraphicViewController::animateExplosions(){
+    qCDebug(GraphicViewControllerCategory) << "animateExplosions";
+    for (int i = 0; i < 10; ++i) {
+        QTimer::singleShot(i * 500, this, [this]() {
+            int xPos = rand() % worldController->getCols();
+            int yPos = rand() % worldController->getRows();
+            QLabel *explosionAnimationLabel = new QLabel();
+            explosionAnimationLabel->setAttribute( Qt::WA_TranslucentBackground, true );
+            explosionAnimationLabel->setMovie(explosionAnimation);
+            explosionAnimation->start();
+
+            QGraphicsProxyWidget* explosionProxy = scene->addWidget(explosionAnimationLabel);
+
+            explosionProxy->setPos((xPos - 4) * tileSize, (yPos - 4) * tileSize );
+            explosionProxy->setZValue(2);
+
+            QTimer* timer = new QTimer(this);
+            timer->setSingleShot(true);
+
+            connect(timer, &QTimer::timeout, this, [explosionProxy]() {
+                if (explosionProxy) {
+                    QGraphicsScene* scene = explosionProxy->scene();
+                    if (scene) {
+                        scene->removeItem(explosionProxy);
+                        explosionProxy->deleteLater();
+                    }
+                }
+            });
+
+            timer->start(2000);
+        });
+    }
+}
+
+void GraphicViewController::animateFireworks(){
+    qCDebug(GraphicViewControllerCategory) << "animateFireworks";
+    for (int i = 0; i < 10; ++i) {
+        QTimer::singleShot(i * 500, this, [i, this]() {
+            int xPos = rand() % worldController->getCols();
+            int yPos = rand() % worldController->getRows();
+            QLabel *fireworksAnimationLabel = new QLabel();
+            fireworksAnimationLabel->setAttribute( Qt::WA_TranslucentBackground, true );
+            if (i % 3 == 0){
+                fireworksAnimationLabel->setMovie(fireworksAnimation1);
+                fireworksAnimation1->start();
+            }
+            else if (i % 3 == 1){
+                fireworksAnimationLabel->setMovie(fireworksAnimation2);
+                fireworksAnimation2->start();
+            }
+            else{
+                fireworksAnimationLabel->setMovie(fireworksAnimation3);
+                fireworksAnimation3->start();
+            }
+
+            QGraphicsProxyWidget* fireworksProxy = scene->addWidget(fireworksAnimationLabel);
+
+            fireworksProxy->setPos((xPos - 4) * tileSize, (yPos - 4) * tileSize );
+            fireworksProxy->setZValue(2);
+
+            QTimer* timer = new QTimer(this);
+            timer->setSingleShot(true);
+
+            connect(timer, &QTimer::timeout, this, [fireworksProxy]() {
+                if (fireworksProxy) {
+                    QGraphicsScene* scene = fireworksProxy->scene();
+                    if (scene) {
+                        scene->removeItem(fireworksProxy);
+                        fireworksProxy->deleteLater();
+                    }
+                }
+            });
+
+            timer->start(2000);
+        });
+    }
+}
+
 int GraphicViewController::getTileSize() const{
     return tileSize;
 }
