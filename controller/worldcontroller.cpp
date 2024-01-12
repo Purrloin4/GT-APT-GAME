@@ -216,7 +216,7 @@ void WorldController::attackEnemy(){
                     qCDebug(WorldControllerCategory) << &"Defeated an enemy, nrOfEnemies = " [nrOfEnemies];
                 }
 
-                emit drawProtagonist();
+                //emit drawProtagonist();
                 emit drawBars();
             } else {
                 // Protagonist doesn't have enough health to defeat the enemy
@@ -256,7 +256,7 @@ void WorldController::useHealthpack()
                 }
                 emit healthPackTaken(pack);
                 pack->setValue(0.0f);
-                emit drawProtagonist();
+                //emit drawProtagonist();
                 emit drawBars();
             }
             // Exit the function since the attack has been resolved

@@ -80,7 +80,7 @@ void TextViewController::visualizeWorld(){
     initialAsciiRepresentation += "+"; // Add last '+' of map
 
     // Set ascii to other representations
-    updatedNoProtAsciiRepresentation = initialAsciiRepresentation;
+    updatedAsciiRepresentationNoProt = initialAsciiRepresentation;
     updatedAsciiRepresentation = initialAsciiRepresentation;
 
     // Create a widget to contain the text view
@@ -130,25 +130,21 @@ void TextViewController::drawProtagonist() {
     updatedAsciiRepresentation.replace(oldProtagonistIndex, 1, "\u00A0");
 
     // Check what was under old position
-    if (initialAsciiRepresentation.at(oldProtagonistIndex) == 'E') {
-        qCDebug(TextViewControllerCategory) << "Previous position was E";
-        updatedAsciiRepresentation.replace(oldProtagonistIndex, 1, "\u00A0");
-        updatedNoProtAsciiRepresentation.replace(oldProtagonistIndex, 1, "\u00A0");
-        //updatedAsciiRepresentation.replace(oldProtagonistIndex, 1, "\u0332E"); // Underlined 'E'
-    } else if (updatedNoProtAsciiRepresentation.at(oldProtagonistIndex) == 'H') {
+    if (updatedAsciiRepresentationNoProt.at(oldProtagonistIndex) == 'E'
+     || updatedAsciiRepresentationNoProt.at(oldProtagonistIndex) == QChar(0x00B6)
+     || updatedAsciiRepresentationNoProt.at(oldProtagonistIndex) == 'X') {
+        qCDebug(TextViewControllerCategory) << "Previous position was one of the enemies";
+        updatedAsciiRepresentationNoProt.replace(oldProtagonistIndex, 1, "\u00A0");
+    } else if (updatedAsciiRepresentationNoProt.at(oldProtagonistIndex) == 'H') {
         qCDebug(TextViewControllerCategory) << "Previous position was H";
         qCDebug(TextViewControllerCategory) << "Health before HP =" << currentHealth;
         if (currentHealth < 100.0) {
-            updatedAsciiRepresentation.replace(oldProtagonistIndex, 1, "\u00A0");
-            updatedNoProtAsciiRepresentation.replace(oldProtagonistIndex, 1, "\u00A0");
-            //updatedAsciiRepresentation.replace(oldProtagonistIndex, 1, "\u0332H");  // Underlined 'H'
+            updatedAsciiRepresentationNoProt.replace(oldProtagonistIndex, 1, "\u00A0");
         } else {
             updatedAsciiRepresentation.replace(oldProtagonistIndex, 1, "H");
-            //updatedNoProtAsciiRepresentation.replace(oldProtagonistIndex, 1, "H");
         }
     } else if (initialAsciiRepresentation.at(oldProtagonistIndex) == 'O') {
         updatedAsciiRepresentation.replace(oldProtagonistIndex, 1, "O");
-        updatedNoProtAsciiRepresentation.replace(oldProtagonistIndex, 1, "\u00A0");
     } else {
         qCDebug(TextViewControllerCategory) << "Previous position was empty";
     }
@@ -157,16 +153,15 @@ void TextViewController::drawProtagonist() {
     newProtagonistIndex = worldController->getCols()*4 + 4*worldController->getProtagonist()->getXPos() + 2*worldController->getCols()*4*worldController->getProtagonist()->getYPos() + 4*worldController->getProtagonist()->getYPos()+4;
 
     // Check the character at the current position
-    QChar currentChar = updatedNoProtAsciiRepresentation.at(newProtagonistIndex);
+    QChar currentChar = updatedAsciiRepresentationNoProt.at(newProtagonistIndex);
 
     // Change the color based on the character at the current position
-//    if (currentChar == 'E' || currentChar == '¶' || currentChar == 'X') {
-    if (currentChar == 'E' || currentChar == 'X') {
-        // Change the color to red
+    if (currentChar == 'E' || currentChar == QChar(0x00B6) || currentChar == 'X') {
         asciiTextEdit->setTextColor(Qt::red);
     } else if (currentChar == 'H') {
-        // Change the color to green
         asciiTextEdit->setTextColor(Qt::green);
+    } else if (currentChar == 'O') {
+        asciiTextEdit->setTextColor(Qt::magenta);
     } else {
         asciiTextEdit->setTextColor(Qt::black);
     }
