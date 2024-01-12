@@ -41,4 +41,3 @@
 - View centering arround protagonist - Bob
 - Portals to new world - Tiësto & Cédric
 - Attack, heal, gameWon and gameOver animations - Cédric
-- Sound effects - Cédric
