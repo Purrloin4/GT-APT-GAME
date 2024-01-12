@@ -7,82 +7,17 @@
 QLoggingCategory WorldControllerCategory("worldController", QtDebugMsg);
 
 WorldController::WorldController(QString map1, QString map2) {
-    // try {
-    //     world = std::make_shared<World>();
-    //     world->createWorld(map1, 8, 8, 0.25f);
-    //     this->mainMap = map1;
-
-    //     auto myTiles = world->getTiles();
-    //     for (const auto &tile : myTiles){
-    //         auto sharedTile = std::make_shared<Tile>(tile->getXPos(), tile->getYPos(), tile->getValue());
-    //         this->tiles.push_back(sharedTile);
-    //     }
-
-    //     auto myHealthpacks = world->getHealthPacks();
-    //     for (const auto &healthpack : myHealthpacks){
-    //         auto sharedHealthpack = std::make_shared<Tile>(healthpack->getXPos(),healthpack->getYPos(), healthpack->getValue());
-    //         this->healthpacks.push_back(sharedHealthpack);
-    //     }
-
-    //     auto myEnemies = world->getEnemies();
-    //     nrOfEnemies = myEnemies.size();
-    //     for (const auto &enemy : myEnemies){
-    //         if (auto pEnemy = dynamic_cast<PEnemy*>(enemy.get())) {
-    //             auto sharedPEnemy = std::make_shared<PEnemy>(pEnemy->getXPos(), pEnemy->getYPos(), enemy->getValue());
-    //             this->enemies.push_back(sharedPEnemy);
-    //         } else {
-    //             auto sharedEnemy = std::make_shared<Enemy>(enemy->getXPos(),enemy->getYPos(), enemy->getValue());
-    //             this->enemies.push_back(sharedEnemy);
-    //         }
-    //     }
-
-    //     for (const auto &tile : tiles) {
-    //         if (!isEnemy(tile->getXPos(), tile->getYPos()) && !isHealthPack(tile->getXPos(), tile->getYPos())) {
-    //             emptyTiles.push_back(tile);
-    //         }
-    //     }
-
-    //     int index = rand() % emptyTiles.size();
-    //     Tile* randomTile = emptyTiles[index].get();
-    //     this->portalTile = std::make_shared<PortalTile>(randomTile->getXPos(),randomTile->getYPos());
-
-    //     // Conversion of 25% of regual enemies to XEnemies
-    //     int numXEnemies = static_cast<int>(0.25 * nrOfEnemies);
-    //     int i = 0;
-
-    //     for (const auto &enemy : enemies) {
-    //         if (i == numXEnemies) {
-    //             break;
-    //         }
-    //         // Replace the original enemy with the XEnemy
-    //         auto xEnemy = std::make_shared<XEnemy>(enemy->getXPos(), enemy->getYPos(), enemy->getValue());
-    //         this->enemies[i] = xEnemy;
-    //         i++;
-    //     }
-
-    //     autoplayActive = false;
-
-    //     this->protagonist = std::make_shared<Protagonist>();
-
-    //     this->cols = world->getCols();
-    //     this->rows = world->getRows();
-
-    //     energyRegenTimer = new QTimer(this);
-    //     connect(energyRegenTimer, &QTimer::timeout, this, &WorldController::regenerateEnergy);
-    //     energyRegenTimer->start(100);
-
-    // } catch (const std::exception& e) {
-    //     // Handle any exceptions here
-    //     std::cout << "Exeption during create world" << std::endl;
-    // }
 
     WorldState newState = createWorldState(map1);
     currentState = newState;
     loadWorldState(newState);
-    autoplayActive = false;
+
+    WorldState secondState = createWorldState(map2);
+    otherStates.push(secondState);
 
     this->protagonist = std::make_shared<Protagonist>();
 
+    autoplayActive = false;
     energyRegenTimer = new QTimer(this);
     connect(energyRegenTimer, &QTimer::timeout, this, &WorldController::regenerateEnergy);
     energyRegenTimer->start(100);
@@ -497,11 +432,11 @@ void WorldController::isPortal() {
 
     if (portalTile->getXPos() == x && portalTile->getYPos() == y) {
         qCDebug(WorldControllerCategory) << "Entered a portal tile!";
-        if (!portalTile->getMainMapActive()) {
-            portalTile->setMainMapActive(false);
-        } else {
-            // handle going back to main map
-        }
+
+        WorldState newState = otherStates.top();
+        otherStates.pop();
+        otherStates.push(currentState);
+        loadWorldState(newState);
         emit portalUsed();
     }
 }

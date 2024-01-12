@@ -126,8 +126,8 @@ void MainWindow::gameWonMessage() {
 }
 
 void MainWindow::handlePortalUsed() {
-    //graphicViewController->visualizeWorld();
-    //textViewController->visualizeWorld();
+    graphicViewController->visualizeWorld();
+    textViewController->visualizeWorld();
     //windowController->setupWindow();
 }
 

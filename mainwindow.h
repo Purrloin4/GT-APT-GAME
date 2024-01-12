@@ -31,9 +31,7 @@ public slots:
         void handlePortalUsed();
 private:
     Ui::MainWindow *ui;
-    World myWorld;
     int tileSize;
-    std::vector<std::unique_ptr<Tile>> myTiles;
     std::shared_ptr<WorldController> worldController;
     std::shared_ptr<GraphicViewController> graphicViewController;
     std::shared_ptr<TextViewController> textViewController;

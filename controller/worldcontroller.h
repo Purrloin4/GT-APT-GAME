@@ -131,10 +131,8 @@ private:
     void regenerateEnergy();
     int nrOfEnemies;
     bool autoplayActive;
-    QString mainMap;
-    QString portalMap;
     WorldState currentState;
-    std::stack<WorldState> previousStates;
+    std::stack<WorldState> otherStates;
     WorldState createWorldState(QString mapName);
     void loadWorldState(WorldState state);
 };
