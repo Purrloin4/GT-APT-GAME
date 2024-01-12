@@ -25,6 +25,8 @@ public:
         fireworksAnimation2->setScaledSize(QSize(tileSize*8, tileSize*8));
         fireworksAnimation3 = new QMovie(":/animations/fireworks3.gif");
         fireworksAnimation3->setScaledSize(QSize(tileSize*8, tileSize*8));
+        healingAnimation = new QMovie(":/animations/healing.gif");
+        healingAnimation->setScaledSize(QSize(tileSize*2, tileSize*2));
     }
     std::shared_ptr<QGraphicsScene> scene;
     QGraphicsView* rawView;
@@ -64,7 +66,9 @@ private:
     QMovie *fireworksAnimation1;
     QMovie *fireworksAnimation2;
     QMovie *fireworksAnimation3;
+    QMovie *healingAnimation;
     void animateSplatter(int xPos,int yPos);
+    void animateHealing(int xPos, int yPos);
 };
 
 
