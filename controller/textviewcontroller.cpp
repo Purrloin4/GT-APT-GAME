@@ -89,12 +89,12 @@ void TextViewController::visualizeWorld(){
 
     // Display the ASCII representation in a QTextEdit
     asciiTextEdit = new QTextEdit(initialAsciiRepresentation);
-    asciiTextEdit->setFont(QFont("Courier")); // Set a monospaced font for better alignment
+    asciiTextEdit->setFont(QFont("Courier"));
     asciiTextEdit->setStyleSheet("background-color: white; color: black;");
     asciiTextEdit->setReadOnly(true);
 
     // Set line wrap mode to NoWrap
-    //asciiTextEdit->setLineWrapMode(QTextEdit::NoWrap); // Deze lijn zorgt voor delay wanneer movement
+    //asciiTextEdit->setLineWrapMode(QTextEdit::NoWrap); // !!! Deze lijn zorgt voor delay wanneer movement !!!
 
     asciiTextEdit->setPlainText(initialAsciiRepresentation);
 
@@ -259,8 +259,11 @@ void TextViewController::zoomOut() {
 
 void TextViewController::animateWinner() {
     qCDebug(TextViewControllerCategory) << "WINNER";
+    // Green screen
     asciiTextEdit->setStyleSheet("background-color: green; color: green;");
+    asciiTextEdit->setTextColor(Qt::green);
 
+//    // Happy smiley
 //    asciiTextEdit->setStyleSheet("background-color: black; color: green;");
 //    asciiTextEdit->setTextColor(Qt::green);
 //    QString happySmiley = "                   __ooooooooo__";
@@ -305,34 +308,15 @@ void TextViewController::animateWinner() {
 //    happySmiley += QChar(0x2029);
 //    happySmiley += "                  *ooooooooooooo*";
 //    asciiTextEdit->setPlainText(happySmiley);
-
-//    //                   __ooooooooo__
-//    //              oOOOOOOOOOOOOOOOOOOOOOo
-//    //          oOOOOOOOOOOOOOOOOOOOOOOOOOOOOOo
-//    //       oOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOo
-//    //     oOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOo
-//    //   oOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOo
-//    //  oOOOOOOOOOOO*  *OOOOOOOOOOOOOO*  *OOOOOOOOOOOOo
-//    // oOOOOOOOOOOO      OOOOOOOOOOOO      OOOOOOOOOOOOo
-//    // oOOOOOOOOOOOOo  oOOOOOOOOOOOOOOo  oOOOOOOOOOOOOOo
-//    //oOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOo
-//    //oOOOO     OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO     OOOOo
-//    //oOOOOOO OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO OOOOOOo
-//    // *OOOOO  OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO  OOOOO*
-//    // *OOOOOO  *OOOOOOOOOOOOOOOOOOOOOOOOOOOOO*  OOOOOO*
-//    //  *OOOOOO  *OOOOOOOOOOOOOOOOOOOOOOOOOOO*  OOOOOO*
-//    //   *OOOOOOo  *OOOOOOOOOOOOOOOOOOOOOOO*  oOOOOOO*
-//    //     *OOOOOOOo  *OOOOOOOOOOOOOOOOO*  oOOOOOOO*
-//    //       *OOOOOOOOo  *OOOOOOOOOOO*  oOOOOOOOO*
-//    //          *OOOOOOOOo           oOOOOOOOO*
-//    //              *OOOOOOOOOOOOOOOOOOOOO*
-//    //                  *oooooooooooo*
 }
 
 void TextViewController::animateLoser() {
     qCDebug(TextViewControllerCategory) << "DOOD";
+    // Red screen
     asciiTextEdit->setStyleSheet("background-color: red; color: red;");
+    asciiTextEdit->setTextColor(Qt::red);
 
+//    // Magere Hein
 //    asciiTextEdit->setStyleSheet("background-color: black; color: red;");
 //    asciiTextEdit->setTextColor(Qt::red);
 //    QString sadSmiley = "    ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣀⣀⣤⣤⣤⣤⣤⣤⣤⣴⣿⡇";
@@ -436,7 +420,7 @@ void TextViewController::completeCommand(const QString &completedCommand, const 
 void TextViewController::handleMoveCommand(const QString &direction) {
     qCDebug(TextViewControllerCategory) << direction << " action was triggered";
 
-    // Your logic for handling the move command based on the direction
+    // Handling the move command based on the direction
     int newX = protagonist->getXPos();
     int newY = protagonist->getYPos();
 
