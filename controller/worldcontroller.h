@@ -105,6 +105,8 @@ public:
 
     void generateNewWorld(QString map);
 
+    bool isPoisoned();
+
 public slots:
     void handleKeyPressEvent(QKeyEvent *event);
     void handleMousePressEvent(int x, int y);
