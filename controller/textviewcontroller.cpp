@@ -97,32 +97,6 @@ void TextViewController::visualizeWorld(){
     //asciiTextEdit->setLineWrapMode(QTextEdit::NoWrap); // !!! Deze lijn zorgt voor delay wanneer movement !!!
 
     asciiTextEdit->setPlainText(initialAsciiRepresentation);
-
-    // Add the text view to the layout
-    textLayout->addWidget(asciiTextEdit);
-
-    // Use a QHBoxLayout to arrange the text box and button horizontally
-    navigateLayout = new QHBoxLayout;
-
-    // Add the text box to the layout
-    navigateLineEdit = new QLineEdit;
-    navigateLineEdit->setPlaceholderText("Enter your command");
-    navigateLayout->addWidget(navigateLineEdit);
-
-    // Enter to navigate
-    connect(navigateLineEdit, &QLineEdit::returnPressed, this, &TextViewController::handleTextCommand);
-
-    // Create a button
-    navigateButton = new QPushButton("ENTER");
-    connect(navigateButton, &QPushButton::clicked, this, &TextViewController::handleTextCommand);
-    navigateLayout->addWidget(navigateButton);
-
-    textLayout->addLayout(navigateLayout);
-
-    // Add a QLabel for additional text
-    commandMessageLabel = new QLabel;
-    commandMessageLabel->setTextFormat(Qt::RichText);
-    textLayout->addWidget(commandMessageLabel);
 }
 
 void TextViewController::drawProtagonist() {
@@ -583,4 +557,8 @@ void TextViewController::commandCheckVisual(bool correctCommand) {
         navigateLineEdit->setStyleSheet("");
         navigateLineEdit->setText("");
     });
+}
+
+void TextViewController::clearTextWorld() {
+    initialAsciiRepresentation.clear();
 }

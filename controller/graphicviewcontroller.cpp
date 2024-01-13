@@ -107,10 +107,6 @@ void GraphicViewController::visualizeWorld()
     }
 
     this->drawProtagonist();
-
-    graphViewWidget = new QWidget;
-    graphLayout = new QVBoxLayout(graphViewWidget);
-    graphLayout->addWidget(rawView);
 }
 
 void GraphicViewController::drawProtagonist() {
@@ -148,8 +144,11 @@ void GraphicViewController::visualizePath(std::vector<int> path, std::shared_ptr
 
         for (const auto &tileVis : previousPath) {
             if (tileVis.graphicsItem) {
-                scene->removeItem(tileVis.graphicsItem);
-                delete tileVis.graphicsItem;
+                try {
+                    scene->removeItem(tileVis.graphicsItem);
+                    delete tileVis.graphicsItem;
+                } catch (...) {
+                }
             }
         }
         previousPath.clear();
@@ -160,8 +159,11 @@ void GraphicViewController::visualizePath(std::vector<int> path, std::shared_ptr
     connect(pathDeletionTimer, &QTimer::timeout, this, [this]() {
         for (const auto &tileVis : previousPath) {
             if (tileVis.graphicsItem) {
-                scene->removeItem(tileVis.graphicsItem);
-                delete tileVis.graphicsItem;
+                try {
+                    scene->removeItem(tileVis.graphicsItem);
+                    delete tileVis.graphicsItem;
+                } catch (...) {
+                }
             }
         }
         previousPath.clear();
@@ -222,8 +224,11 @@ void GraphicViewController::handleHalfDead() {
     scene->addItem(halfXEnemyItem);
     for (auto it = tileVisualisations.begin(); it != tileVisualisations.end();) {
         if (it->enemy==enemy){
-            scene->removeItem(it->texturePixmapItem);
-            it->texturePixmapItem = halfXEnemyItem;
+            try {
+                scene->removeItem(it->texturePixmapItem);
+                it->texturePixmapItem = halfXEnemyItem;
+            } catch (...) {
+            }
             break;
         }
         else{
@@ -241,8 +246,11 @@ void GraphicViewController::handleDeath() {
     scene->addItem(tombStoneItem);
     for (auto it = tileVisualisations.begin(); it != tileVisualisations.end();) {
         if (it->enemy==enemy){
-            scene->removeItem(it->enemyHealthText);
-            scene->removeItem(it->texturePixmapItem);
+            try {
+                scene->removeItem(it->enemyHealthText);
+                scene->removeItem(it->texturePixmapItem);
+            } catch (...) {
+            }
             break;
         }
         else{
@@ -259,7 +267,10 @@ void GraphicViewController::removePoisonedTiles(Enemy* enemy) {
     if (PEnemy* pEnemy = dynamic_cast<PEnemy*>(enemy)) {
         for (auto it = worldController->poisonedTiles.begin(); it != worldController->poisonedTiles.end();) {
             if (it->enemy == pEnemy) {
-                scene->removeItem(it->graphicsItem);
+                try {
+                    scene->removeItem(it->graphicsItem);
+                } catch (...) {
+                }
                 it = worldController->poisonedTiles.erase(it);
             } else {
                 ++it;
@@ -270,16 +281,19 @@ void GraphicViewController::removePoisonedTiles(Enemy* enemy) {
 
 
 void GraphicViewController::handleHealthPackTaken(std::shared_ptr<Tile> pack){
-     //scene->addRect(pack->getXPos() * tileSize, pack->getYPos() * tileSize, tileSize, tileSize, QPen(Qt::black), QBrush(QColorConstants::Svg::purple));
+    //scene->addRect(pack->getXPos() * tileSize, pack->getYPos() * tileSize, tileSize, tileSize, QPen(Qt::black), QBrush(QColorConstants::Svg::purple));
     for (auto it = tileVisualisations.begin(); it != tileVisualisations.end();) {
         //if (it->tile->getXPos() == xPos && it->tile->getYPos() == yPos){
         if(it->tile == pack.get()){
             animateHealing(it->tile->getXPos(), it->tile->getYPos());
             qCDebug(GraphicViewControllerCategory) << "found healthPackTile";
-            scene->removeItem(it->healthPackText);
-            scene->removeItem(it->texturePixmapItem);
+            try {
+                scene->removeItem(it->healthPackText);
+                scene->removeItem(it->texturePixmapItem);
+            } catch (...) {
+            }
             break;
-         }
+        }
         else{
             ++it;
         }
@@ -364,7 +378,10 @@ void GraphicViewController::animateSplatter(int xPos,int yPos){
         if (splatterProxy) {
             QGraphicsScene* scene = splatterProxy->scene();
             if (scene) {
-                scene->removeItem(splatterProxy);
+                try {
+                    scene->removeItem(splatterProxy);
+                } catch (...) {
+                }
                 splatterProxy->deleteLater();
             }
         }
@@ -423,7 +440,10 @@ void GraphicViewController::animateExplosions(){
                 if (explosionProxy) {
                     QGraphicsScene* scene = explosionProxy->scene();
                     if (scene) {
-                        scene->removeItem(explosionProxy);
+                        try {
+                            scene->removeItem(explosionProxy);
+                        } catch (...) {
+                        }
                         explosionProxy->deleteLater();
                     }
                 }
@@ -467,7 +487,10 @@ void GraphicViewController::animateFireworks(){
                 if (fireworksProxy) {
                     QGraphicsScene* scene = fireworksProxy->scene();
                     if (scene) {
-                        scene->removeItem(fireworksProxy);
+                        try {
+                            scene->removeItem(fireworksProxy);
+                        } catch (...) {
+                        }
                         fireworksProxy->deleteLater();
                     }
                 }
@@ -478,6 +501,15 @@ void GraphicViewController::animateFireworks(){
     }
 }
 
+void GraphicViewController::clearScene() {
+    if (scene){
+        scene->clear();
+    }
+    if (protagonistPixmapItem) {
+        protagonistPixmapItem = nullptr;
+    }
+}
+
 int GraphicViewController::getTileSize() const{
     return tileSize;
 }
@@ -485,4 +517,3 @@ int GraphicViewController::getTileSize() const{
 double GraphicViewController::getRelativeTileSize(){
     return relativeTileSize;
 }
-

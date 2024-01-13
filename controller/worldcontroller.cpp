@@ -7,45 +7,62 @@
 QLoggingCategory WorldControllerCategory("worldController", QtDebugMsg);
 
 WorldController::WorldController(QString map1, QString map2) {
-    try {
-        world = std::make_shared<World>();
-        world->createWorld(map1, 8, 8, 0.25f);
-        this->mainMap = map1;
 
-        auto myTiles = world->getTiles();
+    WorldState newState = createWorldState(map1);
+    currentState = newState;
+    loadWorldState(newState);
+
+    WorldState secondState = createWorldState(map2);
+    otherStates.push(secondState);
+
+    this->protagonist = std::make_shared<Protagonist>();
+
+    autoplayActive = false;
+    energyRegenTimer = new QTimer(this);
+    connect(energyRegenTimer, &QTimer::timeout, this, &WorldController::regenerateEnergy);
+    energyRegenTimer->start(100);
+
+}
+
+WorldState WorldController::createWorldState(QString mapName){
+    WorldState newState;
+    try {
+        newState.world = std::make_shared<World>();
+        newState.world->createWorld(mapName, 8, 8, 0.25f);
+
+        auto myTiles = newState.world->getTiles();
         for (const auto &tile : myTiles){
             auto sharedTile = std::make_shared<Tile>(tile->getXPos(), tile->getYPos(), tile->getValue());
-            this->tiles.push_back(sharedTile);
+            newState.tiles.push_back(sharedTile);
         }
 
-        auto myHealthpacks = world->getHealthPacks();
+        auto myHealthpacks = newState.world->getHealthPacks();
         for (const auto &healthpack : myHealthpacks){
             auto sharedHealthpack = std::make_shared<Tile>(healthpack->getXPos(),healthpack->getYPos(), healthpack->getValue());
-            this->healthpacks.push_back(sharedHealthpack);
+            newState.healthpacks.push_back(sharedHealthpack);
         }
 
-        auto myEnemies = world->getEnemies();
-        nrOfEnemies = myEnemies.size();
+        auto myEnemies = newState.world->getEnemies();
+        newState.nrOfEnemies = myEnemies.size();
         for (const auto &enemy : myEnemies){
             if (auto pEnemy = dynamic_cast<PEnemy*>(enemy.get())) {
                 auto sharedPEnemy = std::make_shared<PEnemy>(pEnemy->getXPos(), pEnemy->getYPos(), enemy->getValue());
-                this->enemies.push_back(sharedPEnemy);
+                newState.enemies.push_back(sharedPEnemy);
             } else {
                 auto sharedEnemy = std::make_shared<Enemy>(enemy->getXPos(),enemy->getYPos(), enemy->getValue());
-                this->enemies.push_back(sharedEnemy);
+                newState.enemies.push_back(sharedEnemy);
             }
         }
 
-        for (const auto &tile : tiles) {
+        for (const auto &tile : newState.tiles) {
             if (!isEnemy(tile->getXPos(), tile->getYPos()) && !isHealthPack(tile->getXPos(), tile->getYPos())) {
-                emptyTiles.push_back(tile);
+                newState.emptyTiles.push_back(tile);
             }
         }
 
-        int index = rand() % emptyTiles.size();
-        Tile* randomTile = emptyTiles[index].get();
-        this->portalTile = std::make_shared<PortalTile>(randomTile->getXPos(),randomTile->getYPos(), map2);
-        this->portalMap = map2;
+        int index = rand() % newState.emptyTiles.size();
+        Tile* randomTile = newState.emptyTiles[index].get();
+        newState.portalTile = std::make_shared<PortalTile>(randomTile->getXPos(),randomTile->getYPos());
 
         // Conversion of 25% of regual enemies to XEnemies
         int numXEnemies = static_cast<int>(0.25 * nrOfEnemies);
@@ -57,25 +74,32 @@ WorldController::WorldController(QString map1, QString map2) {
             }
             // Replace the original enemy with the XEnemy
             auto xEnemy = std::make_shared<XEnemy>(enemy->getXPos(), enemy->getYPos(), enemy->getValue());
-            this->enemies[i] = xEnemy;
+            newState.enemies[i] = xEnemy;
             i++;
         }
 
-        autoplayActive = false;
-
-        this->protagonist = std::make_shared<Protagonist>();
-
-        this->cols = world->getCols();
-        this->rows = world->getRows();
-
-        energyRegenTimer = new QTimer(this);
-        connect(energyRegenTimer, &QTimer::timeout, this, &WorldController::regenerateEnergy);
-        energyRegenTimer->start(100);
+        newState.cols = newState.world->getCols();
+        newState.rows = newState.world->getRows();
+        return newState;
 
     } catch (const std::exception& e) {
         // Handle any exceptions here
-        std::cout << "Exeption during create world" << std::endl;
+        std::cout << "Exeption during create of worldState" << std::endl;
+        return newState;
     }
+}
+
+void WorldController::loadWorldState(WorldState newState){
+    this->currentState = newState;
+    world = currentState.world;
+    tiles = currentState.tiles;
+    healthpacks = currentState.healthpacks;
+    enemies = currentState.enemies;
+    emptyTiles = currentState.emptyTiles;
+    portalTile = currentState.portalTile;
+    nrOfEnemies = currentState.nrOfEnemies;
+    cols = currentState.cols;
+    rows = currentState.rows;
 }
 
 std::vector<int> WorldController::findPath(std::shared_ptr<Tile> startTile, std::shared_ptr<Tile> endTile) {
@@ -406,11 +430,18 @@ void WorldController::isPortal() {
 
     if (portalTile->getXPos() == x && portalTile->getYPos() == y) {
         qCDebug(WorldControllerCategory) << "Entered a portal tile!";
-        if (!portalTile->getMainMapActive()) {
-            portalTile->setMainMapActive(false);
-        } else {
-            // handle going back to main map
-        }
+
+        WorldState newState = otherStates.top();
+        otherStates.pop();
+        otherStates.push(currentState);
+        loadWorldState(newState);
         emit portalUsed();
+        updateProtagonistPositionToPortal();
     }
+}
+
+void WorldController::updateProtagonistPositionToPortal(){
+    protagonist->setXPos(portalTile->getXPos());
+    protagonist->setYPos(portalTile->getYPos());
+    emit drawProtagonist();
 }

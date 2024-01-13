@@ -24,9 +24,47 @@ public:
         commandHandlers["take"] = std::bind(&TextViewController::handleTakeCommand, this);
         commandHandlers["theme"] = std::bind(&TextViewController::handleThemeCommand, this);
         commandHandlers["help"] = std::bind(&TextViewController::handleHelpCommand, this);
+
+
+        // Create a widget to contain the text view
+        textViewWidget = new QWidget;
+        textLayout = new QVBoxLayout(textViewWidget);
+
+        // Display the ASCII representation in a QTextEdit
+        asciiTextEdit = new QTextEdit(initialAsciiRepresentation);
+        asciiTextEdit->setFont(QFont("Courier")); // Set a monospaced font for better alignment
+        asciiTextEdit->setStyleSheet("background-color: white; color: black;");
+        asciiTextEdit->setReadOnly(true);
+
+        // Add the text view to the layout
+        textLayout->addWidget(asciiTextEdit);
+
+        // Use a QHBoxLayout to arrange the text box and button horizontally
+        navigateLayout = new QHBoxLayout;
+
+        // Add the text box to the layout
+        navigateLineEdit = new QLineEdit;
+        navigateLineEdit->setPlaceholderText("Enter your command");
+        navigateLayout->addWidget(navigateLineEdit);
+
+        // Enter to navigate
+        connect(navigateLineEdit, &QLineEdit::returnPressed, this, &TextViewController::handleTextCommand);
+
+        // Create a button
+        navigateButton = new QPushButton("ENTER");
+        connect(navigateButton, &QPushButton::clicked, this, &TextViewController::handleTextCommand);
+        navigateLayout->addWidget(navigateButton);
+
+        textLayout->addLayout(navigateLayout);
+
+        // Add a QLabel for additional text
+        commandMessageLabel = new QLabel;
+        commandMessageLabel->setTextFormat(Qt::RichText);
+        textLayout->addWidget(commandMessageLabel);
     }
 
     void visualizeWorld() override;
+    void clearTextWorld();
     QVBoxLayout* getTextLayout() {return textLayout;}
 
 public slots:

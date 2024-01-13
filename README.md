@@ -30,7 +30,7 @@
 - Protagonist movement in text-based view implementation in new file system - Bob
 
 ### Week 13
-- Weight controls and animations implementation - Cédric
+- Weight controls and textures implementation - Cédric
 - Implemented movement & teleport commands in TextBased - Bob
 - Poisoning of protagonist by PEnemy, XEnemy implementation - Tiësto
 
