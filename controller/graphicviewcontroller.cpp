@@ -51,6 +51,9 @@ void GraphicViewController::visualizeWorld()
     // Add visualization for enemies
     for (const auto &enemy : enemies) {
         QGraphicsPixmapItem *enemyItem;
+        if (enemy->getDefeated()) {
+            break;
+        }
         if (auto pEnemy = dynamic_cast<PEnemy*>(enemy.get())) {
             enemyItem = new QGraphicsPixmapItem(PEnemyTexture.scaled(tileSize, tileSize, Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation));
             enemyItem->setPos(pEnemy->getXPos() * tileSize, pEnemy->getYPos() * tileSize);
