@@ -541,3 +541,7 @@ void TextViewController::commandCheckVisual(bool correctCommand) {
         navigateLineEdit->setText("");
     });
 }
+
+void TextViewController::clearTextWorld() {
+    initialAsciiRepresentation.clear();
+}

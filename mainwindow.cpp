@@ -127,9 +127,14 @@ void MainWindow::gameWonMessage() {
 }
 
 void MainWindow::handlePortalUsed() {
+    // graphBased
     //graphicViewController->clearScene();
     graphicViewController->visualizeWorld();
+
+    // textBased
+    textViewController->clearTextWorld();
     textViewController->visualizeWorld();
+    textViewController->drawProtagonist(); // Clear old protagonist
 }
 
 void MainWindow::connectSignalsAndSlots() {

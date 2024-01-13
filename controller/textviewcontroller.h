@@ -64,6 +64,7 @@ public:
     }
 
     void visualizeWorld() override;
+    void clearTextWorld();
     QVBoxLayout* getTextLayout() {return textLayout;}
 
 public slots:
