@@ -44,7 +44,7 @@ public:
     double getRelativeTileSize();
     void clearScene();
 public slots:
-    void visualizePath(std::vector<int> path, std::shared_ptr<Tile> startTile);
+    void visualizePath(const std::vector<int> & path,const std::shared_ptr<Tile> & startTile);
     void drawProtagonist() override;
     void handleDeath();
     void handlePoisonLevelUpdated(float poisonLevel);
