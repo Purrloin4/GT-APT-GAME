@@ -54,6 +54,20 @@ WorldState WorldController::createWorldState(QString mapName){
             }
         }
 
+        // Conversion of 25% of regual enemies to XEnemies
+        int numXEnemies = static_cast<int>(0.25 * newState.nrOfEnemies);
+        int i = 0;
+
+        for (const auto &enemy : newState.enemies) {
+            if (i == numXEnemies) {
+                break;
+            }
+            // Replace the original enemy with the XEnemy
+            auto xEnemy = std::make_shared<XEnemy>(enemy->getXPos(), enemy->getYPos(), enemy->getValue());
+            newState.enemies[i] = xEnemy;
+            i++;
+        }
+
         for (const auto &tile : newState.tiles) {
             if (!isEnemy(tile->getXPos(), tile->getYPos()) && !isHealthPack(tile->getXPos(), tile->getYPos())) {
                 newState.emptyTiles.push_back(tile);
@@ -63,20 +77,6 @@ WorldState WorldController::createWorldState(QString mapName){
         int index = rand() % newState.emptyTiles.size();
         Tile* randomTile = newState.emptyTiles[index].get();
         newState.portalTile = std::make_shared<PortalTile>(randomTile->getXPos(),randomTile->getYPos());
-
-        // Conversion of 25% of regual enemies to XEnemies
-        int numXEnemies = static_cast<int>(0.25 * nrOfEnemies);
-        int i = 0;
-
-        for (const auto &enemy : enemies) {
-            if (i == numXEnemies) {
-                break;
-            }
-            // Replace the original enemy with the XEnemy
-            auto xEnemy = std::make_shared<XEnemy>(enemy->getXPos(), enemy->getYPos(), enemy->getValue());
-            newState.enemies[i] = xEnemy;
-            i++;
-        }
 
         newState.cols = newState.world->getCols();
         newState.rows = newState.world->getRows();
