@@ -4,10 +4,10 @@
 QLoggingCategory TextViewControllerCategory("textviewcontroller", QtDebugMsg);
 
 void TextViewController::visualizeWorld(){
-    auto myTiles = worldController->getTiles();
-    auto myEnemies = worldController->getEnemies();
-    auto myHealthpacks = worldController->getHealthpacks();
-    auto portalTile = worldController->getPortalTile();
+    const auto& myTiles = worldController->getTiles();
+    const auto& myEnemies = worldController->getEnemies();
+    const auto& myHealthpacks = worldController->getHealthpacks();
+    const auto& portalTile = worldController->getPortalTile();
 
     // Determine the ASCII representation of different entities
     const QString horizontalBorder = "+---";
