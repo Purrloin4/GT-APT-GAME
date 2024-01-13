@@ -501,19 +501,23 @@ void GraphicViewController::animateFireworks(){
     }
 }
 
-void GraphicViewController::clearScene() {
-    if (scene){
-        scene->clear();
-    }
-    if (protagonistPixmapItem) {
-        protagonistPixmapItem = nullptr;
-    }
-}
-
 int GraphicViewController::getTileSize() const{
     return tileSize;
 }
 
 double GraphicViewController::getRelativeTileSize(){
     return relativeTileSize;
+}
+
+void GraphicViewController::clearScene() {
+    if (scene) {
+        QList<QGraphicsItem*> items = scene->items();
+        for (QGraphicsItem* item : items) {
+            // Check if the item is the protagonistPixmapItem
+            if (item == protagonistPixmapItem) {
+                continue; // Skip the protagonist item
+            }
+            scene->removeItem(item);
+        }
+    }
 }

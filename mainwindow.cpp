@@ -128,7 +128,7 @@ void MainWindow::gameWonMessage() {
 
 void MainWindow::handlePortalUsed() {
     // graphBased
-    //graphicViewController->clearScene();
+    graphicViewController->clearScene();
     graphicViewController->visualizeWorld();
 
     // textBased
