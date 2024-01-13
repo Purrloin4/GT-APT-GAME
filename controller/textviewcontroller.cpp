@@ -83,16 +83,6 @@ void TextViewController::visualizeWorld(){
     updatedAsciiRepresentationNoProt = initialAsciiRepresentation;
     updatedAsciiRepresentation = initialAsciiRepresentation;
 
-    // Create a widget to contain the text view
-    textViewWidget = new QWidget;
-    textLayout = new QVBoxLayout(textViewWidget);
-
-    // Display the ASCII representation in a QTextEdit
-    asciiTextEdit = new QTextEdit(initialAsciiRepresentation);
-    asciiTextEdit->setFont(QFont("Courier"));
-    asciiTextEdit->setStyleSheet("background-color: white; color: black;");
-    asciiTextEdit->setReadOnly(true);
-
     // Set line wrap mode to NoWrap
     //asciiTextEdit->setLineWrapMode(QTextEdit::NoWrap); // !!! Deze lijn zorgt voor delay wanneer movement !!!
 
