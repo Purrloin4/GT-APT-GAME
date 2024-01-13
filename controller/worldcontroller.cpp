@@ -12,8 +12,7 @@ WorldController::WorldController(QString map1, QString map2) {
     currentState = newState;
     loadWorldState(newState);
 
-    WorldState secondState = createWorldState(map2);
-    otherStates.push(secondState);
+    portalMap = map2;
 
     this->protagonist = std::make_shared<Protagonist>();
 
@@ -54,6 +53,20 @@ WorldState WorldController::createWorldState(QString mapName){
             }
         }
 
+        // Conversion of 25% of regual enemies to XEnemies
+        int numXEnemies = static_cast<int>(0.25 * newState.nrOfEnemies);
+        int i = 0;
+
+        for (const auto &enemy : newState.enemies) {
+            if (i == numXEnemies) {
+                break;
+            }
+            // Replace the original enemy with the XEnemy
+            auto xEnemy = std::make_shared<XEnemy>(enemy->getXPos(), enemy->getYPos(), enemy->getValue());
+            newState.enemies[i] = xEnemy;
+            i++;
+        }
+
         for (const auto &tile : newState.tiles) {
             if (!isEnemy(tile->getXPos(), tile->getYPos()) && !isHealthPack(tile->getXPos(), tile->getYPos())) {
                 newState.emptyTiles.push_back(tile);
@@ -63,20 +76,6 @@ WorldState WorldController::createWorldState(QString mapName){
         int index = rand() % newState.emptyTiles.size();
         Tile* randomTile = newState.emptyTiles[index].get();
         newState.portalTile = std::make_shared<PortalTile>(randomTile->getXPos(),randomTile->getYPos());
-
-        // Conversion of 25% of regual enemies to XEnemies
-        int numXEnemies = static_cast<int>(0.25 * nrOfEnemies);
-        int i = 0;
-
-        for (const auto &enemy : enemies) {
-            if (i == numXEnemies) {
-                break;
-            }
-            // Replace the original enemy with the XEnemy
-            auto xEnemy = std::make_shared<XEnemy>(enemy->getXPos(), enemy->getYPos(), enemy->getValue());
-            newState.enemies[i] = xEnemy;
-            i++;
-        }
 
         newState.cols = newState.world->getCols();
         newState.rows = newState.world->getRows();
@@ -417,7 +416,7 @@ void WorldController::autoplayStep() {
 
 void WorldController::handleDeath() {
     nrOfEnemies--;
-    Enemy* enemy = qobject_cast<Enemy*>(sender());
+    Enemy* enemy = dynamic_cast<Enemy*>(sender());
     if (enemy) {
         disconnect(enemy, &Enemy::dead, this, &WorldController::handleDeath);
     }
@@ -434,6 +433,8 @@ void WorldController::isPortal() {
     if (portalTile->getXPos() == x && portalTile->getYPos() == y) {
         qCDebug(WorldControllerCategory) << "Entered a portal tile!";
 
+        WorldState secondState = createWorldState(portalMap);
+        otherStates.push(secondState);
         WorldState newState = otherStates.top();
         otherStates.pop();
         otherStates.push(currentState);
