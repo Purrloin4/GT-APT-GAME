@@ -47,6 +47,7 @@ void GraphicViewController::visualizeWorld()
     portalItem->setPos(portalTile->getXPos() * tileSize, portalTile->getYPos() * tileSize);
     scene->addItem(portalItem);
 
+    tileVisualisations.clear();
     // Add visualization for enemies
     for (const auto &enemy : enemies) {
         QGraphicsPixmapItem *enemyItem;
