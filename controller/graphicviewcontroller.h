@@ -57,6 +57,7 @@ public slots:
     void animateFireworks();
 signals:
     void pathVisualizationRequested(std::vector<int> path, std::shared_ptr<Tile> startTile);
+    void poisonedTilesRequested(std::vector<TileVisualisation> tileVisualisations);
 private:
     QTimer *pathDeletionTimer = nullptr;
     const int tileSize = 50;

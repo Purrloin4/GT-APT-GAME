@@ -89,7 +89,7 @@ WorldState WorldController::createWorldState(QString mapName){
     }
 }
 
-void WorldController::loadWorldState(WorldState newState){
+void WorldController::loadWorldState(const WorldState & newState){
     this->currentState = newState;
     world = currentState.world;
     tiles = currentState.tiles;
@@ -102,7 +102,7 @@ void WorldController::loadWorldState(WorldState newState){
     rows = currentState.rows;
 }
 
-std::vector<int> WorldController::findPath(std::shared_ptr<Tile> startTile, std::shared_ptr<Tile> endTile) {
+std::vector<int> WorldController::findPath(const std::shared_ptr<Tile> & startTile, const std::shared_ptr<Tile> & endTile) {
     std::vector<PathNode> pathNodes;
     for (const auto &tile : tiles) {
         pathNodes.push_back(PathNode(*tile));
@@ -379,6 +379,9 @@ void WorldController::handleAutoplay() {
 }
 
 void WorldController::autoplayStep() {
+    if (isPoisoned()) {
+        return;
+    }
     if (nrOfEnemies != 0) {
         auto enemy = getNearestEnemy();
         if (enemy) {
@@ -444,4 +447,17 @@ void WorldController::updateProtagonistPositionToPortal(){
     protagonist->setXPos(portalTile->getXPos());
     protagonist->setYPos(portalTile->getYPos());
     emit drawProtagonist();
+}
+
+bool WorldController::isPoisoned() {
+    for (const auto &enemy : enemies){
+        if (auto pEnemy = dynamic_cast<PEnemy*>(enemy.get())) {
+            if (pEnemy->getXPos() == protagonist->getXPos() && pEnemy->getYPos() == protagonist->getYPos()) {
+                if (!pEnemy->getDefeated()) {
+                    return true;
+                }
+            }
+        }
+    }
+    return false;
 }

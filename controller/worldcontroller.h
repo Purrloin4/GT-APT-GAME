@@ -54,7 +54,7 @@ signals:
 public:
     WorldController(QString map1, QString map2);
 
-    std::vector<int> findPath(std::shared_ptr<Tile> startTile, std::shared_ptr<Tile> endTile);
+    std::vector<int> findPath(const std::shared_ptr<Tile> & startTile,const std::shared_ptr<Tile> & endTile);
     bool isValidPosition(int x, int y) {return x >= 0 && x < cols && y >= 0 && y < rows;};
     void attackEnemy();
     void useHealthpack();
@@ -99,6 +99,8 @@ public:
 
     void generateNewWorld(QString map);
 
+    bool isPoisoned();
+
 public slots:
     void handleKeyPressEvent(QKeyEvent *event);
     void handleMousePressEvent(int x, int y);
@@ -126,7 +128,7 @@ private:
     WorldState currentState;
     std::stack<WorldState> otherStates;
     WorldState createWorldState(QString mapName);
-    void loadWorldState(WorldState state);
+    void loadWorldState(const WorldState & state);
     void updateProtagonistPositionToPortal();
 };
 
