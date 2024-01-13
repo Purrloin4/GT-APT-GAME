@@ -83,8 +83,18 @@ void TextViewController::visualizeWorld(){
     updatedAsciiRepresentationNoProt = initialAsciiRepresentation;
     updatedAsciiRepresentation = initialAsciiRepresentation;
 
+    // Create a widget to contain the text view
+    textViewWidget = new QWidget;
+    textLayout = new QVBoxLayout(textViewWidget);
+
+    // Display the ASCII representation in a QTextEdit
+    asciiTextEdit = new QTextEdit(initialAsciiRepresentation);
+    asciiTextEdit->setFont(QFont("Courier"));
+    asciiTextEdit->setStyleSheet("background-color: white; color: black;");
+    asciiTextEdit->setReadOnly(true);
+
     // Set line wrap mode to NoWrap
-    //asciiTextEdit->setLineWrapMode(QTextEdit::NoWrap); // Deze lijn zorgt voor delay wanneer movement
+    //asciiTextEdit->setLineWrapMode(QTextEdit::NoWrap); // !!! Deze lijn zorgt voor delay wanneer movement !!!
 
     asciiTextEdit->setPlainText(initialAsciiRepresentation);
 }
@@ -223,103 +233,110 @@ void TextViewController::zoomOut() {
 
 void TextViewController::animateWinner() {
     qCDebug(TextViewControllerCategory) << "WINNER";
-    asciiTextEdit->setStyleSheet("background-color: black; color: green;");
+    // Green screen
+    asciiTextEdit->setStyleSheet("background-color: green; color: green;");
     asciiTextEdit->setTextColor(Qt::green);
 
-    QString happySmiley = "                   __ooooooooo__";
-    happySmiley += QChar(0x2029);
-    happySmiley += "              oOOOOOOOOOOOOOOOOOOOOOo";
-    happySmiley += QChar(0x2029);
-    happySmiley += "          oOOOOOOOOOOOOOOOOOOOOOOOOOOOOOo";
-    happySmiley += QChar(0x2029);
-    happySmiley += "       oOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOo";
-    happySmiley += QChar(0x2029);
-    happySmiley += "     oOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOo";
-    happySmiley += QChar(0x2029);
-    happySmiley += "   oOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOo";
-    happySmiley += QChar(0x2029);
-    happySmiley += "  oOOOOOOOOOOO*  *OOOOOOOOOOOOOO*  *OOOOOOOOOOOOo";
-    happySmiley += QChar(0x2029);
-    happySmiley += " oOOOOOOOOOOO      OOOOOOOOOOOO      OOOOOOOOOOOOo";
-    happySmiley += QChar(0x2029);
-    happySmiley += " oOOOOOOOOOOOOo  oOOOOOOOOOOOOOOo  oOOOOOOOOOOOOOo";
-    happySmiley += QChar(0x2029);
-    happySmiley += "oOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOo";
-    happySmiley += QChar(0x2029);
-    happySmiley += "oOOOO     OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO     OOOOo";
-    happySmiley += QChar(0x2029);
-    happySmiley += "oOOOOOO OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO OOOOOOo";
-    happySmiley += QChar(0x2029);
-    happySmiley += " *OOOOO  OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO  OOOOO*";
-    happySmiley += QChar(0x2029);
-    happySmiley += " *OOOOOO  *OOOOOOOOOOOOOOOOOOOOOOOOOOOOO*  OOOOOO*";
-    happySmiley += QChar(0x2029);
-    happySmiley += "  *OOOOOO  *OOOOOOOOOOOOOOOOOOOOOOOOOOO*  OOOOOO*";
-    happySmiley += QChar(0x2029);
-    happySmiley += "   *OOOOOOo  *OOOOOOOOOOOOOOOOOOOOOOO*  oOOOOOO*";
-    happySmiley += QChar(0x2029);
-    happySmiley += "     *OOOOOOOo  *OOOOOOOOOOOOOOOOO*  oOOOOOOO*";
-    happySmiley += QChar(0x2029);
-    happySmiley += "       *OOOOOOOOo  *OOOOOOOOOOO*  oOOOOOOOO*";
-    happySmiley += QChar(0x2029);
-    happySmiley += "          *OOOOOOOOo           oOOOOOOOO*";
-    happySmiley += QChar(0x2029);
-    happySmiley += "              *OOOOOOOOOOOOOOOOOOOOO*";
-    happySmiley += QChar(0x2029);
-    happySmiley += "                  *ooooooooooooo*";
-    asciiTextEdit->setPlainText(happySmiley);
-
-    //                   __ooooooooo__
-    //              oOOOOOOOOOOOOOOOOOOOOOo
-    //          oOOOOOOOOOOOOOOOOOOOOOOOOOOOOOo
-    //       oOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOo
-    //     oOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOo
-    //   oOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOo
-    //  oOOOOOOOOOOO*  *OOOOOOOOOOOOOO*  *OOOOOOOOOOOOo
-    // oOOOOOOOOOOO      OOOOOOOOOOOO      OOOOOOOOOOOOo
-    // oOOOOOOOOOOOOo  oOOOOOOOOOOOOOOo  oOOOOOOOOOOOOOo
-    //oOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOo
-    //oOOOO     OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO     OOOOo
-    //oOOOOOO OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO OOOOOOo
-    // *OOOOO  OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO  OOOOO*
-    // *OOOOOO  *OOOOOOOOOOOOOOOOOOOOOOOOOOOOO*  OOOOOO*
-    //  *OOOOOO  *OOOOOOOOOOOOOOOOOOOOOOOOOOO*  OOOOOO*
-    //   *OOOOOOo  *OOOOOOOOOOOOOOOOOOOOOOO*  oOOOOOO*
-    //     *OOOOOOOo  *OOOOOOOOOOOOOOOOO*  oOOOOOOO*
-    //       *OOOOOOOOo  *OOOOOOOOOOO*  oOOOOOOOO*
-    //          *OOOOOOOOo           oOOOOOOOO*
-    //              *OOOOOOOOOOOOOOOOOOOOO*
-    //                  *oooooooooooo*"
+//    // Happy smiley
+//    asciiTextEdit->setStyleSheet("background-color: black; color: green;");
+//    asciiTextEdit->setTextColor(Qt::green);
+//    QString happySmiley = "                   __ooooooooo__";
+//    happySmiley += QChar(0x2029);
+//    happySmiley += "              oOOOOOOOOOOOOOOOOOOOOOo";
+//    happySmiley += QChar(0x2029);
+//    happySmiley += "          oOOOOOOOOOOOOOOOOOOOOOOOOOOOOOo";
+//    happySmiley += QChar(0x2029);
+//    happySmiley += "       oOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOo";
+//    happySmiley += QChar(0x2029);
+//    happySmiley += "     oOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOo";
+//    happySmiley += QChar(0x2029);
+//    happySmiley += "   oOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOo";
+//    happySmiley += QChar(0x2029);
+//    happySmiley += "  oOOOOOOOOOOO*  *OOOOOOOOOOOOOO*  *OOOOOOOOOOOOo";
+//    happySmiley += QChar(0x2029);
+//    happySmiley += " oOOOOOOOOOOO      OOOOOOOOOOOO      OOOOOOOOOOOOo";
+//    happySmiley += QChar(0x2029);
+//    happySmiley += " oOOOOOOOOOOOOo  oOOOOOOOOOOOOOOo  oOOOOOOOOOOOOOo";
+//    happySmiley += QChar(0x2029);
+//    happySmiley += "oOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOo";
+//    happySmiley += QChar(0x2029);
+//    happySmiley += "oOOOO     OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO     OOOOo";
+//    happySmiley += QChar(0x2029);
+//    happySmiley += "oOOOOOO OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO OOOOOOo";
+//    happySmiley += QChar(0x2029);
+//    happySmiley += " *OOOOO  OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO  OOOOO*";
+//    happySmiley += QChar(0x2029);
+//    happySmiley += " *OOOOOO  *OOOOOOOOOOOOOOOOOOOOOOOOOOOOO*  OOOOOO*";
+//    happySmiley += QChar(0x2029);
+//    happySmiley += "  *OOOOOO  *OOOOOOOOOOOOOOOOOOOOOOOOOOO*  OOOOOO*";
+//    happySmiley += QChar(0x2029);
+//    happySmiley += "   *OOOOOOo  *OOOOOOOOOOOOOOOOOOOOOOO*  oOOOOOO*";
+//    happySmiley += QChar(0x2029);
+//    happySmiley += "     *OOOOOOOo  *OOOOOOOOOOOOOOOOO*  oOOOOOOO*";
+//    happySmiley += QChar(0x2029);
+//    happySmiley += "       *OOOOOOOOo  *OOOOOOOOOOO*  oOOOOOOOO*";
+//    happySmiley += QChar(0x2029);
+//    happySmiley += "          *OOOOOOOOo           oOOOOOOOO*";
+//    happySmiley += QChar(0x2029);
+//    happySmiley += "              *OOOOOOOOOOOOOOOOOOOOO*";
+//    happySmiley += QChar(0x2029);
+//    happySmiley += "                  *ooooooooooooo*";
+//    asciiTextEdit->setPlainText(happySmiley);
 }
 
 void TextViewController::animateLoser() {
     qCDebug(TextViewControllerCategory) << "DOOD";
-    asciiTextEdit->setStyleSheet("background-color: black; color: red;");
+    // Red screen
+    asciiTextEdit->setStyleSheet("background-color: red; color: red;");
     asciiTextEdit->setTextColor(Qt::red);
 
-    QString sadSmiley = "    ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣀⣀⣤⣤⣤⣤⣤⣤⣤⣴⣿⡇\n"
-                        "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣤⣶⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⣿\n"
-                        "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⣴⣿⣿⣿⣿⠿⠿⠟⠿⠿⠿⠛⠿⠿⢿⣿⣿⣿⣷⣽\n"
-                        "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⣾⣿⠿⠛⠉⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢹⣿\n"
-                        "⠀⠀⠀⠀⠀⠀⠀⠀⠀⣼⠿⠋⠁⠀⠀⠀⣷⣄⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠸⣿⡆\n"
-                        "⠀⠀⠀⠀⠀⠀⠀⠀⠘⠁⠀⠀⠀⠀⠀⠀⣿⣿⣿⣾⣿⣷⣶⣶⣤⣄⠀⠀⠀⠀⠀⠀⣿⡇\n"
-                        "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⡤⠀⠀⠀⠀⣿⡇\n"
-                        "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⠀⠀⠀⠀⣿⡇\n"
-                        "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢠⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⠀⠀⠀⠀⢹⡇\n"
-                        "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡆⠀⠀⣀⣿⡇\n"
-                        "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⠀⣀⣿⣿⢷⡄\n"
-                        "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢙⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣶⣾⣿⣿⣭⣽⡇\n"
-                        "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣰⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⢽⣶⣿⡇\n"
-                        "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣾⣿⣿⣿⡏⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇\n"
-                        "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠻⣿⣿⣿⣿⣶⣿⣿⣿⣿⣿⣿⣿⡆⠈⠙⠛⢿⡿⠟\n"
-                        "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢙⣿⣿⣿⣯⣉⣉⣹⢿⢿⣯⣼⣧⠀⠻⣿⣾⡇\n"
-                        "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⣾⣿⣿⣿⣿⣿⣿⡿⣸⡎⢿⣿⣿⣆⠀⠀⣿⡇\n"
-                        "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⣾⣿⣿⣿⣿⣿⣿⣿⣿⡇⣿⡡⢴⣿⣿⣿⡆⠀⣿⠁\n"
-                        "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣏⣉⣿⣿⣿⣿⣿⣿⣿⣴⣿\n"
-                        "⠀⠀⠀⠀⠀⠀⠀⣀⣴⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣾⣿⣿⣿⣿⣿⣿⣿⣿⡏\n"
-                        "⣤⣤⣤⣤⣶⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣇\n"
-                        "⠈⠙⠛⠛⠻⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠛⠿⠿⣿⣿⣿⣿⣿⣿⣿⠿⠟⠛⠛⠋⠁\n";
-    asciiTextEdit->setPlainText(sadSmiley);
+//    // Magere Hein
+//    asciiTextEdit->setStyleSheet("background-color: black; color: red;");
+//    asciiTextEdit->setTextColor(Qt::red);
+//    QString sadSmiley = "    ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣀⣀⣤⣤⣤⣤⣤⣤⣤⣴⣿⡇";
+//    sadSmiley += QChar(0x2029);
+//    sadSmiley += "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣤⣶⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⣿";
+//    sadSmiley += QChar(0x2029);
+//    sadSmiley += "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⣴⣿⣿⣿⣿⠿⠿⠟⠿⠿⠿⠛⠿⠿⢿⣿⣿⣿⣷⣽";
+//    sadSmiley += QChar(0x2029);
+//    sadSmiley += "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⣾⣿⠿⠛⠉⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢹⣿";
+//    sadSmiley += QChar(0x2029);
+//    sadSmiley += "⠀⠀⠀⠀⠀⠀⠀⠀⠀⣼⠿⠋⠁⠀⠀⠀⣷⣄⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠸⣿⡆";
+//    sadSmiley += QChar(0x2029);
+//    sadSmiley += "⠀⠀⠀⠀⠀⠀⠀⠀⠘⠁⠀⠀⠀⠀⠀⠀⣿⣿⣿⣾⣿⣷⣶⣶⣤⣄⠀⠀⠀⠀⠀⠀⣿⡇";
+//    sadSmiley += QChar(0x2029);
+//    sadSmiley += "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⡤⠀⠀⠀⠀⣿⡇";
+//    sadSmiley += QChar(0x2029);
+//    sadSmiley += "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⠀⠀⠀⠀⣿⡇";
+//    sadSmiley += QChar(0x2029);
+//    sadSmiley += "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢠⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⠀⠀⠀⠀⢹⡇";
+//    sadSmiley += QChar(0x2029);
+//    sadSmiley += "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡆⠀⠀⣀⣿⡇";
+//    sadSmiley += QChar(0x2029);
+//    sadSmiley += "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⠀⣀⣿⣿⢷⡄";
+//    sadSmiley += QChar(0x2029);
+//    sadSmiley += "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢙⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣶⣾⣿⣿⣭⣽⡇";
+//    sadSmiley += QChar(0x2029);
+//    sadSmiley += "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣰⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⢽⣶⣿⡇";
+//    sadSmiley += QChar(0x2029);
+//    sadSmiley += "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣾⣿⣿⣿⡏⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇";
+//    sadSmiley += QChar(0x2029);
+//    sadSmiley += "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠻⣿⣿⣿⣿⣶⣿⣿⣿⣿⣿⣿⣿⡆⠈⠙⠛⢿⡿⠟";
+//    sadSmiley += QChar(0x2029);
+//    sadSmiley += "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢙⣿⣿⣿⣯⣉⣉⣹⢿⢿⣯⣼⣧⠀⠻⣿⣾⡇";
+//    sadSmiley += QChar(0x2029);
+//    sadSmiley += "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⣾⣿⣿⣿⣿⣿⣿⡿⣸⡎⢿⣿⣿⣆⠀⠀⣿⡇";
+//    sadSmiley += QChar(0x2029);
+//    sadSmiley += "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⣾⣿⣿⣿⣿⣿⣿⣿⣿⡇⣿⡡⢴⣿⣿⣿⡆⠀⣿⠁";
+//    sadSmiley += QChar(0x2029);
+//    sadSmiley += "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣏⣉⣿⣿⣿⣿⣿⣿⣿⣴⣿";
+//    sadSmiley += QChar(0x2029);
+//    sadSmiley += "⠀⠀⠀⠀⠀⠀⠀⣀⣴⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣾⣿⣿⣿⣿⣿⣿⣿⣿⡏";
+//    sadSmiley += QChar(0x2029);
+//    sadSmiley += "⣤⣤⣤⣤⣶⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣇";
+//    sadSmiley += QChar(0x2029);
+//    sadSmiley += "⠈⠙⠛⠛⠻⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠛⠿⠿⣿⣿⣿⣿⣿⣿⣿⠿⠟⠛⠛⠋⠁";
+//    asciiTextEdit->setPlainText(sadSmiley);
 }
 
 void TextViewController::handleTextCommand() {
@@ -377,7 +394,7 @@ void TextViewController::completeCommand(const QString &completedCommand, const 
 void TextViewController::handleMoveCommand(const QString &direction) {
     qCDebug(TextViewControllerCategory) << direction << " action was triggered";
 
-    // Your logic for handling the move command based on the direction
+    // Handling the move command based on the direction
     int newX = protagonist->getXPos();
     int newY = protagonist->getYPos();
 

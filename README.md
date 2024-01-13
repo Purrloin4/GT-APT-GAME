@@ -39,5 +39,5 @@
 - Fully implemented command line - Bob
 - Implemented autoplay - Tiësto
 - View centering arround protagonist - Bob
-- Portals to new world - Tiësto & Cédric
+- Portals to new world - Tiësto & Cédric & Bob
 - Attack, heal, gameWon and gameOver animations - Cédric
