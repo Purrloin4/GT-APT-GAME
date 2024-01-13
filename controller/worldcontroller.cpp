@@ -12,8 +12,7 @@ WorldController::WorldController(QString map1, QString map2) {
     currentState = newState;
     loadWorldState(newState);
 
-    WorldState secondState = createWorldState(map2);
-    otherStates.push(secondState);
+    portalMap = map2;
 
     this->protagonist = std::make_shared<Protagonist>();
 
@@ -417,7 +416,7 @@ void WorldController::autoplayStep() {
 
 void WorldController::handleDeath() {
     nrOfEnemies--;
-    Enemy* enemy = qobject_cast<Enemy*>(sender());
+    Enemy* enemy = dynamic_cast<Enemy*>(sender());
     if (enemy) {
         disconnect(enemy, &Enemy::dead, this, &WorldController::handleDeath);
     }
@@ -434,6 +433,8 @@ void WorldController::isPortal() {
     if (portalTile->getXPos() == x && portalTile->getYPos() == y) {
         qCDebug(WorldControllerCategory) << "Entered a portal tile!";
 
+        WorldState secondState = createWorldState(portalMap);
+        otherStates.push(secondState);
         WorldState newState = otherStates.top();
         otherStates.pop();
         otherStates.push(currentState);

@@ -130,6 +130,7 @@ private:
     WorldState createWorldState(QString mapName);
     void loadWorldState(const WorldState & state);
     void updateProtagonistPositionToPortal();
+    QString portalMap;
 };
 
 #endif // WORLDCONTROLLER_H
