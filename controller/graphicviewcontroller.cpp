@@ -51,9 +51,7 @@ void GraphicViewController::visualizeWorld()
     // Add visualization for enemies
     for (const auto &enemy : enemies) {
         QGraphicsPixmapItem *enemyItem;
-        if (enemy->getDefeated()) {
-            continue;
-        }
+        if (enemy->getDefeated()) continue;
         if (auto pEnemy = dynamic_cast<PEnemy*>(enemy.get())) {
             enemyItem = new QGraphicsPixmapItem(PEnemyTexture.scaled(tileSize, tileSize, Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation));
             enemyItem->setPos(pEnemy->getXPos() * tileSize, pEnemy->getYPos() * tileSize);
@@ -88,6 +86,7 @@ void GraphicViewController::visualizeWorld()
 
     // Add visualization for health packs
     for (const auto &healthPack : healthPacks) {
+        if (healthPack->getValue() == 0) continue;
         QGraphicsPixmapItem *healthPackItem = new QGraphicsPixmapItem(healthPackTexture.scaled(tileSize*0.95, tileSize*0.95, Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation));
         healthPackItem->setPos(healthPack->getXPos() * tileSize, healthPack->getYPos() * tileSize);
         scene->addItem(healthPackItem);

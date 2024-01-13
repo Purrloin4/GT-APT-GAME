@@ -433,8 +433,11 @@ void WorldController::isPortal() {
     if (portalTile->getXPos() == x && portalTile->getYPos() == y) {
         qCDebug(WorldControllerCategory) << "Entered a portal tile!";
 
-        WorldState secondState = createWorldState(portalMap);
-        otherStates.push(secondState);
+        if (firstBool) {
+            WorldState secondState = createWorldState(portalMap);
+            otherStates.push(secondState);
+            firstBool = false;
+        }
         WorldState newState = otherStates.top();
         otherStates.pop();
         otherStates.push(currentState);

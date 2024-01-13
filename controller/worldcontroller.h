@@ -131,6 +131,7 @@ private:
     void loadWorldState(const WorldState & state);
     void updateProtagonistPositionToPortal();
     QString portalMap;
+    bool firstBool = true;
 };
 
 #endif // WORLDCONTROLLER_H
