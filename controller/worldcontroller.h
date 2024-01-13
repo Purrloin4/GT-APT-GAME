@@ -13,12 +13,6 @@
 #include "pathfinder function.h"
 #include "XEnemy.h"
 
-
-struct point {
-    int xCoordinate;
-    int yCoordinate;
-};
-
 struct TileVisualisation{
     int spreadXPos;
     int spreadYPos;
@@ -113,8 +107,6 @@ public slots:
     void handleAutoplay();
     void handleDeath();
 private:
-    point start;
-    point exit;
     std::shared_ptr<World> world;
     std::vector<std::shared_ptr<Tile>> tiles;
     std::vector<std::shared_ptr<Tile>> healthpacks;
