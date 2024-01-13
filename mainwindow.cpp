@@ -217,4 +217,23 @@ void MainWindow::connectSignalsAndSlots() {
     //checkPoisonDamage
     connect(movementController.get(), &MovementController::posChanged,
             worldController.get(), &WorldController::checkPoisonDamage);
+    //connectSignals
+    connect(worldController.get(), &WorldController::connectSignals,
+            this, &MainWindow::handleSignals);
+}
+
+void MainWindow::handleSignals(std::vector<std::shared_ptr<Enemy>> enemies) {
+    for (const auto &enemy : enemies){
+        qCDebug(mainwindowCategory) << "SIUUUUUU";
+        connect(enemy.get(), &Enemy::dead, graphicViewController.get(), &GraphicViewController::handleDeath);
+        connect(enemy.get(), &Enemy::dead, worldController.get(), &WorldController::handleDeath);
+        if (auto pEnemy = dynamic_cast<PEnemy*>(enemy.get())) {
+            connect(pEnemy, &PEnemy::poisonLevelUpdated, graphicViewController.get(), &GraphicViewController::handlePoisonLevelUpdated);
+        }
+        if (auto xEnemy = dynamic_cast<XEnemy*>(enemy.get())) {
+            connect(xEnemy, &XEnemy::timerExpired, graphicViewController.get(), &GraphicViewController::handleAlive);
+            connect(xEnemy, &XEnemy::halfDeadSet, graphicViewController.get(), &GraphicViewController::handleHalfDead);
+            connect(xEnemy, &XEnemy::allHalfDead, worldController.get(), &WorldController::handleAllHalfDead);
+        }
+    }
 }

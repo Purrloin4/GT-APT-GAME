@@ -79,6 +79,7 @@ WorldState WorldController::createWorldState(QString mapName){
 
         newState.cols = newState.world->getCols();
         newState.rows = newState.world->getRows();
+        emit connectSignals(newState.enemies);
         return newState;
 
     } catch (const std::exception& e) {

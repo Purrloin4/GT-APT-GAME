@@ -26,9 +26,10 @@ public:
     MainWindow(int width, int height, QWidget *parent = nullptr); // ctor - specified width and height
     ~MainWindow();
 public slots:
-        void gameOverMessage();
-        void gameWonMessage();
-        void handlePortalUsed();
+    void gameOverMessage();
+    void gameWonMessage();
+    void handlePortalUsed();
+    void handleSignals(std::vector<std::shared_ptr<Enemy>> enemies);
 private:
     Ui::MainWindow *ui;
     int tileSize;

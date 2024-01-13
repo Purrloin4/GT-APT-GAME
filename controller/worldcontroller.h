@@ -51,6 +51,7 @@ signals:
     void moveProtagonistPosSignal(int x, int y);
     void moveProtagonistPathSignal(std::vector<int> path);
     void portalUsed();
+    void connectSignals(std::vector<std::shared_ptr<Enemy>> enemies);
 public:
     WorldController(QString map1, QString map2);
 
