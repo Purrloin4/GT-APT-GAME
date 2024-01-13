@@ -16,7 +16,7 @@ void TextViewController::visualizeWorld(){
     const QString verticalEnemyTile = "| E ";
     const QString verticalProtagonistTile = "| P ";
     const QString verticalPEnemyTile = "| ¶ ";
-        const QString verticalXEnemyTile = "| X ";
+    const QString verticalXEnemyTile = "| X ";
     const QString verticalPortalTile = "| O ";
 
     // Loop through each row
@@ -32,25 +32,30 @@ void TextViewController::visualizeWorld(){
         for (int x = 0; x < worldController->getCols(); ++x) {
             // Check if the current position contains an entity (health pack, enemy, protagonist)
             auto isHealthPack = std::find_if(myHealthpacks.begin(), myHealthpacks.end(),
-                                             [x, y](const auto &hp) { return hp->getXPos() == x && hp->getYPos() == y; });
+                [x, y](const auto &hp) { return hp->getXPos() == x && hp->getYPos() == y && hp->getValue() > 0; });
+
             auto isPEnemy = std::find_if(myEnemies.begin(), myEnemies.end(),
-                                         [x, y](const auto &enemy) {
-                                             if (auto pEnemy = std::dynamic_pointer_cast<PEnemy>(enemy)) {
-                                                 return pEnemy->getXPos() == x && pEnemy->getYPos() == y;
-                                             }
-                                             return false;
-                                         });
+                [x, y](const auto &enemy) {
+                    if (auto pEnemy = std::dynamic_pointer_cast<PEnemy>(enemy)) {
+                        return pEnemy->getXPos() == x && pEnemy->getYPos() == y && !pEnemy->getDefeated();
+                    }
+                    return false;
+                });
+
             auto isXEnemy = std::find_if(myEnemies.begin(), myEnemies.end(),
-                                         [x, y](const auto &enemy) {
-                                             if (auto xEnemy = std::dynamic_pointer_cast<XEnemy>(enemy)) {
-                                                 return xEnemy->getXPos() == x && xEnemy->getYPos() == y;
-                                             }
-                                             return false;
-                                         });
+                [x, y](const auto &enemy) {
+                    if (auto xEnemy = std::dynamic_pointer_cast<XEnemy>(enemy)) {
+                        return xEnemy->getXPos() == x && xEnemy->getYPos() == y && !xEnemy->getDefeated();
+                    }
+                    return false;
+                });
+
             auto isEnemy = std::find_if(myEnemies.begin(), myEnemies.end(),
-                                        [x, y](const auto &enemy) { return enemy->getXPos() == x && enemy->getYPos() == y; });
+                [x, y](const auto &enemy) { return enemy->getXPos() == x && enemy->getYPos() == y && !enemy->getDefeated(); });
+
             auto isProtagonist = (protagonist->getXPos() == x && protagonist->getYPos() == y);
             auto isPortalTile = (portalTile->getXPos() == x && portalTile->getYPos() == y);
+
 
             // Append the corresponding ASCII representation to the overall representation string
             if (isHealthPack != myHealthpacks.end()) {
