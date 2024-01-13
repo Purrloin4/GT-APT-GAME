@@ -2,7 +2,7 @@
 
 QLoggingCategory MovementControllerCategory("MovementController", QtDebugMsg);
 
-void MovementController::moveProtagonistPos(int x, int y)
+void MovementController::moveProtagonistPos(const int & x, const int & y)
 {
     if (!isValidPosition(x, y)) {
         qCDebug(MovementControllerCategory) << "Invalid position";
@@ -26,7 +26,7 @@ void MovementController::moveProtagonistPos(int x, int y)
     }
 }
 
-void MovementController::moveProtagonistPath(std::vector<int> path)
+void MovementController::moveProtagonistPath(const std::vector<int> & path)
 {
     int xPos = protagonist->getXPos();
     int yPos = protagonist->getYPos();
@@ -46,6 +46,6 @@ void MovementController::moveProtagonistPath(std::vector<int> path)
     }
 }
 
-bool MovementController::isValidPosition(int x, int y) {
+bool MovementController::isValidPosition(const int & x, const int & y) {
     return x >= 0 && x < worldController->getCols() && y >= 0 && y < worldController->getRows();
 }

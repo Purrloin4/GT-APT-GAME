@@ -19,12 +19,12 @@ public:
     }
 
 public slots:
-    void moveProtagonistPos(int x, int y);
-    void moveProtagonistPath(std::vector<int> path);
+    void moveProtagonistPos(const int & x, const int & y);
+    void moveProtagonistPath(const std::vector<int> & path);
 private:
     std::shared_ptr<WorldController> worldController;
     std::shared_ptr<Protagonist> protagonist;
-    bool isValidPosition(int x, int y);
+    bool isValidPosition(const int & x,const int & y);
 };
 
 #endif // MOVEMENTCONTROLLER_H
