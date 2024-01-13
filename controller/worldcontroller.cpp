@@ -247,7 +247,7 @@ void WorldController::useHealthpack() {
 void WorldController::handleAllHalfDead() {
     for (auto& enemy : enemies) {
         if (auto xEnemy = dynamic_cast<XEnemy*>(enemy.get())) {
-            xEnemy->setDefeated(true);
+            xEnemy->setDefeated();
         }
     }
 }

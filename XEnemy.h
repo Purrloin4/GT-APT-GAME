@@ -25,7 +25,7 @@ public:
     void incrementHalfDeadCount() {halfDeadCount++;};
     void decrementHalfDeadCount() {halfDeadCount--;};
     int getHalfDeadCount() {return halfDeadCount;};
-    void setDefeated(bool value);
+    void setDefeated();
 
 signals:
     void timerExpired();
