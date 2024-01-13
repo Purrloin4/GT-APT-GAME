@@ -194,6 +194,11 @@ void WorldController::attackEnemy() {
         if (enemy->getDefeated()) {
             break;
         }
+        if (auto xEnemy = dynamic_cast<XEnemy*>(enemy.get())){
+            if (xEnemy->isHalfDead()){
+                break;
+            }
+        }
         if (protagonist->getHealth() > enemy->getValue()) { // Protagonist has enough health to attack and defeat the enemy
             protagonist->setHealth(protagonist->getHealth() - enemy->getValue());
             qCDebug(WorldControllerCategory) << "Protagonist health:" << protagonist->getHealth();
