@@ -13,12 +13,6 @@
 #include "pathfinder function.h"
 #include "XEnemy.h"
 
-
-struct point {
-    int xCoordinate;
-    int yCoordinate;
-};
-
 struct TileVisualisation{
     int spreadXPos;
     int spreadYPos;
@@ -105,6 +99,8 @@ public:
 
     void generateNewWorld(QString map);
 
+    bool isPoisoned();
+
 public slots:
     void handleKeyPressEvent(QKeyEvent *event);
     void handleMousePressEvent(int x, int y);
@@ -113,8 +109,6 @@ public slots:
     void handleAutoplay();
     void handleDeath();
 private:
-    point start;
-    point exit;
     std::shared_ptr<World> world;
     std::vector<std::shared_ptr<Tile>> tiles;
     std::vector<std::shared_ptr<Tile>> healthpacks;

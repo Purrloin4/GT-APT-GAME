@@ -36,12 +36,11 @@ public:
     std::shared_ptr<QGraphicsScene> scene;
     QGraphicsView* rawView;
     void visualizeWorld() override;
-    //QGraphicsView* getRawView(){return rawView;}
     QVBoxLayout* getGraphLayout(){return graphLayout;}
     void drawPoisonSpread(PEnemy* pEnemy, float poisonLevel);
     void removePoisonedTiles(Enemy* enemy);
-    int getTileSize() const;
-    double getRelativeTileSize();
+    int getTileSize() const {return tileSize;};
+    double getRelativeTileSize() {return relativeTileSize;};
     void clearScene();
 public slots:
     void visualizePath(const std::vector<int> & path,const std::shared_ptr<Tile> & startTile);
@@ -49,14 +48,21 @@ public slots:
     void handleDeath();
     void handlePoisonLevelUpdated(float poisonLevel);
     void handleHealthPackTaken(std::shared_ptr<Tile> pack);
-    void zoomIn() override;
-    void zoomOut() override;
+    void zoomIn() override {
+        rawView->scale(1.1, 1.1);
+        relativeTileSize = relativeTileSize / 1.1;
+    };
+    void zoomOut() override {
+        rawView->scale(0.9, 0.9);
+    relativeTileSize = relativeTileSize / 0.9;
+    };
     void handleAlive();
     void handleHalfDead();
     void animateExplosions();
     void animateFireworks();
 signals:
     void pathVisualizationRequested(std::vector<int> path, std::shared_ptr<Tile> startTile);
+    void poisonedTilesRequested(std::vector<TileVisualisation> tileVisualisations);
 private:
     QTimer *pathDeletionTimer = nullptr;
     const int tileSize = 50;

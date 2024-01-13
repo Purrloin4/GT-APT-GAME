@@ -123,7 +123,6 @@ void GraphicViewController::drawProtagonist() {
         scene->addItem(protagonistPixmapItem);
     }
 
-    // Calculate the desired scroll positions
     int centerPosX = (rawView->viewport()->width() - 1) / 2;
     int centerPosY = (rawView->viewport()->height() - 1) / 2;
 
@@ -133,7 +132,6 @@ void GraphicViewController::drawProtagonist() {
     int scrollX = protagonistX - centerPosX;
     int scrollY = protagonistY - centerPosY;
 
-    // Set the scroll positions
     rawView->horizontalScrollBar()->setValue(scrollX / getRelativeTileSize());
     rawView->verticalScrollBar()->setValue(scrollY / getRelativeTileSize());
 
@@ -182,7 +180,6 @@ void GraphicViewController::visualizePath(const std::vector<int>& path, const st
     auto xPos = startTile->getXPos();
     auto yPos = startTile->getYPos();
     for (const auto &move : path) {
-        // Determine the position based on the move
         switch (move) {
         case 0: yPos -= 1; break;  // Move up
         case 1: xPos -= 1; yPos -= 1; break;  // Move to the top-right
@@ -345,23 +342,9 @@ void GraphicViewController::drawPoisonSpread(PEnemy* pEnemy, float poisonLevel) 
             }
         }
     }
-
     drawProtagonist();
 
-    // Update the spread radius for the next iteration
     spreadRadii.insert(pEnemy, spreadRadius + 1);
-}
-
-void GraphicViewController::zoomIn() {
-    rawView->scale(1.1, 1.1);
-    relativeTileSize = relativeTileSize / 1.1;
-    qCDebug(GraphicViewControllerCategory) << "relativeTilesize:" << relativeTileSize;
-}
-
-void GraphicViewController::zoomOut() {
-    rawView->scale(0.9, 0.9);
-    relativeTileSize = relativeTileSize / 0.9;
-    qCDebug(GraphicViewControllerCategory) << "relativeTilesize:" << relativeTileSize;
 }
 
 void GraphicViewController::animateSplatter(int xPos,int yPos){
@@ -499,27 +482,17 @@ void GraphicViewController::animateFireworks(){
                     }
                 }
             });
-
             timer->start(2000);
         });
     }
-}
-
-int GraphicViewController::getTileSize() const{
-    return tileSize;
-}
-
-double GraphicViewController::getRelativeTileSize(){
-    return relativeTileSize;
 }
 
 void GraphicViewController::clearScene() {
     if (scene) {
         QList<QGraphicsItem*> items = scene->items();
         for (QGraphicsItem* item : items) {
-            // Check if the item is the protagonistPixmapItem
             if (item == protagonistPixmapItem) {
-                continue; // Skip the protagonist item
+                continue;
             }
             scene->removeItem(item);
         }

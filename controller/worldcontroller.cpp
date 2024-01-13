@@ -379,6 +379,9 @@ void WorldController::handleAutoplay() {
 }
 
 void WorldController::autoplayStep() {
+    if (isPoisoned()) {
+        return;
+    }
     if (nrOfEnemies != 0) {
         auto enemy = getNearestEnemy();
         if (enemy) {
@@ -444,4 +447,17 @@ void WorldController::updateProtagonistPositionToPortal(){
     protagonist->setXPos(portalTile->getXPos());
     protagonist->setYPos(portalTile->getYPos());
     emit drawProtagonist();
+}
+
+bool WorldController::isPoisoned() {
+    for (const auto &enemy : enemies){
+        if (auto pEnemy = dynamic_cast<PEnemy*>(enemy.get())) {
+            if (pEnemy->getXPos() == protagonist->getXPos() && pEnemy->getYPos() == protagonist->getYPos()) {
+                if (!pEnemy->getDefeated()) {
+                    return true;
+                }
+            }
+        }
+    }
+    return false;
 }
