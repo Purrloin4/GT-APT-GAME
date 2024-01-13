@@ -88,6 +88,9 @@ void GraphicViewController::visualizeWorld()
 
     // Add visualization for health packs
     for (const auto &healthPack : healthPacks) {
+        if (healthPack->getValue() == 0) {
+            continue;
+        }
         QGraphicsPixmapItem *healthPackItem = new QGraphicsPixmapItem(healthPackTexture.scaled(tileSize*0.95, tileSize*0.95, Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation));
         healthPackItem->setPos(healthPack->getXPos() * tileSize, healthPack->getYPos() * tileSize);
         scene->addItem(healthPackItem);
