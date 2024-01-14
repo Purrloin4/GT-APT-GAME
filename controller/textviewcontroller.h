@@ -28,7 +28,7 @@ public:
 
         // Create a widget to contain the text view
         textViewWidget = new QWidget;
-        textLayout = new QVBoxLayout(textViewWidget);
+        textLayout = new QVBoxLayout(std::move(textViewWidget));
 
         // Display the ASCII representation in a QTextEdit
         asciiTextEdit = new QTextEdit(initialAsciiRepresentation);
@@ -37,7 +37,7 @@ public:
         asciiTextEdit->setReadOnly(true);
 
         // Add the text view to the layout
-        textLayout->addWidget(asciiTextEdit);
+        textLayout->addWidget(std::move(asciiTextEdit));
 
         // Use a QHBoxLayout to arrange the text box and button horizontally
         navigateLayout = new QHBoxLayout;
@@ -48,19 +48,19 @@ public:
         navigateLayout->addWidget(navigateLineEdit);
 
         // Enter to navigate
-        connect(navigateLineEdit, &QLineEdit::returnPressed, this, &TextViewController::handleTextCommand);
+        connect(std::move(navigateLineEdit), &QLineEdit::returnPressed, this, &TextViewController::handleTextCommand);
 
         // Create a button
         navigateButton = new QPushButton("ENTER");
         connect(navigateButton, &QPushButton::clicked, this, &TextViewController::handleTextCommand);
-        navigateLayout->addWidget(navigateButton);
+        navigateLayout->addWidget(std::move(navigateButton));
 
-        textLayout->addLayout(navigateLayout);
+        textLayout->addLayout(std::move(navigateLayout));
 
         // Add a QLabel for additional text
         commandMessageLabel = new QLabel;
         commandMessageLabel->setTextFormat(Qt::RichText);
-        textLayout->addWidget(commandMessageLabel);
+        textLayout->addWidget(std::move(commandMessageLabel));
     }
 
     void visualizeWorld() override;

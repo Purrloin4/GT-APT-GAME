@@ -27,21 +27,21 @@ void WindowController::setupWindow(){
     heuristicFactorEdit = new QLineEdit;
     connect(heuristicFactorEdit, &QLineEdit::textChanged, this, &WindowController::handleTextChange);
     heuristicFactorEdit->setPlaceholderText(QString::number(worldController->getHeursticFactor()));
-    controlLayout->addRow(heuristicFactorLabel, heuristicFactorEdit);
+    controlLayout->addRow(std::move(heuristicFactorLabel), heuristicFactorEdit);
 
     QLabel *heightFactorLabel = new QLabel("Height Factor");
     heightFactorEdit = new QLineEdit;
     connect(heightFactorEdit, &QLineEdit::textChanged, this, &WindowController::handleTextChange);
     heightFactorEdit->setPlaceholderText(QString::number(worldController->getHeightFactor()));
-    controlLayout->addRow(heightFactorLabel, heightFactorEdit);
+    controlLayout->addRow(std::move(heightFactorLabel), heightFactorEdit);
 
     autoPlayButton = new QPushButton("AutoPlay");
     controlLayout->addWidget(autoPlayButton);
 
     connect(autoPlayButton, &QPushButton::clicked, this, &WindowController::autoplay);
 
-    windowLayout->addLayout(infoLayout);
-    windowLayout->addLayout(controlLayout);
+    windowLayout->addLayout(std::move(infoLayout));
+    windowLayout->addLayout(std::move(controlLayout));
     drawBars();
 }
 
