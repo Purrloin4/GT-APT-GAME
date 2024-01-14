@@ -28,7 +28,7 @@ void GraphicViewController::visualizeWorld()
             //brush = Qt::black;
             QGraphicsPixmapItem *brickItem = new QGraphicsPixmapItem(brickTexture.scaled(tileSize, tileSize, Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation));
             brickItem->setPos(xPos * tileSize, yPos * tileSize);
-            scene->addItem(brickItem);
+            scene->addItem(std::move(brickItem));
         }
         else {
             brush = QColor::fromRgbF(value, value, value);
@@ -45,7 +45,7 @@ void GraphicViewController::visualizeWorld()
     QGraphicsPixmapItem *portalItem;
     portalItem = new QGraphicsPixmapItem(portalTexture.scaled(tileSize, tileSize, Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation));
     portalItem->setPos(portalTile->getXPos() * tileSize, portalTile->getYPos() * tileSize);
-    scene->addItem(portalItem);
+    scene->addItem(std::move(portalItem));
 
     tileVisualisations.clear();
     // Add visualization for enemies
@@ -72,13 +72,13 @@ void GraphicViewController::visualizeWorld()
         font.setPointSize(20);
         healthText->setFont(font);
         healthText->setPos((enemy->getXPos()) * tileSize, (enemy->getYPos() + 1) * tileSize);
-        scene->addItem(healthText);
+        scene->addItem(std::move(healthText));
 
         //To store the health text with the correct enemy
         TileVisualisation tileVis;
         tileVis.enemy = enemy.get();
         tileVis.enemyHealthText = healthText;
-        tileVis.texturePixmapItem = enemyItem;
+        tileVis.texturePixmapItem = std::move(enemyItem);
         tileVisualisations.push_back(tileVis);
     }
 
@@ -104,8 +104,8 @@ void GraphicViewController::visualizeWorld()
         //To store the health text with the correct enemy
         TileVisualisation tileVis;
         tileVis.tile = healthPack.get();
-        tileVis.healthPackText = healthPackText;
-        tileVis.texturePixmapItem = healthPackItem;
+        tileVis.healthPackText = std::move(healthPackText);
+        tileVis.texturePixmapItem = std::move(healthPackItem);
         tileVisualisations.push_back(tileVis);
     }
 
@@ -221,7 +221,7 @@ void GraphicViewController::handleHalfDead() {
     QPixmap XEnemyHalfTexture(":/texture_images/XEnemy_half.png");
     QGraphicsPixmapItem *halfXEnemyItem = new QGraphicsPixmapItem(XEnemyHalfTexture.scaled(tileSize*0.8, tileSize*0.8, Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation));
     halfXEnemyItem->setPos(enemy->getXPos() * tileSize, enemy->getYPos() * tileSize);
-    scene->addItem(std::move(halfXEnemyItem));
+    scene->addItem(halfXEnemyItem);
     for (auto it = tileVisualisations.begin(); it != tileVisualisations.end();) {
         if (it->enemy==enemy){
             try {

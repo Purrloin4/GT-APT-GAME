@@ -6,7 +6,7 @@ int XEnemy::halfDeadCount = 0;
 int XEnemy::totalEnemies = 0;
 
 XEnemy::XEnemy(int xPosition, int yPosition, float strength)
-    : Enemy(xPosition, yPosition, strength), defeated(false), halfDead(false)
+    : Enemy(xPosition, yPosition, strength), halfDead(false)
 {
     timer = new QTimer(this);
     totalEnemies++;
@@ -28,7 +28,7 @@ void XEnemy::setHalfDead(bool value) {
         incrementHalfDeadCount();
         std::cout << "starting timer for 10 seconds" << std::endl;
         timer->singleShot(10000, this, [=, this]() {
-            if (!defeated) {
+            if (!this->getDefeated()) {
                 setHalfDead(false);
                 emit timerExpired();
             }

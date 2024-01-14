@@ -9,7 +9,6 @@ class XEnemy : public Enemy {
 
 private:
 
-    bool defeated;
     bool halfDead;
     static int halfDeadCount;
     static int totalEnemies;
