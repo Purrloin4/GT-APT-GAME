@@ -57,6 +57,7 @@ void GraphicViewController::visualizeWorld()
             enemyItem->setPos(pEnemy->getXPos() * tileSize, pEnemy->getYPos() * tileSize);
             scene->addItem(enemyItem);
         } else if (auto xEnemy = dynamic_cast<XEnemy*>(enemy.get())) {
+            if (xEnemy->getDefeated()) continue;
             enemyItem = new QGraphicsPixmapItem(XEnemyTexture.scaled(tileSize*0.9, tileSize*0.9, Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation));
             enemyItem->setPos(xEnemy->getXPos() * tileSize, xEnemy->getYPos() * tileSize);
             scene->addItem(enemyItem);
