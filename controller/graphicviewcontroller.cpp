@@ -206,7 +206,7 @@ void GraphicViewController::handleAlive() {
     for (auto it = tileVisualisations.begin(); it != tileVisualisations.end();) {
         if (it->enemy==enemy){
             scene->removeItem(it->texturePixmapItem);
-            it->texturePixmapItem = xEnemyItem;
+            it->texturePixmapItem = std::move(xEnemyItem);
             break;
         }
         else{
@@ -221,12 +221,12 @@ void GraphicViewController::handleHalfDead() {
     QPixmap XEnemyHalfTexture(":/texture_images/XEnemy_half.png");
     QGraphicsPixmapItem *halfXEnemyItem = new QGraphicsPixmapItem(XEnemyHalfTexture.scaled(tileSize*0.8, tileSize*0.8, Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation));
     halfXEnemyItem->setPos(enemy->getXPos() * tileSize, enemy->getYPos() * tileSize);
-    scene->addItem(halfXEnemyItem);
+    scene->addItem(std::move(halfXEnemyItem));
     for (auto it = tileVisualisations.begin(); it != tileVisualisations.end();) {
         if (it->enemy==enemy){
             try {
                 scene->removeItem(it->texturePixmapItem);
-                it->texturePixmapItem = halfXEnemyItem;
+                it->texturePixmapItem = std::move(halfXEnemyItem);
             } catch (...) {
             }
             break;
@@ -243,7 +243,7 @@ void GraphicViewController::handleDeath() {
     QPixmap tombStoneTexture(":/texture_images/tombstone.png");
     QGraphicsPixmapItem *tombStoneItem = new QGraphicsPixmapItem(tombStoneTexture.scaled(tileSize, tileSize, Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation));
     tombStoneItem->setPos(enemy->getXPos() * tileSize, enemy->getYPos() * tileSize);
-    scene->addItem(tombStoneItem);
+    scene->addItem(std::move(tombStoneItem));
     for (auto it = tileVisualisations.begin(); it != tileVisualisations.end();) {
         if (it->enemy==enemy){
             try {
@@ -352,7 +352,7 @@ void GraphicViewController::animateSplatter(int xPos,int yPos){
     splatterAnimationLabel->setMovie(splatterAnimation);
     splatterAnimation->start();
 
-    QGraphicsProxyWidget* splatterProxy = scene->addWidget(splatterAnimationLabel);
+    QGraphicsProxyWidget* splatterProxy = scene->addWidget(std::move(splatterAnimationLabel));
 
     splatterProxy->setPos((xPos-1.5) * tileSize, (yPos- 1.5) * tileSize );
     splatterProxy->setZValue(2);
@@ -382,7 +382,7 @@ void GraphicViewController::animateHealing(int xPos,int yPos){
     healingAnimationLabel->setMovie(healingAnimation);
     healingAnimation->start();
 
-    QGraphicsProxyWidget* healingProxy = scene->addWidget(healingAnimationLabel);
+    QGraphicsProxyWidget* healingProxy = scene->addWidget(std::move(healingAnimationLabel));
 
     healingProxy->setPos((xPos-0.5) * tileSize, (yPos- 0.5) * tileSize );
     healingProxy->setZValue(2);
@@ -414,7 +414,7 @@ void GraphicViewController::animateExplosions(){
             explosionAnimationLabel->setMovie(explosionAnimation);
             explosionAnimation->start();
 
-            QGraphicsProxyWidget* explosionProxy = scene->addWidget(explosionAnimationLabel);
+            QGraphicsProxyWidget* explosionProxy = scene->addWidget(std::move(explosionAnimationLabel));
 
             explosionProxy->setPos((xPos - 4) * tileSize, (yPos - 4) * tileSize );
             explosionProxy->setZValue(2);
@@ -461,7 +461,7 @@ void GraphicViewController::animateFireworks(){
                 fireworksAnimation3->start();
             }
 
-            QGraphicsProxyWidget* fireworksProxy = scene->addWidget(fireworksAnimationLabel);
+            QGraphicsProxyWidget* fireworksProxy = scene->addWidget(std::move(fireworksAnimationLabel));
 
             fireworksProxy->setPos((xPos - 4) * tileSize, (yPos - 4) * tileSize );
             fireworksProxy->setZValue(2);
