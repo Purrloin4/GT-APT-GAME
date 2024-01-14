@@ -30,8 +30,8 @@ public:
         healingAnimation->setScaledSize(QSize(tileSize*2, tileSize*2));
 
         graphViewWidget = new QWidget;
-        graphLayout = new QVBoxLayout(graphViewWidget);
-        graphLayout->addWidget(rawView);
+        graphLayout = new QVBoxLayout(std::move(graphViewWidget));
+        graphLayout->addWidget(std::move(rawView));
     }
     std::shared_ptr<QGraphicsScene> scene;
     QGraphicsView* rawView;
